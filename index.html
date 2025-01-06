@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Expenditure Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Daily Expenditure Tracker</h3>
+            </div>
+            <div class="card-body">
+                <form id="expenditure-form">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" id="title" class="form-control" placeholder="Enter title" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" id="amount" class="form-control" placeholder="Enter amount" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Expenditure</button>
+                </form>
+                <hr>
+                <table class="table table-bordered table-hover mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenditure-table">
+                        <!-- Dynamic rows will be added here -->
+                    </tbody>
+                </table>
+                <h5 class="mt-3" id="total-amount">Total Amount: Rs. 0.00</h5>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let expenditures = [];
+        const expenditureTable = document.getElementById('expenditure-table');
+        const expenditureForm = document.getElementById('expenditure-form');
+        const totalAmountDisplay = document.getElementById('total-amount');
+
+        function renderTable() {
+            expenditureTable.innerHTML = '';
+            expenditures.forEach((exp, index) => {
+                expenditureTable.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${exp.title}</td>
+                        <td>Rs. ${exp.amount.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editExpenditure(${index})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteExpenditure(${index})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            calculateTotal();
+        }
+
+        expenditureForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (title && amount) {
+                expenditures.push({ title, amount });
+                renderTable();
+                expenditureForm.reset();
+            }
+        });
+
+        function editExpenditure(index) {
+            const exp = expenditures[index];
+            document.getElementById('title').value = exp.title;
+            document.getElementById('amount').value = exp.amount;
+            expenditures.splice(index, 1);
+            renderTable();
+        }
+
+        function deleteExpenditure(index) {
+            expenditures.splice(index, 1);
+            renderTable();
+        }
+
+        function calculateTotal() {
+            const total = expenditures.reduce((sum, exp) => sum + exp.amount, 0);
+            totalAmountDisplay.textContent = `Total Amount: Rs. ${total.toFixed(2)}`;
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
