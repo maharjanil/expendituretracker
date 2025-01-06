@@ -10,101 +10,108 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f0f2f5;
+      background-color: #f8f9fa;
       font-family: 'Roboto', sans-serif;
+      color: #333;
+      margin-top: 50px;
+      text-align: center; /* Align all text to center */
     }
 
     .container {
       max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
     h1 {
-      color: #007bff;
+      color: #1e3d58;
       font-weight: bold;
-      margin-bottom: 30px;
-      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
     }
 
     .card {
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      color: #333;
       margin-bottom: 30px;
+      border: 1px solid #dcdcdc;
     }
 
     .card-body {
       padding: 30px;
     }
 
-    .form-control {
-      border-radius: 10px;
-      box-shadow: none;
-      border: 1px solid #ddd;
+    .form-control, .form-select {
+      display: inline-block;
+      width: 80%;
+      margin: 15px auto;
+      border-radius: 25px;
+      padding: 15px;
+      font-size: 1.1rem;
+      border: 2px solid #6e7cbe;
     }
 
-    .form-control:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    .form-control:focus, .form-select:focus {
+      border-color: #1e3d58;
+      box-shadow: 0 0 8px rgba(30, 61, 88, 0.5);
     }
 
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-      border-radius: 10px;
+    .btn-primary, .btn-left {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      background-color: #1e3d58;
+      border-color: #1e3d58;
+      color: white;
+      transition: background-color 0.3s ease;
     }
 
     .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
+      background-color: #6e7cbe;
+      border-color: #6e7cbe;
     }
 
-    .btn-warning {
-      background-color: #ffc107;
-      border-color: #ffc107;
-    }
-
-    .btn-danger {
-      background-color: #e74a3b;
-      border-color: #e74a3b;
-    }
-
-    .btn-sm {
-      border-radius: 5px;
+    .total-container {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #28a745;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .table {
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+      width: 90%;
+      background-color: #fff;
     }
 
-    .table thead {
-      background-color: #007bff;
-      color: #fff;
-    }
-
-    .table th,
-    .table td {
+    .table th, .table td {
       text-align: center;
       vertical-align: middle;
       padding: 15px;
+      font-size: 1.1rem;
     }
 
     .table tbody tr:hover {
       background-color: #f1f1f1;
+      cursor: pointer;
     }
 
-    .total-container {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 20px;
-      text-align: center;
-      color: #28a745;
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: #fafafa;
     }
 
     .icon-btn {
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
+      transition: color 0.3s ease;
     }
 
     .icon-btn:hover {
@@ -114,94 +121,118 @@
     .footer {
       text-align: center;
       font-size: 0.9rem;
-      margin-top: 30px;
+      margin-top: 40px;
       color: #6c757d;
     }
 
     .footer a {
       color: #007bff;
+      text-decoration: none;
     }
 
-    .btn-left {
-      width: auto;
-      display: inline-block;
-      margin-left: 0;
+    /* New container for centering dropdown */
+    .select-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
     }
 
     .select-left {
-  width: auto;
-  display: inline-block;
-  margin-left: 0;
-  float: left;
-  margin-right: 10px;
-  padding: 10px 15px; /* Increase padding for larger size */
-}
+      width: auto;
+      display: inline-block;
+      margin-left: 0;
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      border-radius: 15px;
+      background-color: #fff;
+      text-align: center;
+    }
 
-.form-select-sm {
-  font-size: 1rem; /* Slightly increase font size */
-  padding: 0.5rem 1rem; /* Increase padding */
-  height: 45px; /* Increase the height of the dropdown */
-}
+    .form-select-sm {
+      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+      height: 45px;
+      border-radius: 25px;
+    }
 
+    .btn-danger {
+      display: inline-block;
+      width: auto;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #e74a3b;
+      border-color: #e74a3b;
+      font-size: 1.1rem;
+      border-radius: 30px;
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+      border-color: #c0392b;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container mt-5">
+  <div class="container">
     <h1>Daily Expenditure Tracker</h1>
-    
+
     <!-- Expense Form -->
-    <div class="card p-4">
-      <form id="expense-form">
-        <div class="mb-3">
-          <label for="expense-name" class="form-label">Expense Name</label>
-          <input type="text" class="form-control" id="expense-name" placeholder="Enter expense name" required>
-        </div>
-        <div class="mb-3">
-          <label for="expense-amount" class="form-label">Amount (NPR)</label>
-          <input type="number" class="form-control" id="expense-amount" placeholder="Enter amount" required>
-        </div>
-        <!-- Add Expense Button aligned to the left -->
-        <button type="submit" class="btn btn-primary btn-left">Add Expense</button>
-      </form>
+    <div class="card">
+      <div class="card-body">
+        <form id="expense-form">
+          <div class="mb-3">
+            <label for="expense-name" class="form-label">Expense Name</label>
+            <input type="text" class="form-control" id="expense-name" placeholder="Enter expense name" required>
+          </div>
+          <div class="mb-3">
+            <label for="expense-amount" class="form-label">Amount (NPR)</label>
+            <input type="number" class="form-control" id="expense-amount" placeholder="Enter amount" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-left">Add Expense</button>
+        </form>
+      </div>
     </div>
-    
+
     <!-- Month Filter -->
     <div class="card mt-4">
       <div class="card-body">
         <h4 class="card-title">Filter by Month</h4>
-        <select id="month-filter" class="form-select form-select-sm select-left">
-          <option value="all">All Months</option>
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-          <option value="06">June</option>
-          <option value="07">July</option>
-          <option value="08">August</option>
-          <option value="09">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
-        </select>
+        <div class="select-container"> <!-- Center the dropdown -->
+          <select id="month-filter" class="form-select form-select-sm select-left">
+            <option value="all">Months</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
       </div>
     </div>
-    
-    <!-- Manual Amount Input and Subtraction -->
+
+    <!-- Manual Amount Input -->
     <div class="card mt-4">
       <div class="card-body">
-        <h4 class="card-title">Total Amount </h4>
+        <h4 class="card-title">Total Amount</h4>
         <div class="mb-3">
           <label for="manual-amount" class="form-label">Enter Amount (NPR)</label>
-          <input type="number" class="form-control" id="manual-amount" placeholder="Enter amount" step="0.01">
+          <input type="number" class="form-control" id="manual-amount" placeholder="Enter manual amount" step="0.01">
         </div>
         <div class="mb-3">
           <h5>Remaining Amount: <span id="remaining-amount">NPR 0.00</span></h5>
         </div>
       </div>
     </div>
-    
+
     <!-- Expenses Table -->
     <div class="card mt-4">
       <div class="card-body">
@@ -223,10 +254,10 @@
         <div class="total-container">
           Total: <span id="total-amount">NPR 0.00</span>
         </div>
-        <button id="delete-all" class="btn btn-danger w-auto mt-3 float-start">Delete All</button>
+        <button id="delete-all" class="btn btn-danger w-auto mt-3">Delete All</button>
       </div>
     </div>
-    
+
   </div>
 
   <!-- Bootstrap 5 JS and Popper -->
@@ -249,7 +280,8 @@
 
     // Render expenses function
     function renderExpenses() {
-      expenseTable.innerHTML = "";
+      expenseTable.innerHTML = "";  // Clear table rows
+
       expenses.forEach((expense, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -258,47 +290,52 @@
           <td>NPR ${expense.amount.toFixed(2)}</td>
           <td>${expense.date}</td>
           <td>
-            <button class="btn btn-warning btn-sm" onclick="confirmEdit(${expense.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger btn-sm" onclick="confirmDelete(${expense.id})"><i class="fas fa-trash-alt"></i></button>
+            <button class="btn btn-info btn-sm icon-btn" onclick="editExpense(${expense.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm icon-btn" onclick="confirmDelete(${expense.id})">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </td>
         `;
         expenseTable.appendChild(row);
       });
+
+      calculateTotal();
     }
 
-    // Calculate and display total amount
+    // Calculate total
     function calculateTotal() {
       const totalAmount = expenses.reduce((total, expense) => total + expense.amount, 0);
-      totalAmountDisplay.innerHTML = `NPR ${totalAmount.toFixed(2)}`;
+      totalAmountDisplay.textContent = `NPR ${totalAmount.toFixed(2)}`;
     }
 
-    // Handle form submission
+    // Add new expense
     expenseForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      
       const expenseName = expenseNameInput.value.trim();
       const expenseAmount = parseFloat(expenseAmountInput.value.trim());
 
-      if (expenseName && !isNaN(expenseAmount) && expenseAmount > 0) {
-        const currentDate = new Date().toISOString().split('T')[0]; // Get the current date
-
+      if (expenseName && expenseAmount) {
         const newExpense = {
+          id: Date.now(),
           name: expenseName,
           amount: expenseAmount,
-          date: currentDate,
-          id: Date.now()
+          date: new Date().toLocaleDateString()
         };
 
         expenses.push(newExpense);
-        renderExpenses();
-        calculateTotal();
         localStorage.setItem("expenses", JSON.stringify(expenses));
 
-        expenseForm.reset();
+        expenseNameInput.value = "";
+        expenseAmountInput.value = "";
+
+        renderExpenses();
+        calculateTotal();
       }
     });
 
-    // Function to handle expense editing
+    // Edit expense
     function editExpense(id) {
       const expenseToEdit = expenses.find(exp => exp.id === id);
       expenseNameInput.value = expenseToEdit.name;
@@ -306,20 +343,24 @@
       expenses = expenses.filter(exp => exp.id !== id);
       renderExpenses();
       calculateTotal();
-      localStorage.setItem("expenses", JSON.stringify(expenses));
     }
 
-    // Function to confirm expense deletion
+    // Confirm before deleting
     function confirmDelete(id) {
       if (confirm("Are you sure you want to delete this expense?")) {
-        expenses = expenses.filter(exp => exp.id !== id);
-        renderExpenses();
-        calculateTotal();
-        localStorage.setItem("expenses", JSON.stringify(expenses));
+        deleteExpense(id);
       }
     }
 
-    // Handle delete all button click
+    // Delete expense by id
+    function deleteExpense(id) {
+      expenses = expenses.filter(exp => exp.id !== id);
+      renderExpenses();
+      calculateTotal();
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+    }
+
+    // Delete all expenses
     deleteAllButton.addEventListener("click", function () {
       if (confirm("Are you sure you want to delete all expenses?")) {
         expenses = [];
@@ -329,17 +370,18 @@
       }
     });
 
-    // Handle manual amount input change
+    // Handle manual amount input
     manualAmountInput.addEventListener("input", function () {
-      const manualAmount = parseFloat(manualAmountInput.value) || 0;
+      const manualAmount = parseFloat(manualAmountInput.value.trim()) || 0;
       const totalExpenditure = expenses.reduce((total, expense) => total + expense.amount, 0);
       const remainingAmount = manualAmount - totalExpenditure;
-      remainingAmountDisplay.innerHTML = `NPR ${remainingAmount.toFixed(2)}`;
+      remainingAmountDisplay.textContent = `NPR ${remainingAmount.toFixed(2)}`;
     });
 
-    // Initialize app
+    // Initialize
     renderExpenses();
     calculateTotal();
   </script>
+
 </body>
 </html>
