@@ -127,6 +127,20 @@
     .btn, .table tbody tr:hover {
       transition: all 0.3s ease;
     }
+
+    /* Align Add Expense Button to the left */
+    .btn-left {
+      width: auto;
+      display: inline-block;
+      margin-left: 0;
+    }
+
+    /* Align Month Filter Dropdown to the left */
+    .select-left {
+      width: auto;
+      display: inline-block;
+      margin-left: 0;
+    }
   </style>
 </head>
 <body>
@@ -145,8 +159,31 @@
           <label for="expense-amount" class="form-label">Amount (NPR)</label>
           <input type="number" class="form-control" id="expense-amount" placeholder="Enter amount" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Add Expense</button>
+        <!-- Add Expense Button aligned to the left -->
+        <button type="submit" class="btn btn-primary btn-left">Add Expense</button>
       </form>
+    </div>
+    
+    <!-- Month Filter -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h4 class="card-title">Filter by Month</h4>
+        <select id="month-filter" class="form-select select-left">
+          <option value="all">All Months</option>
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
     </div>
     
     <!-- Expenses Table -->
@@ -172,13 +209,15 @@
           <h5>Total Amount: <span id="total-amount">NPR 0.00</span></h5>
         </div>
         <!-- Delete All Button -->
-        <button id="delete-all" class="btn btn-danger w-100 mt-3">Delete All</button>
+       <!-- Delete All Button -->
+        <button id="delete-all" class="btn btn-danger w-auto mt-3 float-start">Delete All</button>
+
       </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-      <p>Made with ❤️ by <a href="#">Anil Maharjan</a></p>
+      <p>Made with ❤️ by <a href="#">Anil Maharjan/a></p>
     </div>
   </div>
 
@@ -197,13 +236,14 @@
     const expenseTable = document.getElementById("expense-table").getElementsByTagName("tbody")[0];
     const totalAmountDisplay = document.getElementById("total-amount");
     const deleteAllButton = document.getElementById("delete-all");
+    const monthFilter = document.getElementById("month-filter");
 
     // Load saved expenses from localStorage
     window.onload = function() {
       if (localStorage.getItem('expenses')) {
         expenses = JSON.parse(localStorage.getItem('expenses'));
-        renderExpenses();
-        calculateTotal();
+        renderExpenses(); // Render expenses when the page loads
+        calculateTotal(); // Calculate the total amount
       }
     };
 
@@ -242,9 +282,13 @@
 
     // Function to render expenses in the table
     function renderExpenses() {
+      const selectedMonth = monthFilter.value;
       expenseTable.innerHTML = ""; // Clear the current table content
-      
-      expenses.forEach((expense, index) => {
+
+      // Filter expenses by selected month
+      const filteredExpenses = selectedMonth === "all" ? expenses : expenses.filter(exp => exp.date.split('-')[1] === selectedMonth);
+
+      filteredExpenses.forEach((expense, index) => {
         const row = document.createElement("tr");
         
         row.innerHTML = `
@@ -313,6 +357,12 @@
         deleteExpense(id);
       }
     }
+
+    // Event listener for month filter change
+    monthFilter.addEventListener("change", function () {
+      renderExpenses();
+      calculateTotal();
+    });
   </script>
 </body>
 </html>
