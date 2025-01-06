@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
+    /* Styling to make the app beautiful */
     body {
       background-color: #f4f7fc;
       font-family: 'Arial', sans-serif;
@@ -37,7 +38,7 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .form-control, .form-select, .btn {
+    .form-control, .btn {
       border-radius: 8px;
       font-size: 1.1rem;
       padding: 12px;
@@ -145,7 +146,6 @@
       margin-bottom: 20px;
     }
 
-    .filter-container select,
     .filter-container input {
       width: 30%;
     }
@@ -177,6 +177,11 @@
       text-align: center;
       margin-top: 10px;
     }
+
+    /* Bold the section titles */
+    .section-title {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -186,17 +191,7 @@
 
     <!-- Filter Section -->
     <div class="filter-container">
-      <select id="category-filter" class="form-select" aria-label="Filter by Category">
-        <option value="">Filter by Category</option>
-        <option value="Food">Food</option>
-        <option value="Transportation">Transportation</option>
-        <option value="Utilities">Utilities</option>
-        <option value="Extra">Extra</option>
-        <option value="Others">Others</option>
-      </select>
-
       <input type="date" id="date-filter" class="form-control" aria-label="Filter by Date">
-
       <button id="apply-filters" class="btn btn-primary" aria-label="Apply Filters">Apply Filters</button>
     </div>
 
@@ -212,45 +207,30 @@
           <label for="expense-amount" class="form-label">Amount (NPR)</label>
           <input type="number" class="form-control" id="expense-amount" placeholder="Enter amount" aria-label="Expense amount" required>
         </div>
-        <div class="mb-3">
-          <label for="expense-category" class="form-label">Category</label>
-          <select class="form-select" id="expense-category" aria-label="Expense category" required>
-            <option value="">Select Category</option>
-            <option value="Food">Food</option>
-            <option value="Transportation">Transportation</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Extra">Extra</option>
-
-            <option value="Others">Others</option>
-          </select>
-        </div>
         <button type="submit" class="btn btn-primary w-100" aria-label="Add Expense">Add Expense</button>
       </form>
     </div>
 
-    <!-- Total Amount Section -->
-    <h3 class="text-center">Total Amount</h3>
-    <div class="manual-amount-container">
-      <input type="number" id="manual-amount" class="form-control" placeholder="Enter manual amount" aria-label="Enter manual amount">
+    <!-- Total Amount and Remaining Amount Section -->
+    <div class="card" role="section" aria-labelledby="amount-section-title">
+      <h3 id="amount-section-title" class="text-center section-title">Amount Management</h3>
+      <div class="manual-amount-container">
+        <input type="number" id="manual-amount" class="form-control" placeholder="Enter manual amount" aria-label="Enter manual amount">
+      </div>
+      <div class="remaining-amount" id="remaining-amount">
+        Remaining: NPR 0.00
+      </div>
     </div>
 
-    <!-- Remaining Amount Section -->
-    <div class="remaining-amount" id="remaining-amount">
-      Remaining: NPR 0.00
-    </div>
-
-    <!-- Recorded Expenditures Heading -->
-    <h3 class="text-center" id="expense-table-title">Recorded Expenditures</h3>
-
-    <!-- Expenses Table -->
+    <!-- Expenses Table Section -->
     <div class="card" role="table" aria-labelledby="expense-table-title">
+      <h3 id="expense-table-title" class="text-center section-title">Recorded Expenditures</h3>
       <table class="table" id="expense-table">
         <thead>
           <tr>
             <th>#</th>
             <th>Expense Name</th>
             <th>Amount (NPR)</th>
-            <th>Category</th>
             <th>Date</th>
             <th>Actions</th>
           </tr>
@@ -267,6 +247,11 @@
 
   </div>
 
+  <!-- Footer Section -->
+  <footer class="footer">
+    <p>&copy; 2025 Daily Expenditure Tracker | Designed with <i class="fas fa-heart"></i> by <a href="#">Anil Maharjan</a></p>
+  </footer>
+
   <!-- Bootstrap 5 JS and Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -275,11 +260,9 @@
     const expenseForm = document.getElementById("expense-form");
     const expenseNameInput = document.getElementById("expense-name");
     const expenseAmountInput = document.getElementById("expense-amount");
-    const expenseCategoryInput = document.getElementById("expense-category");
     const expenseTable = document.getElementById("expense-table").getElementsByTagName('tbody')[0];
     const totalAmountDisplay = document.getElementById("total-amount");
     const deleteAllButton = document.getElementById("delete-all");
-    const categoryFilter = document.getElementById("category-filter");
     const dateFilter = document.getElementById("date-filter");
     const applyFiltersButton = document.getElementById("apply-filters");
     const manualAmountInput = document.getElementById("manual-amount");
@@ -287,15 +270,12 @@
 
     let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-    // Filter expenses by category and date
+    // Filter expenses by date
     function filterExpenses() {
-      const categoryValue = categoryFilter.value;
       const dateValue = dateFilter.value;
 
       const filteredExpenses = expenses.filter(expense => {
-        let categoryMatch = categoryValue ? expense.category === categoryValue : true;
-        let dateMatch = dateValue ? expense.date === dateValue : true;
-        return categoryMatch && dateMatch;
+        return dateValue ? expense.date === dateValue : true;
       });
 
       renderExpenses(filteredExpenses);
@@ -311,7 +291,6 @@
           <td>${index + 1}</td>
           <td>${expense.name}</td>
           <td>NPR ${expense.amount.toFixed(2)}</td>
-          <td>${expense.category}</td>
           <td>${expense.date}</td>
           <td class="action-btns">
             <button class="icon-btn edit" onclick="editExpense(${expense.id})" aria-label="Edit Expense">
@@ -361,23 +340,22 @@
 
     // Edit expense
     function editExpense(id) {
-      const expense = expenses.find(exp => exp.id === id);
-      expenseNameInput.value = expense.name;
-      expenseAmountInput.value = expense.amount;
-      expenseCategoryInput.value = expense.category;
-      expenseForm.addEventListener("submit", function updateExpense(event) {
-        event.preventDefault();
-        expense.name = expenseNameInput.value.trim();
-        expense.amount = parseFloat(expenseAmountInput.value.trim());
-        expense.category = expenseCategoryInput.value;
-        expense.date = new Date().toLocaleDateString();
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        renderExpenses(expenses);
-        expenseNameInput.value = "";
-        expenseAmountInput.value = "";
-        expenseCategoryInput.value = "";
-        expenseForm.removeEventListener("submit", updateExpense);
-      });
+      if (confirm("Are you sure you want to edit this expense?")) {
+        const expense = expenses.find(exp => exp.id === id);
+        expenseNameInput.value = expense.name;
+        expenseAmountInput.value = expense.amount;
+        expenseForm.addEventListener("submit", function updateExpense(event) {
+          event.preventDefault();
+          expense.name = expenseNameInput.value.trim();
+          expense.amount = parseFloat(expenseAmountInput.value.trim());
+          expense.date = new Date().toLocaleDateString();
+          localStorage.setItem("expenses", JSON.stringify(expenses));
+          renderExpenses(expenses);
+          expenseNameInput.value = "";
+          expenseAmountInput.value = "";
+          expenseForm.removeEventListener("submit", updateExpense);
+        });
+      }
     }
 
     // Delete a single expense
@@ -394,14 +372,12 @@
       event.preventDefault();
       const name = expenseNameInput.value.trim();
       const amount = parseFloat(expenseAmountInput.value.trim());
-      const category = expenseCategoryInput.value;
 
-      if (name && !isNaN(amount) && category) {
+      if (name && !isNaN(amount)) {
         const expense = {
           id: Date.now(),
           name,
           amount,
-          category,
           date: new Date().toLocaleDateString()
         };
         expenses.push(expense);
@@ -409,7 +385,6 @@
         renderExpenses(expenses);
         expenseNameInput.value = "";
         expenseAmountInput.value = "";
-        expenseCategoryInput.value = "";
       }
     });
 
