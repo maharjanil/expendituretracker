@@ -9,7 +9,6 @@
   <!-- Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
-    /* Custom CSS */
     body {
       background-color: #f0f2f5;
       font-family: 'Roboto', sans-serif;
@@ -123,24 +122,27 @@
       color: #007bff;
     }
 
-    /* Add a smooth transition for the hover effects */
-    .btn, .table tbody tr:hover {
-      transition: all 0.3s ease;
-    }
-
-    /* Align Add Expense Button to the left */
     .btn-left {
       width: auto;
       display: inline-block;
       margin-left: 0;
     }
 
-    /* Align Month Filter Dropdown to the left */
     .select-left {
-      width: auto;
-      display: inline-block;
-      margin-left: 0;
-    }
+  width: auto;
+  display: inline-block;
+  margin-left: 0;
+  float: left;
+  margin-right: 10px;
+  padding: 10px 15px; /* Increase padding for larger size */
+}
+
+.form-select-sm {
+  font-size: 1rem; /* Slightly increase font size */
+  padding: 0.5rem 1rem; /* Increase padding */
+  height: 45px; /* Increase the height of the dropdown */
+}
+
   </style>
 </head>
 <body>
@@ -168,7 +170,7 @@
     <div class="card mt-4">
       <div class="card-body">
         <h4 class="card-title">Filter by Month</h4>
-        <select id="month-filter" class="form-select select-left">
+        <select id="month-filter" class="form-select form-select-sm select-left">
           <option value="all">All Months</option>
           <option value="01">January</option>
           <option value="02">February</option>
@@ -183,6 +185,20 @@
           <option value="11">November</option>
           <option value="12">December</option>
         </select>
+      </div>
+    </div>
+    
+    <!-- Manual Amount Input and Subtraction -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h4 class="card-title">Total Amount </h4>
+        <div class="mb-3">
+          <label for="manual-amount" class="form-label">Enter Amount (NPR)</label>
+          <input type="number" class="form-control" id="manual-amount" placeholder="Enter amount" step="0.01">
+        </div>
+        <div class="mb-3">
+          <h5>Remaining Amount: <span id="remaining-amount">NPR 0.00</span></h5>
+        </div>
       </div>
     </div>
     
@@ -201,168 +217,129 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Dynamic rows will be injected here -->
+            <!-- Dynamic rows will go here -->
           </tbody>
         </table>
-        <!-- Total Amount Display -->
         <div class="total-container">
-          <h5>Total Amount: <span id="total-amount">NPR 0.00</span></h5>
+          Total: <span id="total-amount">NPR 0.00</span>
         </div>
-        <!-- Delete All Button -->
-       <!-- Delete All Button -->
         <button id="delete-all" class="btn btn-danger w-auto mt-3 float-start">Delete All</button>
-
       </div>
     </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <p>Made with ❤️ by <a href="#">Anil Maharjan/a></p>
-    </div>
+    
   </div>
 
-  <!-- Bootstrap 5 JS and Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <!-- Bootstrap 5 JS and Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
   <script>
-    // Global expenses array
-    let expenses = [];
-
-    // DOM Elements
+    // DOM elements
     const expenseForm = document.getElementById("expense-form");
     const expenseNameInput = document.getElementById("expense-name");
     const expenseAmountInput = document.getElementById("expense-amount");
-    const expenseTable = document.getElementById("expense-table").getElementsByTagName("tbody")[0];
+    const expenseTable = document.getElementById("expense-table").getElementsByTagName('tbody')[0];
+    const monthFilter = document.getElementById("month-filter");
     const totalAmountDisplay = document.getElementById("total-amount");
     const deleteAllButton = document.getElementById("delete-all");
-    const monthFilter = document.getElementById("month-filter");
+    const manualAmountInput = document.getElementById("manual-amount");
+    const remainingAmountDisplay = document.getElementById("remaining-amount");
 
-    // Load saved expenses from localStorage
-    window.onload = function() {
-      if (localStorage.getItem('expenses')) {
-        expenses = JSON.parse(localStorage.getItem('expenses'));
-        renderExpenses(); // Render expenses when the page loads
-        calculateTotal(); // Calculate the total amount
-      }
-    };
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-    // Save expenses to localStorage
-    function saveToLocalStorage() {
-      localStorage.setItem('expenses', JSON.stringify(expenses));
-    }
-
-    // Event listener for the form submission
-    expenseForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      
-      const expenseName = expenseNameInput.value.trim();
-      const expenseAmount = parseFloat(expenseAmountInput.value.trim());
-      
-      if (expenseName && !isNaN(expenseAmount) && expenseAmount > 0) {
-        // Get the current date in YYYY-MM-DD format
-        const currentDate = new Date().toISOString().split('T')[0]; 
-        
-        const newExpense = {
-          name: expenseName,
-          amount: expenseAmount,
-          date: currentDate,  // Store the date here
-          id: Date.now()
-        };
-        
-        expenses.push(newExpense);
-        renderExpenses();
-        calculateTotal(); // Automatically calculate total after adding expense
-        saveToLocalStorage(); // Save updated expenses to localStorage
-        expenseForm.reset();
-      } else {
-        alert("Please provide valid input for both fields.");
-      }
-    });
-
-    // Function to render expenses in the table
+    // Render expenses function
     function renderExpenses() {
-      const selectedMonth = monthFilter.value;
-      expenseTable.innerHTML = ""; // Clear the current table content
-
-      // Filter expenses by selected month
-      const filteredExpenses = selectedMonth === "all" ? expenses : expenses.filter(exp => exp.date.split('-')[1] === selectedMonth);
-
-      filteredExpenses.forEach((expense, index) => {
+      expenseTable.innerHTML = "";
+      expenses.forEach((expense, index) => {
         const row = document.createElement("tr");
-        
         row.innerHTML = `
           <td>${index + 1}</td>
           <td>${expense.name}</td>
           <td>NPR ${expense.amount.toFixed(2)}</td>
-          <td>${expense.date}</td> <!-- Display date -->
+          <td>${expense.date}</td>
           <td>
-            <button class="btn btn-warning btn-sm icon-btn" onclick="confirmEdit(${expense.id})"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger btn-sm icon-btn" onclick="confirmDelete(${expense.id})"><i class="fas fa-trash-alt"></i></button>
+            <button class="btn btn-warning btn-sm" onclick="confirmEdit(${expense.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDelete(${expense.id})"><i class="fas fa-trash-alt"></i></button>
           </td>
         `;
-        
         expenseTable.appendChild(row);
       });
     }
 
-    // Function to calculate and display the total amount
+    // Calculate and display total amount
     function calculateTotal() {
       const totalAmount = expenses.reduce((total, expense) => total + expense.amount, 0);
       totalAmountDisplay.innerHTML = `NPR ${totalAmount.toFixed(2)}`;
     }
 
-    // Function to delete an expense
-    function deleteExpense(id) {
-      expenses = expenses.filter(expense => expense.id !== id);
-      renderExpenses();
-      calculateTotal(); // Recalculate the total after deletion
-      saveToLocalStorage(); // Save updated expenses to localStorage
-    }
+    // Handle form submission
+    expenseForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      const expenseName = expenseNameInput.value.trim();
+      const expenseAmount = parseFloat(expenseAmountInput.value.trim());
 
-    // Function to delete all expenses (reset the list)
-    deleteAllButton.addEventListener("click", function () {
-      if (confirm("Are you sure you want to delete all expenses?")) {
-        expenses = []; // Clear the expenses array
-        renderExpenses(); // Clear the table
-        calculateTotal(); // Reset the total amount
-        localStorage.removeItem("expenses"); // Remove expenses from localStorage
+      if (expenseName && !isNaN(expenseAmount) && expenseAmount > 0) {
+        const currentDate = new Date().toISOString().split('T')[0]; // Get the current date
+
+        const newExpense = {
+          name: expenseName,
+          amount: expenseAmount,
+          date: currentDate,
+          id: Date.now()
+        };
+
+        expenses.push(newExpense);
+        renderExpenses();
+        calculateTotal();
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+
+        expenseForm.reset();
       }
     });
 
-    // Function to edit an expense
+    // Function to handle expense editing
     function editExpense(id) {
       const expenseToEdit = expenses.find(exp => exp.id === id);
-      
       expenseNameInput.value = expenseToEdit.name;
       expenseAmountInput.value = expenseToEdit.amount;
-      
-      // Remove the expense once edited to avoid duplicates
       expenses = expenses.filter(exp => exp.id !== id);
       renderExpenses();
-      calculateTotal(); // Recalculate the total after editing
-      saveToLocalStorage(); // Save updated expenses to localStorage
+      calculateTotal();
+      localStorage.setItem("expenses", JSON.stringify(expenses));
     }
 
-    // Confirm before editing an expense
-    function confirmEdit(id) {
-      if (confirm("Are you sure you want to edit this expense?")) {
-        editExpense(id);
-      }
-    }
-
-    // Confirm before deleting an expense
+    // Function to confirm expense deletion
     function confirmDelete(id) {
       if (confirm("Are you sure you want to delete this expense?")) {
-        deleteExpense(id);
+        expenses = expenses.filter(exp => exp.id !== id);
+        renderExpenses();
+        calculateTotal();
+        localStorage.setItem("expenses", JSON.stringify(expenses));
       }
     }
 
-    // Event listener for month filter change
-    monthFilter.addEventListener("change", function () {
-      renderExpenses();
-      calculateTotal();
+    // Handle delete all button click
+    deleteAllButton.addEventListener("click", function () {
+      if (confirm("Are you sure you want to delete all expenses?")) {
+        expenses = [];
+        renderExpenses();
+        calculateTotal();
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+      }
     });
+
+    // Handle manual amount input change
+    manualAmountInput.addEventListener("input", function () {
+      const manualAmount = parseFloat(manualAmountInput.value) || 0;
+      const totalExpenditure = expenses.reduce((total, expense) => total + expense.amount, 0);
+      const remainingAmount = manualAmount - totalExpenditure;
+      remainingAmountDisplay.innerHTML = `NPR ${remainingAmount.toFixed(2)}`;
+    });
+
+    // Initialize app
+    renderExpenses();
+    calculateTotal();
   </script>
 </body>
 </html>
