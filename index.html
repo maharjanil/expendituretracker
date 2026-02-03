@@ -291,6 +291,66 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-badge {
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .time-period-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: white;
+        }
+
+        .time-period-card:hover,
+        .time-period-card.active {
+            border-color: #0d6efd;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+        }
+
+        .time-period-card.active {
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            color: white;
+        }
+
+        .time-period-card.active .card-title,
+        .time-period-card.active .card-text {
+            color: white !important;
+        }
+
+        .settings-group {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .settings-group h6 {
+            color: #0d6efd;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
         @media (max-width: 992px) {
             .sidebar {
                 width: 100%;
@@ -340,6 +400,10 @@
             
             .payment-summary {
                 padding: 1rem;
+            }
+            
+            .time-period-card {
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -441,6 +505,62 @@
 
                     <!-- View Expenses Tab -->
                     <div class="tab-pane fade" id="view-expenses">
+                        <div class="card border-0 mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Expenses</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium">Filter By</label>
+                                        <select class="form-select" id="filterType">
+                                            <option value="all">All Time</option>
+                                            <option value="yearly">Yearly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="custom">Custom Range</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="yearFilterGroup" style="display: none;">
+                                        <label class="form-label fw-medium">Select Year</label>
+                                        <select class="form-select" id="yearFilter">
+                                            <!-- Populated dynamically -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="monthFilterGroup" style="display: none;">
+                                        <label class="form-label fw-medium">Select Month</label>
+                                        <select class="form-select" id="monthFilter">
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="startDateGroup" style="display: none;">
+                                        <label class="form-label fw-medium">Start Date</label>
+                                        <input type="date" class="form-control" id="startDate">
+                                    </div>
+                                    <div class="col-md-4" id="endDateGroup" style="display: none;">
+                                        <label class="form-label fw-medium">End Date</label>
+                                        <input type="date" class="form-control" id="endDate">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium">&nbsp;</label>
+                                        <button class="btn btn-primary w-100" id="applyFilter">
+                                            <i class="fas fa-search me-2"></i>Apply Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card border-0">
                             <div class="card-header bg-success text-white">
                                 <div class="row align-items-center">
@@ -673,74 +793,106 @@
 
                     <!-- Settings Tab -->
                     <div class="tab-pane fade" id="settings">
-                        <div class="card border-0">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Budget Settings</h5>
+                        <!-- Budget Settings -->
+                        <div class="settings-group">
+                            <h6><i class="fas fa-wallet me-2"></i>Budget Settings</h6>
+                            <div class="alert alert-info border-0 mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Set your monthly budget limits. These settings are synced to Firebase and available across all your devices.
                             </div>
-                            <div class="card-body p-4">
-                                <div class="alert alert-info border-0 mb-4">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Set your monthly budget limits for different payment methods to track your spending.
-                                </div>
-                                
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <div class="card border-0 shadow-sm">
-                                            <div class="card-header bg-success text-white">
-                                                <h6 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Cash Budget</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
-                                                    <div class="input-group input-group-lg">
-                                                        <span class="input-group-text">₨</span>
-                                                        <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
-                                                    </div>
-                                                    <div class="form-text">Set your monthly cash spending limit</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₨</span>
+                                        <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="card border-0 shadow-sm">
-                                            <div class="card-header bg-primary text-white">
-                                                <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
-                                                    <div class="input-group input-group-lg">
-                                                        <span class="input-group-text">₨</span>
-                                                        <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
-                                                    </div>
-                                                    <div class="form-text">Combined limit for Card, Mobile & Bank transfers</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="form-text">For physical cash expenses</div>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₨</span>
+                                        <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
+                                    </div>
+                                    <div class="form-text">For Card, Mobile & Bank transfers (combined)</div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <hr class="my-4">
+                        <!-- Time Period Settings -->
+                        <div class="settings-group">
+                            <h6><i class="fas fa-calendar-alt me-2"></i>Default View Period</h6>
+                            <div class="alert alert-info border-0 mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Set your preferred default view when opening the expense list.
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Default Filter</label>
+                                    <select class="form-select" id="defaultFilter">
+                                        <option value="all">Show All Expenses</option>
+                                        <option value="monthly">Current Month Only</option>
+                                        <option value="yearly">Current Year Only</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Default Year</label>
+                                    <select class="form-select" id="defaultYear">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                                <div class="mb-4">
+                        <!-- App Settings -->
+                        <div class="settings-group">
+                            <h6><i class="fas fa-cog me-2"></i>Application Settings</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
                                     <label class="form-label fw-medium">Currency</label>
-                                    <select class="form-select form-select-lg" id="currencySetting">
+                                    <select class="form-select" id="currencySetting">
                                         <option value="NPR">Nepalese Rupee (₨)</option>
                                         <option value="USD">US Dollar ($)</option>
                                         <option value="EUR">Euro (€)</option>
                                     </select>
                                 </div>
-                                <div class="mb-4">
+                                <div class="col-md-6">
                                     <label class="form-label fw-medium">Date Format</label>
-                                    <select class="form-select form-select-lg" id="dateFormatSetting">
+                                    <select class="form-select" id="dateFormatSetting">
                                         <option value="YYYY-MM-DD">YYYY-MM-DD (Standard)</option>
                                         <option value="DD-MM-YYYY">DD-MM-YYYY (Nepali Style)</option>
                                     </select>
                                 </div>
-                                
-                                <button class="btn btn-primary btn-lg w-100 py-3 mt-2" id="saveSettings">
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <button class="btn btn-primary btn-lg w-100 py-3" id="saveSettings">
                                     <i class="fas fa-save me-2"></i>Save All Settings
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- Firebase Sync Status -->
+                        <div class="card border-0 mt-3">
+                            <div class="card-body bg-light">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 me-3">
+                                        <i class="fas fa-cloud fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">Firebase Sync Status</h6>
+                                        <p class="mb-1 text-muted small" id="syncStatus">Checking sync status...</p>
+                                        <button class="btn btn-sm btn-outline-primary" id="syncNow">
+                                            <i class="fas fa-sync me-1"></i> Sync Now
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -813,7 +965,11 @@
         let currentPage = 1;
         let expensesPerPage = 10;
         let currentDeleteId = null;
+        let currentFilter = 'all';
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth() + 1;
         const db = firebase.firestore();
+        const SETTINGS_DOC_ID = 'userSettings'; // Single document for all settings
 
         // ======================
         // INITIALIZATION
@@ -823,8 +979,11 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('expenseDate').value = today;
             
-            // Load settings from localStorage
-            loadSettings();
+            // Populate year dropdowns
+            populateYearDropdowns();
+            
+            // Load settings from Firebase
+            loadSettingsFromFirebase();
             
             // Load expenses from Firebase
             loadExpenses();
@@ -834,7 +993,7 @@
             
             // Show welcome notification if first visit
             if (!localStorage.getItem('expenseTrackerVisited')) {
-                showNotification('Welcome! Set your budget limits in Settings to start tracking.', 'info');
+                showNotification('Welcome! Set your budget in Settings to start tracking.', 'info');
                 localStorage.setItem('expenseTrackerVisited', 'true');
             }
         });
@@ -877,14 +1036,168 @@
                 const searchTerm = e.target.value.toLowerCase().trim();
                 if (searchTerm === '') {
                     currentPage = 1;
-                    displayExpenses();
+                    applyCurrentFilter();
                 } else {
-                    filterExpenses(searchTerm);
+                    filterExpensesBySearch(searchTerm);
                 }
             });
 
+            // Filter type change
+            document.getElementById('filterType').addEventListener('change', function(e) {
+                const filterType = e.target.value;
+                document.getElementById('yearFilterGroup').style.display = 'none';
+                document.getElementById('monthFilterGroup').style.display = 'none';
+                document.getElementById('startDateGroup').style.display = 'none';
+                document.getElementById('endDateGroup').style.display = 'none';
+                
+                if (filterType === 'yearly') {
+                    document.getElementById('yearFilterGroup').style.display = 'block';
+                } else if (filterType === 'monthly') {
+                    document.getElementById('yearFilterGroup').style.display = 'block';
+                    document.getElementById('monthFilterGroup').style.display = 'block';
+                } else if (filterType === 'custom') {
+                    document.getElementById('startDateGroup').style.display = 'block';
+                    document.getElementById('endDateGroup').style.display = 'block';
+                    // Set default dates
+                    const today = new Date().toISOString().split('T')[0];
+                    const lastMonth = new Date();
+                    lastMonth.setMonth(lastMonth.getMonth() - 1);
+                    document.getElementById('startDate').value = lastMonth.toISOString().split('T')[0];
+                    document.getElementById('endDate').value = today;
+                }
+            });
+
+            // Apply filter button
+            document.getElementById('applyFilter').addEventListener('click', applyFilter);
+
             // Save settings button
-            document.getElementById('saveSettings').addEventListener('click', saveSettings);
+            document.getElementById('saveSettings').addEventListener('click', saveSettingsToFirebase);
+
+            // Sync now button
+            document.getElementById('syncNow').addEventListener('click', function() {
+                loadSettingsFromFirebase();
+                showNotification('Syncing settings from Firebase...', 'info');
+            });
+        }
+
+        // ======================
+        // FILTER FUNCTIONS
+        // ======================
+        function applyFilter() {
+            currentFilter = document.getElementById('filterType').value;
+            
+            if (currentFilter === 'all') {
+                displayAllExpenses();
+            } else if (currentFilter === 'yearly') {
+                currentYear = parseInt(document.getElementById('yearFilter').value);
+                filterByYear(currentYear);
+            } else if (currentFilter === 'monthly') {
+                currentYear = parseInt(document.getElementById('yearFilter').value);
+                currentMonth = parseInt(document.getElementById('monthFilter').value);
+                filterByMonth(currentYear, currentMonth);
+            } else if (currentFilter === 'custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                if (!startDate || !endDate) {
+                    showNotification('Please select both start and end dates', 'warning');
+                    return;
+                }
+                if (new Date(startDate) > new Date(endDate)) {
+                    showNotification('Start date cannot be after end date', 'warning');
+                    return;
+                }
+                filterByDateRange(startDate, endDate);
+            }
+        }
+
+        function applyCurrentFilter() {
+            if (currentFilter === 'all') {
+                displayAllExpenses();
+            } else if (currentFilter === 'yearly') {
+                filterByYear(currentYear);
+            } else if (currentFilter === 'monthly') {
+                filterByMonth(currentYear, currentMonth);
+            }
+        }
+
+        function displayAllExpenses() {
+            currentPage = 1;
+            displayExpenses();
+            updatePageInfo();
+            showNotification('Showing all expenses', 'info');
+        }
+
+        function filterByYear(year) {
+            const filtered = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getFullYear() === year;
+            });
+            
+            currentPage = 1;
+            displayFilteredExpenses(filtered);
+            showNotification(`Showing expenses for ${year}`, 'info');
+        }
+
+        function filterByMonth(year, month) {
+            const filtered = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getFullYear() === year && (expenseDate.getMonth() + 1) === month;
+            });
+            
+            currentPage = 1;
+            displayFilteredExpenses(filtered);
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            showNotification(`Showing expenses for ${monthNames[month - 1]} ${year}`, 'info');
+        }
+
+        function filterByDateRange(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999); // Include entire end day
+            
+            const filtered = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate >= start && expenseDate <= end;
+            });
+            
+            currentPage = 1;
+            displayFilteredExpenses(filtered);
+            showNotification(`Showing expenses from ${formatDate(startDate)} to ${formatDate(endDate)}`, 'info');
+        }
+
+        function filterExpensesBySearch(searchTerm) {
+            if (!searchTerm) {
+                applyCurrentFilter();
+                return;
+            }
+
+            let filteredExpenses = expenses;
+            
+            // Apply current time filter first
+            if (currentFilter === 'yearly') {
+                filteredExpenses = filteredExpenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getFullYear() === currentYear;
+                });
+            } else if (currentFilter === 'monthly') {
+                filteredExpenses = filteredExpenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getFullYear() === currentYear && 
+                           (expenseDate.getMonth() + 1) === currentMonth;
+                });
+            }
+            
+            // Then apply search filter
+            filteredExpenses = filteredExpenses.filter(expense => 
+                (expense.description && expense.description.toLowerCase().includes(searchTerm)) ||
+                expense.amount.toString().includes(searchTerm) ||
+                expense.paymentMethod.toLowerCase().includes(searchTerm) ||
+                formatDate(expense.date).toLowerCase().includes(searchTerm)
+            );
+
+            displayFilteredExpenses(filteredExpenses);
+            document.getElementById('pageInfo').textContent = `${filteredExpenses.length} result${filteredExpenses.length > 1 ? 's' : ''} found`;
         }
 
         // ======================
@@ -966,8 +1279,26 @@
                     expenses.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // Update UI
-                displayExpenses();
+                // Apply default filter from settings
+                const savedSettings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
+                const defaultFilter = savedSettings.defaultFilter || 'all';
+                const defaultYear = savedSettings.defaultYear || new Date().getFullYear();
+                
+                if (defaultFilter === 'monthly') {
+                    currentFilter = 'monthly';
+                    currentYear = defaultYear;
+                    currentMonth = new Date().getMonth() + 1;
+                    filterByMonth(currentYear, currentMonth);
+                } else if (defaultFilter === 'yearly') {
+                    currentFilter = 'yearly';
+                    currentYear = defaultYear;
+                    filterByYear(currentYear);
+                } else {
+                    currentFilter = 'all';
+                    displayExpenses();
+                }
+                
+                // Update statistics
                 updateStatistics();
                 
             } catch (error) {
@@ -1047,31 +1378,6 @@
             updatePageInfo();
         }
 
-        function updatePageInfo() {
-            const totalPages = Math.ceil(expenses.length / expensesPerPage);
-            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
-            
-            // Disable buttons when needed
-            document.getElementById('prevPage').disabled = currentPage === 1;
-            document.getElementById('nextPage').disabled = currentPage === Math.ceil(expenses.length / expensesPerPage);
-        }
-
-        function filterExpenses(searchTerm) {
-            if (!searchTerm) {
-                displayExpenses();
-                return;
-            }
-
-            const filteredExpenses = expenses.filter(expense => 
-                (expense.description && expense.description.toLowerCase().includes(searchTerm)) ||
-                expense.amount.toString().includes(searchTerm) ||
-                expense.paymentMethod.toLowerCase().includes(searchTerm) ||
-                formatDate(expense.date).toLowerCase().includes(searchTerm)
-            );
-
-            displayFilteredExpenses(filteredExpenses);
-        }
-
         function displayFilteredExpenses(filteredExpenses) {
             const tbody = document.getElementById('expensesTableBody');
             
@@ -1082,7 +1388,7 @@
                             <div class="text-muted">
                                 <i class="fas fa-search fa-3x mb-3 d-block opacity-50"></i>
                                 <p class="h5">No matching expenses found</p>
-                                <p class="mb-0">Try different search terms</p>
+                                <p class="mb-0">Try different filters or search terms</p>
                             </div>
                         </td>
                     </tr>
@@ -1091,11 +1397,16 @@
                 return;
             }
 
+            // Pagination
+            const startIndex = (currentPage - 1) * expensesPerPage;
+            const endIndex = Math.min(startIndex + expensesPerPage, filteredExpenses.length);
+            const currentExpenses = filteredExpenses.slice(startIndex, endIndex);
+
             let html = '';
-            filteredExpenses.forEach(expense => {
+            currentExpenses.forEach((expense, index) => {
                 const paymentBadge = getPaymentBadge(expense.paymentMethod);
                 html += `
-                    <tr>
+                    <tr class="${index === 0 ? 'new-entry' : ''}">
                         <td class="px-4 py-3">${formatDate(expense.date)}</td>
                         <td class="px-4 py-3">${expense.description || '<span class="text-muted">No description</span>'}</td>
                         <td class="px-4 py-3 fw-bold">₨ ${expense.amount.toFixed(2)}</td>
@@ -1120,7 +1431,25 @@
                 });
             });
             
-            document.getElementById('pageInfo').textContent = `${filteredExpenses.length} result${filteredExpenses.length > 1 ? 's' : ''} found`;
+            updatePageInfoForFiltered(filteredExpenses.length);
+        }
+
+        function updatePageInfo() {
+            const totalPages = Math.ceil(expenses.length / expensesPerPage);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            
+            // Disable buttons when needed
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === Math.ceil(expenses.length / expensesPerPage);
+        }
+
+        function updatePageInfoForFiltered(totalCount) {
+            const totalPages = Math.ceil(totalCount / expensesPerPage);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            
+            // Disable buttons when needed
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === Math.ceil(totalCount / expensesPerPage);
         }
 
         function getPaymentBadge(paymentMethod) {
@@ -1198,11 +1527,11 @@
 
             // Calculate this month's expenses
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            const currentMonthNum = now.getMonth() + 1;
+            const currentYearNum = now.getFullYear();
             const thisMonthExpenses = expenses.filter(expense => {
                 const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+                return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
             });
             const monthTotal = thisMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
             document.getElementById('monthExpenses').textContent = `₨ ${monthTotal.toFixed(2)}`;
@@ -1230,17 +1559,12 @@
             document.getElementById('totalMobile').textContent = `₨ ${paymentTotals.Mobile.toFixed(2)}`;
             document.getElementById('totalBank').textContent = `₨ ${paymentTotals.Bank.toFixed(2)}`;
 
-            // Get budget limits from settings
-            const settings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
-            const cashBudget = parseFloat(settings.cashBudget || 0);
-            const digitalBudget = parseFloat(settings.digitalBudget || 0);
-            
-            // Calculate digital total (Card + Mobile + Bank)
-            const digitalTotal = paymentTotals.Card + paymentTotals.Mobile + paymentTotals.Bank;
-            
-            // Update budget displays
-            updateBudgetDisplay(cashBudget, paymentTotals.Cash, 'cash');
-            updateBudgetDisplay(digitalBudget, digitalTotal, 'digital');
+            // Get budget limits from settings (Firebase synced)
+            loadBudgetFromFirebase().then(() => {
+                // Budget display is updated in loadBudgetFromFirebase
+            }).catch(error => {
+                console.error('Error loading budget:', error);
+            });
 
             // Recent expenses list
             let recentHTML = '';
@@ -1317,48 +1641,201 @@
             return classes[paymentMethod] || 'bg-secondary';
         }
 
-        function checkBudgetWarnings() {
-            const settings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
-            const cashBudget = parseFloat(settings.cashBudget || 0);
-            const digitalBudget = parseFloat(settings.digitalBudget || 0);
+        async function checkBudgetWarnings() {
+            try {
+                const budgetData = await loadBudgetFromFirebase();
+                const cashBudget = parseFloat(budgetData.cashBudget || 0);
+                const digitalBudget = parseFloat(budgetData.digitalBudget || 0);
+                
+                if (cashBudget > 0 || digitalBudget > 0) {
+                    const now = new Date();
+                    const currentMonthNum = now.getMonth() + 1;
+                    const currentYearNum = now.getFullYear();
+                    
+                    const thisMonthExpenses = expenses.filter(expense => {
+                        const expenseDate = new Date(expense.date);
+                        return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
+                    });
+                    
+                    const cashSpent = thisMonthExpenses
+                        .filter(e => e.paymentMethod === 'Cash')
+                        .reduce((sum, e) => sum + e.amount, 0);
+                    
+                    const digitalSpent = thisMonthExpenses
+                        .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
+                        .reduce((sum, e) => sum + e.amount, 0);
+                    
+                    // Check cash budget
+                    if (cashBudget > 0) {
+                        const cashPercent = (cashSpent / cashBudget) * 100;
+                        if (cashPercent >= 90) {
+                            showNotification(`⚠️ Cash budget at ${cashPercent.toFixed(1)}%! (${cashSpent.toFixed(2)}/${cashBudget.toFixed(2)})`, 'warning');
+                        } else if (cashPercent >= 75) {
+                            showNotification(`💰 Cash budget at ${cashPercent.toFixed(1)}%`, 'info');
+                        }
+                    }
+                    
+                    // Check digital budget
+                    if (digitalBudget > 0) {
+                        const digitalPercent = (digitalSpent / digitalBudget) * 100;
+                        if (digitalPercent >= 90) {
+                            showNotification(`⚠️ Digital budget at ${digitalPercent.toFixed(1)}%! (${digitalSpent.toFixed(2)}/${digitalBudget.toFixed(2)})`, 'warning');
+                        } else if (digitalPercent >= 75) {
+                            showNotification(`💳 Digital budget at ${digitalPercent.toFixed(1)}%`, 'info');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking budget warnings:', error);
+            }
+        }
+
+        // ======================
+        // FIREBASE BUDGET SYNC
+        // ======================
+        async function saveSettingsToFirebase() {
+            const cashBudget = document.getElementById('cashBudgetInput').value;
+            const digitalBudget = document.getElementById('digitalBudgetInput').value;
+            const defaultFilter = document.getElementById('defaultFilter').value;
+            const defaultYear = document.getElementById('defaultYear').value;
+            const currency = document.getElementById('currencySetting').value;
+            const dateFormat = document.getElementById('dateFormatSetting').value;
+
+            // Validation
+            if (cashBudget && parseFloat(cashBudget) < 0) {
+                showNotification('Cash budget cannot be negative', 'danger');
+                return;
+            }
             
-            if (cashBudget > 0 || digitalBudget > 0) {
-                const now = new Date();
-                const currentMonth = now.getMonth();
-                const currentYear = now.getFullYear();
+            if (digitalBudget && parseFloat(digitalBudget) < 0) {
+                showNotification('Digital budget cannot be negative', 'danger');
+                return;
+            }
+
+            try {
+                // Show loading state
+                const saveBtn = document.getElementById('saveSettings');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
                 
-                const thisMonthExpenses = expenses.filter(expense => {
-                    const expenseDate = new Date(expense.date);
-                    return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
-                });
+                // Save to Firebase
+                const settingsData = {
+                    cashBudget: parseFloat(cashBudget || 0),
+                    digitalBudget: parseFloat(digitalBudget || 0),
+                    defaultFilter: defaultFilter,
+                    defaultYear: parseInt(defaultYear),
+                    currency: currency,
+                    dateFormat: dateFormat,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                };
                 
-                const cashSpent = thisMonthExpenses
-                    .filter(e => e.paymentMethod === 'Cash')
-                    .reduce((sum, e) => sum + e.amount, 0);
+                await db.collection('settings').doc(SETTINGS_DOC_ID).set(settingsData, { merge: true });
                 
-                const digitalSpent = thisMonthExpenses
-                    .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
-                    .reduce((sum, e) => sum + e.amount, 0);
+                // Also save to localStorage for offline access
+                localStorage.setItem('expenseTrackerSettings', JSON.stringify(settingsData));
                 
-                // Check cash budget
-                if (cashBudget > 0) {
-                    const cashPercent = (cashSpent / cashBudget) * 100;
-                    if (cashPercent >= 90) {
-                        showNotification(`⚠️ Cash budget at ${cashPercent.toFixed(1)}%! (${cashSpent.toFixed(2)}/${cashBudget.toFixed(2)})`, 'warning');
-                    } else if (cashPercent >= 75) {
-                        showNotification(`💰 Cash budget at ${cashPercent.toFixed(1)}%`, 'info');
+                showNotification('Settings saved successfully to Firebase!', 'success');
+                
+                // Update sync status
+                document.getElementById('syncStatus').textContent = 'Last synced: ' + new Date().toLocaleString();
+                
+                // Reload statistics to reflect new budget limits
+                await loadBudgetFromFirebase();
+                updateStatistics();
+                
+            } catch (error) {
+                console.error('Error saving settings to Firebase:', error);
+                showNotification('Error saving settings. Please try again.', 'danger');
+            } finally {
+                // Restore button state
+                const saveBtn = document.getElementById('saveSettings');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
+        }
+
+        async function loadSettingsFromFirebase() {
+            try {
+                const doc = await db.collection('settings').doc(SETTINGS_DOC_ID).get();
+                
+                if (doc.exists) {
+                    const settings = doc.data();
+                    
+                    // Update UI
+                    document.getElementById('cashBudgetInput').value = settings.cashBudget || '';
+                    document.getElementById('digitalBudgetInput').value = settings.digitalBudget || '';
+                    document.getElementById('defaultFilter').value = settings.defaultFilter || 'all';
+                    document.getElementById('defaultYear').value = settings.defaultYear || new Date().getFullYear();
+                    document.getElementById('currencySetting').value = settings.currency || 'NPR';
+                    document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
+                    
+                    // Save to localStorage
+                    localStorage.setItem('expenseTrackerSettings', JSON.stringify(settings));
+                    
+                    // Update sync status
+                    let lastUpdated = 'Just now';
+                    if (settings.lastUpdated) {
+                        lastUpdated = settings.lastUpdated.toDate().toLocaleString();
                     }
+                    document.getElementById('syncStatus').textContent = 'Last synced: ' + lastUpdated;
+                    
+                    // Load budget for statistics
+                    await loadBudgetFromFirebase();
+                    
+                } else {
+                    document.getElementById('syncStatus').textContent = 'No settings found in Firebase. Using defaults.';
                 }
+            } catch (error) {
+                console.error('Error loading settings from Firebase:', error);
+                document.getElementById('syncStatus').textContent = 'Error syncing. Check console.';
+                showNotification('Error loading settings from Firebase', 'danger');
+            }
+        }
+
+        async function loadBudgetFromFirebase() {
+            try {
+                const doc = await db.collection('settings').doc(SETTINGS_DOC_ID).get();
                 
-                // Check digital budget
-                if (digitalBudget > 0) {
-                    const digitalPercent = (digitalSpent / digitalBudget) * 100;
-                    if (digitalPercent >= 90) {
-                        showNotification(`⚠️ Digital budget at ${digitalPercent.toFixed(1)}%! (${digitalSpent.toFixed(2)}/${digitalBudget.toFixed(2)})`, 'warning');
-                    } else if (digitalPercent >= 75) {
-                        showNotification(`💳 Digital budget at ${digitalPercent.toFixed(1)}%`, 'info');
-                    }
+                if (doc.exists) {
+                    const settings = doc.data();
+                    const cashBudget = parseFloat(settings.cashBudget || 0);
+                    const digitalBudget = parseFloat(settings.digitalBudget || 0);
+                    
+                    // Calculate current month spending
+                    const now = new Date();
+                    const currentMonthNum = now.getMonth() + 1;
+                    const currentYearNum = now.getFullYear();
+                    
+                    const thisMonthExpenses = expenses.filter(expense => {
+                        const expenseDate = new Date(expense.date);
+                        return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
+                    });
+                    
+                    const cashSpent = thisMonthExpenses
+                        .filter(e => e.paymentMethod === 'Cash')
+                        .reduce((sum, e) => sum + e.amount, 0);
+                    
+                    const digitalSpent = thisMonthExpenses
+                        .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
+                        .reduce((sum, e) => sum + e.amount, 0);
+                    
+                    // Update budget displays
+                    updateBudgetDisplay(cashBudget, cashSpent, 'cash');
+                    updateBudgetDisplay(digitalBudget, digitalSpent, 'digital');
+                    
+                    return { cashBudget, digitalBudget };
+                } else {
+                    // No settings in Firebase, use defaults
+                    updateBudgetDisplay(0, 0, 'cash');
+                    updateBudgetDisplay(0, 0, 'digital');
+                    return { cashBudget: 0, digitalBudget: 0 };
                 }
+            } catch (error) {
+                console.error('Error loading budget from Firebase:', error);
+                updateBudgetDisplay(0, 0, 'cash');
+                updateBudgetDisplay(0, 0, 'digital');
+                throw error;
             }
         }
 
@@ -1416,50 +1893,29 @@
             return icons[type] || 'fa-bell';
         }
 
-        // ======================
-        // SETTINGS MANAGEMENT
-        // ======================
-        function saveSettings() {
-            const cashBudget = document.getElementById('cashBudgetInput').value;
-            const digitalBudget = document.getElementById('digitalBudgetInput').value;
-            const currency = document.getElementById('currencySetting').value;
-            const dateFormat = document.getElementById('dateFormatSetting').value;
-
-            // Validation
-            if (cashBudget && parseFloat(cashBudget) < 0) {
-                showNotification('Cash budget cannot be negative', 'danger');
-                return;
-            }
+        function populateYearDropdowns() {
+            const currentYear = new Date().getFullYear();
+            const startYear = currentYear - 5; // Show last 5 years
+            const endYear = currentYear + 1; // Include next year
             
-            if (digitalBudget && parseFloat(digitalBudget) < 0) {
-                showNotification('Digital budget cannot be negative', 'danger');
-                return;
-            }
-
-            // Save to localStorage
-            const settings = {
-                cashBudget: cashBudget || '0',
-                digitalBudget: digitalBudget || '0',
-                currency: currency || 'NPR',
-                dateFormat: dateFormat || 'YYYY-MM-DD',
-                lastUpdated: new Date().toISOString()
-            };
+            const yearFilter = document.getElementById('yearFilter');
+            const defaultYear = document.getElementById('defaultYear');
             
-            localStorage.setItem('expenseTrackerSettings', JSON.stringify(settings));
-            showNotification('Budget settings saved successfully!', 'success');
+            yearFilter.innerHTML = '';
+            defaultYear.innerHTML = '';
             
-            // Reload statistics to reflect new budget limits
-            updateStatistics();
-        }
-
-        function loadSettings() {
-            const savedSettings = localStorage.getItem('expenseTrackerSettings');
-            if (savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                document.getElementById('cashBudgetInput').value = settings.cashBudget || '';
-                document.getElementById('digitalBudgetInput').value = settings.digitalBudget || '';
-                document.getElementById('currencySetting').value = settings.currency || 'NPR';
-                document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
+            for (let year = endYear; year >= startYear; year--) {
+                const option1 = document.createElement('option');
+                option1.value = year;
+                option1.textContent = year;
+                if (year === currentYear) option1.selected = true;
+                yearFilter.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = year;
+                option2.textContent = year;
+                if (year === currentYear) option2.selected = true;
+                defaultYear.appendChild(option2);
             }
         }
     </script>
