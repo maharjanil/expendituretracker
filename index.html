@@ -812,6 +812,35 @@
         .empty-state p {
             color: #9ca3af;
         }
+
+        /* Period Selector */
+        .period-selector {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .period-selector .form-label {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .period-selector select {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+        }
+
+        .period-display {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -1023,17 +1052,46 @@
                         <!-- Filter Controls -->
                         <div class="filter-controls">
                             <div class="row align-items-center">
-                                <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="col-md-4 mb-3 mb-md-0">
                                     <h6><i class="fas fa-calendar-alt me-2"></i>View Period</h6>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="filter-btn-group d-flex gap-2">
-                                        <button class="btn btn-outline-primary flex-1" data-period="monthly">
-                                            <i class="fas fa-calendar-week me-1"></i> Monthly
-                                        </button>
-                                        <button class="btn btn-outline-primary flex-1 active" data-period="yearly">
-                                            <i class="fas fa-calendar-alt me-1"></i> Yearly
-                                        </button>
+                                <div class="col-md-8">
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-medium">Period Type</label>
+                                            <select class="form-select" id="statsPeriodType">
+                                                <option value="yearly">Yearly</option>
+                                                <option value="monthly">Monthly</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4" id="statsYearSelector">
+                                            <label class="form-label fw-medium">Select Year</label>
+                                            <select class="form-select" id="statsYearFilter">
+                                                <!-- Populated dynamically -->
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4" id="statsMonthSelector" style="display: none;">
+                                            <label class="form-label fw-medium">Select Month</label>
+                                            <select class="form-select" id="statsMonthFilter">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="period-display" id="periodDisplay">
+                                                Showing statistics for <strong>2026</strong>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1047,7 +1105,7 @@
                                         <div>
                                             <div class="card-text mb-1">Total Expenses</div>
                                             <h3 class="card-title mb-0" id="totalExpenses">₨ 0.00</h3>
-                                            <small class="card-text">All time</small>
+                                            <small class="card-text" id="totalPeriodLabel">For selected period</small>
                                         </div>
                                         <i class="fas fa-money-bill-wave stat-icon"></i>
                                     </div>
@@ -1057,11 +1115,11 @@
                                 <div class="stat-card bg-success">
                                     <div class="d-flex justify-content-between align-items-start position-relative">
                                         <div>
-                                            <div class="card-text mb-1">Current Period</div>
-                                            <h3 class="card-title mb-0" id="periodExpenses">₨ 0.00</h3>
-                                            <small class="card-text" id="periodLabel">This year</small>
+                                            <div class="card-text mb-1">Average Expense</div>
+                                            <h3 class="card-title mb-0" id="avgExpense">₨ 0.00</h3>
+                                            <small class="card-text" id="avgPeriodLabel">Per transaction</small>
                                         </div>
-                                        <i class="fas fa-calendar stat-icon"></i>
+                                        <i class="fas fa-calculator stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1071,7 +1129,7 @@
                                         <div>
                                             <div class="card-text mb-1">Expense Count</div>
                                             <h3 class="card-title mb-0" id="expenseCount">0</h3>
-                                            <small class="card-text">Total records</small>
+                                            <small class="card-text" id="countPeriodLabel">Transactions</small>
                                         </div>
                                         <i class="fas fa-list stat-icon"></i>
                                     </div>
@@ -1081,13 +1139,17 @@
 
                         <!-- Payment Method Breakdown -->
                         <div class="payment-summary">
-                            <h5 class="mb-4 text-white"><i class="fas fa-wallet me-2"></i>Payment Method Breakdown</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Payment Method Breakdown</h5>
+                                <span class="badge bg-light text-dark" id="paymentPeriodBadge">2026</span>
+                            </div>
                             <div class="row g-3">
                                 <div class="col-md-3 col-6">
                                     <div class="payment-summary-item">
                                         <i class="fas fa-money-bill-wave"></i>
                                         <div class="fw-bold">Cash</div>
                                         <div class="h5 mb-0" id="totalCash">₨ 0.00</div>
+                                        <small class="text-white-50" id="cashPercent">0%</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
@@ -1095,6 +1157,7 @@
                                         <i class="fas fa-credit-card"></i>
                                         <div class="fw-bold">Card</div>
                                         <div class="h5 mb-0" id="totalCard">₨ 0.00</div>
+                                        <small class="text-white-50" id="cardPercent">0%</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
@@ -1102,6 +1165,7 @@
                                         <i class="fas fa-mobile-alt"></i>
                                         <div class="fw-bold">Mobile</div>
                                         <div class="h5 mb-0" id="totalMobile">₨ 0.00</div>
+                                        <small class="text-white-50" id="mobilePercent">0%</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
@@ -1109,6 +1173,7 @@
                                         <i class="fas fa-university"></i>
                                         <div class="fw-bold">Bank</div>
                                         <div class="h5 mb-0" id="totalBank">₨ 0.00</div>
+                                        <small class="text-white-50" id="bankPercent">0%</small>
                                     </div>
                                 </div>
                             </div>
@@ -1139,6 +1204,7 @@
                                             <span class="fw-medium">Remaining</span>
                                             <span class="fw-bold" id="cashRemaining">₨ 0.00</span>
                                         </div>
+                                        <small class="text-white-50 mt-2 d-block" id="cashPeriodNote">Based on current period</small>
                                     </div>
                                 </div>
                             </div>
@@ -1167,6 +1233,7 @@
                                             <span class="fw-medium">Remaining</span>
                                             <span class="fw-bold" id="digitalRemaining">₨ 0.00</span>
                                         </div>
+                                        <small class="text-white-50 mt-2 d-block" id="digitalPeriodNote">Based on current period</small>
                                     </div>
                                 </div>
                             </div>
@@ -1175,7 +1242,10 @@
                         <!-- Recent Expenses -->
                         <div class="card">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Expenses</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Expenses</h5>
+                                    <span class="badge bg-light text-dark" id="recentPeriodBadge">2026</span>
+                                </div>
                             </div>
                             <div class="card-body p-0">
                                 <div class="list-group list-group-flush">
@@ -1347,7 +1417,9 @@
         let currentFilter = 'all';
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1;
-        let currentStatsPeriod = 'yearly'; // 'monthly' or 'yearly'
+        let statsPeriodType = 'yearly'; // 'yearly' or 'monthly'
+        let statsSelectedYear = new Date().getFullYear();
+        let statsSelectedMonth = new Date().getMonth() + 1;
         const db = firebase.firestore();
         const SETTINGS_DOC_ID = 'userSettings';
 
@@ -1473,14 +1545,25 @@
             // Save settings button
             document.getElementById('saveSettings').addEventListener('click', saveSettingsToFirebase);
 
-            // Statistics period filter buttons
-            document.querySelectorAll('[data-period]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentStatsPeriod = this.getAttribute('data-period');
-                    updateStatistics();
-                });
+            // Statistics period filter
+            document.getElementById('statsPeriodType').addEventListener('change', function(e) {
+                statsPeriodType = e.target.value;
+                if (statsPeriodType === 'monthly') {
+                    document.getElementById('statsMonthSelector').style.display = 'block';
+                } else {
+                    document.getElementById('statsMonthSelector').style.display = 'none';
+                }
+                updateStatistics();
+            });
+
+            document.getElementById('statsYearFilter').addEventListener('change', function(e) {
+                statsSelectedYear = parseInt(e.target.value);
+                updateStatistics();
+            });
+
+            document.getElementById('statsMonthFilter').addEventListener('change', function(e) {
+                statsSelectedMonth = parseInt(e.target.value);
+                updateStatistics();
             });
 
             // Nav links - close sidebar on mobile
@@ -1909,15 +1992,16 @@
         function updateStatistics() {
             if (expenses.length === 0) {
                 document.getElementById('totalExpenses').textContent = '₨ 0.00';
-                document.getElementById('periodExpenses').textContent = '₨ 0.00';
-                document.getElementById('periodLabel').textContent = currentStatsPeriod === 'monthly' ? 'This month' : 'This year';
+                document.getElementById('avgExpense').textContent = '₨ 0.00';
                 document.getElementById('expenseCount').textContent = '0';
-                
-                // Payment method totals
                 document.getElementById('totalCash').textContent = '₨ 0.00';
                 document.getElementById('totalCard').textContent = '₨ 0.00';
                 document.getElementById('totalMobile').textContent = '₨ 0.00';
                 document.getElementById('totalBank').textContent = '₨ 0.00';
+                document.getElementById('cashPercent').textContent = '0%';
+                document.getElementById('cardPercent').textContent = '0%';
+                document.getElementById('mobilePercent').textContent = '0%';
+                document.getElementById('bankPercent').textContent = '0%';
                 
                 // Budget cards
                 updateBudgetDisplay(0, 0, 'cash');
@@ -1930,43 +2014,49 @@
                         <p>Add some expenses to see them here</p>
                     </div>
                 `;
+                
+                // Update period displays
+                updatePeriodDisplays();
+                
                 return;
             }
 
-            // Calculate total expenses
-            const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
-
-            // Calculate period expenses (monthly or yearly)
-            const now = new Date();
-            const currentMonthNum = now.getMonth() + 1;
-            const currentYearNum = now.getFullYear();
-            
-            let periodExpenses = [];
+            // Filter expenses based on selected period
+            let filteredExpenses = [];
             let periodLabel = '';
             
-            if (currentStatsPeriod === 'monthly') {
-                periodExpenses = expenses.filter(expense => {
+            if (statsPeriodType === 'yearly') {
+                filteredExpenses = expenses.filter(expense => {
                     const expenseDate = new Date(expense.date);
-                    return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
+                    return expenseDate.getFullYear() === statsSelectedYear;
                 });
-                periodLabel = 'This month';
+                periodLabel = `${statsSelectedYear}`;
             } else {
-                periodExpenses = expenses.filter(expense => {
+                filteredExpenses = expenses.filter(expense => {
                     const expenseDate = new Date(expense.date);
-                    return expenseDate.getFullYear() === currentYearNum;
+                    return expenseDate.getFullYear() === statsSelectedYear && 
+                           (expenseDate.getMonth() + 1) === statsSelectedMonth;
                 });
-                periodLabel = 'This year';
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                periodLabel = `${monthNames[statsSelectedMonth - 1]} ${statsSelectedYear}`;
             }
-            
-            const periodTotal = periodExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-            document.getElementById('periodExpenses').textContent = `₨ ${periodTotal.toFixed(2)}`;
-            document.getElementById('periodLabel').textContent = periodLabel;
+
+            // Calculate total expenses for selected period
+            const total = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+            document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
+            document.getElementById('totalPeriodLabel').textContent = `For ${periodLabel}`;
+
+            // Calculate average expense
+            const avg = filteredExpenses.length > 0 ? total / filteredExpenses.length : 0;
+            document.getElementById('avgExpense').textContent = `₨ ${avg.toFixed(2)}`;
+            document.getElementById('avgPeriodLabel').textContent = `${filteredExpenses.length} transactions`;
 
             // Expense count
-            document.getElementById('expenseCount').textContent = expenses.length;
+            document.getElementById('expenseCount').textContent = filteredExpenses.length;
+            document.getElementById('countPeriodLabel').textContent = `in ${periodLabel}`;
 
-            // Calculate payment method breakdown for current period
+            // Calculate payment method breakdown for selected period
             const paymentTotals = {
                 Cash: 0,
                 Card: 0,
@@ -1974,7 +2064,7 @@
                 Bank: 0
             };
             
-            periodExpenses.forEach(expense => {
+            filteredExpenses.forEach(expense => {
                 if (paymentTotals[expense.paymentMethod] !== undefined) {
                     paymentTotals[expense.paymentMethod] += expense.amount;
                 }
@@ -1985,6 +2075,17 @@
             document.getElementById('totalCard').textContent = `₨ ${paymentTotals.Card.toFixed(2)}`;
             document.getElementById('totalMobile').textContent = `₨ ${paymentTotals.Mobile.toFixed(2)}`;
             document.getElementById('totalBank').textContent = `₨ ${paymentTotals.Bank.toFixed(2)}`;
+            
+            // Calculate percentages
+            const totalPayment = paymentTotals.Cash + paymentTotals.Card + paymentTotals.Mobile + paymentTotals.Bank;
+            document.getElementById('cashPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Cash / totalPayment) * 100).toFixed(1)}%` : '0%';
+            document.getElementById('cardPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Card / totalPayment) * 100).toFixed(1)}%` : '0%';
+            document.getElementById('mobilePercent').textContent = totalPayment > 0 ? `${((paymentTotals.Mobile / totalPayment) * 100).toFixed(1)}%` : '0%';
+            document.getElementById('bankPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Bank / totalPayment) * 100).toFixed(1)}%` : '0%';
+
+            // Update period badges
+            document.getElementById('paymentPeriodBadge').textContent = periodLabel;
+            document.getElementById('recentPeriodBadge').textContent = periodLabel;
 
             // Get budget limits from settings (Firebase synced)
             loadBudgetFromFirebase().then(() => {
@@ -1993,9 +2094,9 @@
                 console.error('Error loading budget:', error);
             });
 
-            // Recent expenses list (last 5 from current period)
+            // Recent expenses list (last 5 from selected period)
             let recentHTML = '';
-            periodExpenses.slice(0, 5).forEach(expense => {
+            filteredExpenses.slice(0, 5).forEach(expense => {
                 const paymentIcon = getPaymentIcon(expense.paymentMethod);
                 recentHTML += `
                     <div class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
@@ -2008,17 +2109,20 @@
                 `;
             });
             
-            if (periodExpenses.length === 0) {
+            if (filteredExpenses.length === 0) {
                 recentHTML = `
                     <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
-                        <h5>No expenses in current period</h5>
-                        <p>Add some expenses to see them here</p>
+                        <h5>No expenses in selected period</h5>
+                        <p>Add some expenses or select a different period</p>
                     </div>
                 `;
             }
             
             document.getElementById('recentExpensesList').innerHTML = recentHTML;
+            
+            // Update period displays
+            updatePeriodDisplays();
         }
 
         function updateBudgetDisplay(budgetLimit, spentAmount, type) {
@@ -2026,6 +2130,7 @@
             const spentEl = type === 'cash' ? document.getElementById('cashSpent') : document.getElementById('digitalSpent');
             const remainingEl = type === 'cash' ? document.getElementById('cashRemaining') : document.getElementById('digitalRemaining');
             const progressEl = type === 'cash' ? document.getElementById('cashProgress') : document.getElementById('digitalProgress');
+            const periodNoteEl = type === 'cash' ? document.getElementById('cashPeriodNote') : document.getElementById('digitalPeriodNote');
             
             budgetLimitEl.textContent = `₨ ${budgetLimit.toFixed(2)}`;
             spentEl.textContent = `₨ ${spentAmount.toFixed(2)}`;
@@ -2047,6 +2152,23 @@
             } else {
                 progressEl.className = `progress-bar bg-${type === 'cash' ? 'success' : 'primary'}`;
             }
+            
+            // Update period note
+            const currentMonthName = new Date().toLocaleString('default', { month: 'long' });
+            const currentYearNum = new Date().getFullYear();
+            periodNoteEl.textContent = `Based on ${currentMonthName} ${currentYearNum}`;
+        }
+
+        function updatePeriodDisplays() {
+            let periodText = '';
+            if (statsPeriodType === 'yearly') {
+                periodText = `Showing statistics for <strong>${statsSelectedYear}</strong>`;
+            } else {
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                periodText = `Showing statistics for <strong>${monthNames[statsSelectedMonth - 1]} ${statsSelectedYear}</strong>`;
+            }
+            document.getElementById('periodDisplay').innerHTML = periodText;
         }
 
         function getPaymentIcon(paymentMethod) {
@@ -2206,7 +2328,7 @@
                     const cashBudget = parseFloat(settings.cashBudget || 0);
                     const digitalBudget = parseFloat(settings.digitalBudget || 0);
                     
-                    // Calculate current month spending
+                    // Calculate current month spending (for budget tracking)
                     const now = new Date();
                     const currentMonthNum = now.getMonth() + 1;
                     const currentYearNum = now.getFullYear();
@@ -2299,19 +2421,34 @@
 
         function populateYearDropdowns() {
             const currentYear = new Date().getFullYear();
-            const startYear = currentYear - 5; // Show last 5 years
+            const startYear = currentYear - 10; // Show last 10 years
             const endYear = currentYear + 1; // Include next year
             
+            // View Expenses tab
             const yearFilter = document.getElementById('yearFilter');
-            
             yearFilter.innerHTML = '';
             
+            // Statistics tab
+            const statsYearFilter = document.getElementById('statsYearFilter');
+            statsYearFilter.innerHTML = '';
+            
             for (let year = endYear; year >= startYear; year--) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                if (year === currentYear) option.selected = true;
-                yearFilter.appendChild(option);
+                // View Expenses dropdown
+                const option1 = document.createElement('option');
+                option1.value = year;
+                option1.textContent = year;
+                if (year === currentYear) option1.selected = true;
+                yearFilter.appendChild(option1);
+                
+                // Statistics dropdown
+                const option2 = document.createElement('option');
+                option2.value = year;
+                option2.textContent = year;
+                if (year === currentYear) {
+                    option2.selected = true;
+                    statsSelectedYear = year;
+                }
+                statsYearFilter.appendChild(option2);
             }
         }
     </script>
