@@ -974,6 +974,30 @@
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
         }
+
+        /* Budget Period Selector */
+        .budget-period-selector {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .budget-period-selector h6 {
+            margin-bottom: 1rem;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .budget-period-note {
+            background: #e7f5ff;
+            border-left: 4px solid #4cc9f0;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -1304,8 +1328,8 @@
                             </div>
                         </div>
 
-                        <!-- Budget Tracking -->
-                        <div class="row g-4 mb-4">
+                        <!-- Budget Tracking - Only shown for monthly view -->
+                        <div class="row g-4 mb-4" id="budgetCardsRow">
                             <div class="col-md-6">
                                 <div class="card budget-card cash">
                                     <div class="card-body">
@@ -1395,7 +1419,41 @@
                             <div class="card-body">
                                 <div class="alert alert-info border-0 mb-4">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Set your monthly budget limits. These settings are synced to Firebase and available across all your devices.
+                                    Set your monthly budget limits for specific months. These settings are synced to Firebase and will be reflected in the Statistics tab when viewing that month.
+                                </div>
+                                
+                                <!-- Budget Period Selector -->
+                                <div class="budget-period-selector">
+                                    <h6><i class="fas fa-calendar me-2"></i>Select Period for Budget</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-medium">Select Year</label>
+                                            <select class="form-select" id="budgetYearSelector">
+                                                <!-- Populated dynamically -->
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-medium">Select Month</label>
+                                            <select class="form-select" id="budgetMonthSelector">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="budget-period-note">
+                                        <i class="fas fa-lightbulb me-2"></i>
+                                        <strong>Note:</strong> Budget settings are saved per month. Select a month and year to set or update its budget limits.
+                                    </div>
                                 </div>
                                 
                                 <div class="row g-4">
@@ -1434,6 +1492,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <button class="btn btn-primary btn-lg px-5 py-3" id="saveBudgetSettings">
+                                        <i class="fas fa-save me-2"></i>Save Budget for Selected Month
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -1465,7 +1529,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <button class="btn btn-primary btn-lg w-100 py-3" id="saveSettings">
-                                    <i class="fas fa-save me-2"></i>Save All Settings
+                                    <i class="fas fa-save me-2"></i>Save Application Settings
                                 </button>
                             </div>
                         </div>
@@ -1553,8 +1617,11 @@
         let statsPeriodType = 'yearly'; // 'yearly' or 'monthly'
         let statsSelectedYear = new Date().getFullYear();
         let statsSelectedMonth = new Date().getMonth() + 1;
+        let budgetSelectedYear = new Date().getFullYear();
+        let budgetSelectedMonth = new Date().getMonth() + 1;
         const db = firebase.firestore();
         const SETTINGS_DOC_ID = 'userSettings';
+        const BUDGETS_COLLECTION = 'budgets'; // New collection for monthly budgets
 
         // ======================
         // SIDEBAR TOGGLE FUNCTION
@@ -1693,16 +1760,21 @@
             // Apply filter button
             document.getElementById('applyFilter').addEventListener('click', applyFilter);
 
-            // Save settings button
-            document.getElementById('saveSettings').addEventListener('click', saveSettingsToFirebase);
+            // Save settings button (application settings only)
+            document.getElementById('saveSettings').addEventListener('click', saveAppSettingsToFirebase);
+
+            // Save budget settings button
+            document.getElementById('saveBudgetSettings').addEventListener('click', saveBudgetSettingsToFirebase);
 
             // Statistics period filter
             document.getElementById('statsPeriodType').addEventListener('change', function(e) {
                 statsPeriodType = e.target.value;
                 if (statsPeriodType === 'monthly') {
                     document.getElementById('statsMonthSelector').style.display = 'block';
+                    document.getElementById('budgetCardsRow').style.display = 'block';
                 } else {
                     document.getElementById('statsMonthSelector').style.display = 'none';
+                    document.getElementById('budgetCardsRow').style.display = 'none';
                 }
                 updateStatistics();
             });
@@ -1715,6 +1787,15 @@
             document.getElementById('statsMonthFilter').addEventListener('change', function(e) {
                 statsSelectedMonth = parseInt(e.target.value);
                 updateStatistics();
+            });
+
+            // Budget period selector in Settings tab
+            document.getElementById('budgetYearSelector').addEventListener('change', function(e) {
+                budgetSelectedYear = parseInt(e.target.value);
+            });
+
+            document.getElementById('budgetMonthSelector').addEventListener('change', function(e) {
+                budgetSelectedMonth = parseInt(e.target.value);
             });
 
             // Toggle period filter button
@@ -1897,7 +1978,7 @@
                 // Reload expenses
                 await loadExpenses();
                 
-                // Check budget warnings
+                // Check budget warnings for current month
                 checkBudgetWarnings();
             } catch (error) {
                 console.error('Error adding expense:', error);
@@ -2145,7 +2226,7 @@
         // ======================
         // STATISTICS & BUDGET TRACKING
         // ======================
-        function updateStatistics() {
+        async function updateStatistics() {
             if (expenses.length === 0) {
                 document.getElementById('totalExpenses').textContent = '₨ 0.00';
                 document.getElementById('expenseCount').textContent = '0';
@@ -2158,9 +2239,8 @@
                 document.getElementById('mobilePercent').textContent = '0%';
                 document.getElementById('bankPercent').textContent = '0%';
                 
-                // Budget cards
-                updateBudgetDisplay(0, 0, 'cash');
-                updateBudgetDisplay(0, 0, 'digital');
+                // Hide budget cards for empty state
+                document.getElementById('budgetCardsRow').style.display = 'none';
                 
                 document.getElementById('recentExpensesList').innerHTML = `
                     <div class="empty-state">
@@ -2186,6 +2266,8 @@
                     return expenseDate.getFullYear() === statsSelectedYear;
                 });
                 periodLabel = `${statsSelectedYear}`;
+                // Hide budget cards for yearly view
+                document.getElementById('budgetCardsRow').style.display = 'none';
             } else {
                 filteredExpenses = expenses.filter(expense => {
                     const expenseDate = new Date(expense.date);
@@ -2195,6 +2277,8 @@
                 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                                   'July', 'August', 'September', 'October', 'November', 'December'];
                 periodLabel = `${monthNames[statsSelectedMonth - 1]} ${statsSelectedYear}`;
+                // Show budget cards for monthly view
+                document.getElementById('budgetCardsRow').style.display = 'block';
             }
 
             // Calculate total expenses for selected period
@@ -2237,12 +2321,10 @@
             document.getElementById('paymentPeriodBadge').textContent = periodLabel;
             document.getElementById('recentPeriodBadge').textContent = periodLabel;
 
-            // Get budget limits from settings (Firebase synced)
-            loadBudgetFromFirebase().then(() => {
-                // Budget display is updated in loadBudgetFromFirebase
-            }).catch(error => {
-                console.error('Error loading budget:', error);
-            });
+            // For monthly view, load and display budget for this month
+            if (statsPeriodType === 'monthly') {
+                await loadAndDisplayBudgetForMonth(statsSelectedYear, statsSelectedMonth, paymentTotals);
+            }
 
             // Recent expenses list (last 5 from selected period)
             let recentHTML = '';
@@ -2275,7 +2357,43 @@
             updatePeriodDisplays();
         }
 
-        function updateBudgetDisplay(budgetLimit, spentAmount, type) {
+        async function loadAndDisplayBudgetForMonth(year, month, paymentTotals) {
+            try {
+                // Format month as two digits
+                const monthStr = String(month).padStart(2, '0');
+                const budgetDocId = `${year}-${monthStr}`;
+                
+                // Load budget for this month
+                const budgetDoc = await db.collection(BUDGETS_COLLECTION).doc(budgetDocId).get();
+                
+                let cashBudget = 0;
+                let digitalBudget = 0;
+                
+                if (budgetDoc.exists) {
+                    const budgetData = budgetDoc.data();
+                    cashBudget = budgetData.cashBudget || 0;
+                    digitalBudget = budgetData.digitalBudget || 0;
+                }
+                
+                // Calculate spent amounts
+                const cashSpent = paymentTotals.Cash || 0;
+                const digitalSpent = (paymentTotals.Card || 0) + (paymentTotals.Mobile || 0) + (paymentTotals.Bank || 0);
+                
+                // Update cash budget card
+                updateBudgetCard('cash', cashBudget, cashSpent, year, month);
+                
+                // Update digital budget card
+                updateBudgetCard('digital', digitalBudget, digitalSpent, year, month);
+                
+            } catch (error) {
+                console.error('Error loading budget for month:', error);
+                // Show default values if error occurs
+                updateBudgetCard('cash', 0, paymentTotals.Cash || 0, year, month);
+                updateBudgetCard('digital', 0, (paymentTotals.Card || 0) + (paymentTotals.Mobile || 0) + (paymentTotals.Bank || 0), year, month);
+            }
+        }
+
+        function updateBudgetCard(type, budgetLimit, spentAmount, year, month) {
             const budgetLimitEl = type === 'cash' ? document.getElementById('cashBudgetLimit') : document.getElementById('digitalBudgetLimit');
             const spentEl = type === 'cash' ? document.getElementById('cashSpent') : document.getElementById('digitalSpent');
             const remainingEl = type === 'cash' ? document.getElementById('cashRemaining') : document.getElementById('digitalRemaining');
@@ -2304,9 +2422,9 @@
             }
             
             // Update period note
-            const currentMonthName = new Date().toLocaleString('default', { month: 'long' });
-            const currentYearNum = new Date().getFullYear();
-            periodNoteEl.textContent = `Based on ${currentMonthName} ${currentYearNum}`;
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            periodNoteEl.textContent = `Budget for ${monthNames[month - 1]} ${year}`;
         }
 
         function updatePeriodDisplays() {
@@ -2343,46 +2461,61 @@
 
         async function checkBudgetWarnings() {
             try {
-                const budgetData = await loadBudgetFromFirebase();
+                // Only check for current month
+                const now = new Date();
+                const currentMonthNum = now.getMonth() + 1;
+                const currentYearNum = now.getFullYear();
+                
+                // Format month as two digits
+                const monthStr = String(currentMonthNum).padStart(2, '0');
+                const budgetDocId = `${currentYearNum}-${monthStr}`;
+                
+                // Load budget for current month
+                const budgetDoc = await db.collection(BUDGETS_COLLECTION).doc(budgetDocId).get();
+                
+                if (!budgetDoc.exists) {
+                    return; // No budget set for current month
+                }
+                
+                const budgetData = budgetDoc.data();
                 const cashBudget = parseFloat(budgetData.cashBudget || 0);
                 const digitalBudget = parseFloat(budgetData.digitalBudget || 0);
                 
-                if (cashBudget > 0 || digitalBudget > 0) {
-                    const now = new Date();
-                    const currentMonthNum = now.getMonth() + 1;
-                    const currentYearNum = now.getFullYear();
-                    
-                    const thisMonthExpenses = expenses.filter(expense => {
-                        const expenseDate = new Date(expense.date);
-                        return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
-                    });
-                    
-                    const cashSpent = thisMonthExpenses
-                        .filter(e => e.paymentMethod === 'Cash')
-                        .reduce((sum, e) => sum + e.amount, 0);
-                    
-                    const digitalSpent = thisMonthExpenses
-                        .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
-                        .reduce((sum, e) => sum + e.amount, 0);
-                    
-                    // Check cash budget
-                    if (cashBudget > 0) {
-                        const cashPercent = (cashSpent / cashBudget) * 100;
-                        if (cashPercent >= 90) {
-                            showNotification(`⚠️ Cash budget at ${cashPercent.toFixed(1)}%! (${cashSpent.toFixed(2)}/${cashBudget.toFixed(2)})`, 'warning');
-                        } else if (cashPercent >= 75) {
-                            showNotification(`💰 Cash budget at ${cashPercent.toFixed(1)}%`, 'info');
-                        }
+                if (cashBudget <= 0 && digitalBudget <= 0) {
+                    return; // No budget limits set
+                }
+                
+                // Get current month expenses
+                const thisMonthExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
+                });
+                
+                const cashSpent = thisMonthExpenses
+                    .filter(e => e.paymentMethod === 'Cash')
+                    .reduce((sum, e) => sum + e.amount, 0);
+                
+                const digitalSpent = thisMonthExpenses
+                    .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
+                    .reduce((sum, e) => sum + e.amount, 0);
+                
+                // Check cash budget
+                if (cashBudget > 0) {
+                    const cashPercent = (cashSpent / cashBudget) * 100;
+                    if (cashPercent >= 90) {
+                        showNotification(`⚠️ Cash budget at ${cashPercent.toFixed(1)}%! (${cashSpent.toFixed(2)}/${cashBudget.toFixed(2)})`, 'warning');
+                    } else if (cashPercent >= 75) {
+                        showNotification(`💰 Cash budget at ${cashPercent.toFixed(1)}%`, 'info');
                     }
-                    
-                    // Check digital budget
-                    if (digitalBudget > 0) {
-                        const digitalPercent = (digitalSpent / digitalBudget) * 100;
-                        if (digitalPercent >= 90) {
-                            showNotification(`⚠️ Digital budget at ${digitalPercent.toFixed(1)}%! (${digitalSpent.toFixed(2)}/${digitalBudget.toFixed(2)})`, 'warning');
-                        } else if (digitalPercent >= 75) {
-                            showNotification(`💳 Digital budget at ${digitalPercent.toFixed(1)}%`, 'info');
-                        }
+                }
+                
+                // Check digital budget
+                if (digitalBudget > 0) {
+                    const digitalPercent = (digitalSpent / digitalBudget) * 100;
+                    if (digitalPercent >= 90) {
+                        showNotification(`⚠️ Digital budget at ${digitalPercent.toFixed(1)}%! (${digitalSpent.toFixed(2)}/${digitalBudget.toFixed(2)})`, 'warning');
+                    } else if (digitalPercent >= 75) {
+                        showNotification(`💳 Digital budget at ${digitalPercent.toFixed(1)}%`, 'info');
                     }
                 }
             } catch (error) {
@@ -2391,13 +2524,11 @@
         }
 
         // ======================
-        // FIREBASE BUDGET SYNC
+        // FIREBASE BUDGET & SETTINGS SYNC
         // ======================
-        async function saveSettingsToFirebase() {
+        async function saveBudgetSettingsToFirebase() {
             const cashBudget = document.getElementById('cashBudgetInput').value;
             const digitalBudget = document.getElementById('digitalBudgetInput').value;
-            const currency = document.getElementById('currencySetting').value;
-            const dateFormat = document.getElementById('dateFormatSetting').value;
 
             // Validation
             if (cashBudget && parseFloat(cashBudget) < 0) {
@@ -2412,6 +2543,52 @@
 
             try {
                 // Show loading state
+                const saveBtn = document.getElementById('saveBudgetSettings');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                
+                // Format month as two digits
+                const monthStr = String(budgetSelectedMonth).padStart(2, '0');
+                const budgetDocId = `${budgetSelectedYear}-${monthStr}`;
+                
+                // Save to Firebase budgets collection
+                const budgetData = {
+                    cashBudget: parseFloat(cashBudget || 0),
+                    digitalBudget: parseFloat(digitalBudget || 0),
+                    year: budgetSelectedYear,
+                    month: budgetSelectedMonth,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection(BUDGETS_COLLECTION).doc(budgetDocId).set(budgetData);
+                
+                showNotification(`Budget settings saved successfully for ${getMonthName(budgetSelectedMonth)} ${budgetSelectedYear}!`, 'success');
+                
+                // If we're currently viewing this month in statistics, update it
+                if (statsPeriodType === 'monthly' && 
+                    statsSelectedYear === budgetSelectedYear && 
+                    statsSelectedMonth === budgetSelectedMonth) {
+                    await updateStatistics();
+                }
+                
+            } catch (error) {
+                console.error('Error saving budget settings to Firebase:', error);
+                showNotification('Error saving budget settings. Please try again.', 'danger');
+            } finally {
+                // Restore button state
+                const saveBtn = document.getElementById('saveBudgetSettings');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
+        }
+
+        async function saveAppSettingsToFirebase() {
+            const currency = document.getElementById('currencySetting').value;
+            const dateFormat = document.getElementById('dateFormatSetting').value;
+
+            try {
+                // Show loading state
                 const saveBtn = document.getElementById('saveSettings');
                 const originalText = saveBtn.innerHTML;
                 saveBtn.disabled = true;
@@ -2419,8 +2596,6 @@
                 
                 // Save to Firebase
                 const settingsData = {
-                    cashBudget: parseFloat(cashBudget || 0),
-                    digitalBudget: parseFloat(digitalBudget || 0),
                     currency: currency,
                     dateFormat: dateFormat,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
@@ -2431,11 +2606,7 @@
                 // Also save to localStorage for offline access
                 localStorage.setItem('expenseTrackerSettings', JSON.stringify(settingsData));
                 
-                showNotification('Settings saved successfully to Firebase!', 'success');
-                
-                // Reload statistics to reflect new budget limits
-                await loadBudgetFromFirebase();
-                updateStatistics();
+                showNotification('Application settings saved successfully to Firebase!', 'success');
                 
             } catch (error) {
                 console.error('Error saving settings to Firebase:', error);
@@ -2456,8 +2627,6 @@
                     const settings = doc.data();
                     
                     // Update UI
-                    document.getElementById('cashBudgetInput').value = settings.cashBudget || '';
-                    document.getElementById('digitalBudgetInput').value = settings.digitalBudget || '';
                     document.getElementById('currencySetting').value = settings.currency || 'NPR';
                     document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
                     
@@ -2466,52 +2635,6 @@
                 }
             } catch (error) {
                 console.error('Error loading settings from Firebase:', error);
-            }
-        }
-
-        async function loadBudgetFromFirebase() {
-            try {
-                const doc = await db.collection('settings').doc(SETTINGS_DOC_ID).get();
-                
-                if (doc.exists) {
-                    const settings = doc.data();
-                    const cashBudget = parseFloat(settings.cashBudget || 0);
-                    const digitalBudget = parseFloat(settings.digitalBudget || 0);
-                    
-                    // Calculate current month spending (for budget tracking)
-                    const now = new Date();
-                    const currentMonthNum = now.getMonth() + 1;
-                    const currentYearNum = now.getFullYear();
-                    
-                    const thisMonthExpenses = expenses.filter(expense => {
-                        const expenseDate = new Date(expense.date);
-                        return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
-                    });
-                    
-                    const cashSpent = thisMonthExpenses
-                        .filter(e => e.paymentMethod === 'Cash')
-                        .reduce((sum, e) => sum + e.amount, 0);
-                    
-                    const digitalSpent = thisMonthExpenses
-                        .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
-                        .reduce((sum, e) => sum + e.amount, 0);
-                    
-                    // Update budget displays
-                    updateBudgetDisplay(cashBudget, cashSpent, 'cash');
-                    updateBudgetDisplay(digitalBudget, digitalSpent, 'digital');
-                    
-                    return { cashBudget, digitalBudget };
-                } else {
-                    // No settings in Firebase, use defaults
-                    updateBudgetDisplay(0, 0, 'cash');
-                    updateBudgetDisplay(0, 0, 'digital');
-                    return { cashBudget: 0, digitalBudget: 0 };
-                }
-            } catch (error) {
-                console.error('Error loading budget from Firebase:', error);
-                updateBudgetDisplay(0, 0, 'cash');
-                updateBudgetDisplay(0, 0, 'digital');
-                throw error;
             }
         }
 
@@ -2569,6 +2692,12 @@
             return icons[type] || 'fa-bell';
         }
 
+        function getMonthName(monthNum) {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            return monthNames[monthNum - 1];
+        }
+
         function populateYearDropdowns() {
             const currentYear = new Date().getFullYear();
             const startYear = currentYear - 10; // Show last 10 years
@@ -2581,6 +2710,10 @@
             // Statistics tab
             const statsYearFilter = document.getElementById('statsYearFilter');
             statsYearFilter.innerHTML = '';
+            
+            // Budget settings in Settings tab
+            const budgetYearSelector = document.getElementById('budgetYearSelector');
+            budgetYearSelector.innerHTML = '';
             
             for (let year = endYear; year >= startYear; year--) {
                 // View Expenses dropdown
@@ -2599,7 +2732,22 @@
                     statsSelectedYear = year;
                 }
                 statsYearFilter.appendChild(option2);
+                
+                // Budget settings dropdown
+                const option3 = document.createElement('option');
+                option3.value = year;
+                option3.textContent = year;
+                if (year === currentYear) {
+                    option3.selected = true;
+                    budgetSelectedYear = year;
+                }
+                budgetYearSelector.appendChild(option3);
             }
+            
+            // Set current month for budget selector
+            const currentMonthNum = new Date().getMonth() + 1;
+            document.getElementById('budgetMonthSelector').value = currentMonthNum;
+            budgetSelectedMonth = currentMonthNum;
         }
     </script>
 </body>
