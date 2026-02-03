@@ -20,6 +20,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            padding-bottom: 80px;
         }
 
         .app-container {
@@ -30,7 +31,7 @@
             width: 100%;
         }
 
-        /* Sidebar Styles */
+        /* Sidebar Styles - Hidden by default */
         .sidebar {
             position: fixed;
             top: 0;
@@ -41,14 +42,18 @@
             box-shadow: 4px 0 20px rgba(0,0,0,0.3);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+            width: 0 !important;
+            opacity: 0;
+        }
+
+        .sidebar.visible {
+            width: 280px !important;
+            opacity: 1;
         }
 
         .sidebar.collapsed {
             width: 80px !important;
-        }
-
-        .sidebar.expanded {
-            width: 280px !important;
+            opacity: 1;
         }
 
         .sidebar-header {
@@ -98,6 +103,7 @@
 
         .sidebar.collapsed .sidebar-toggle-btn {
             transform: rotate(180deg);
+            right: -20px;
         }
 
         .nav-item {
@@ -150,11 +156,12 @@
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 2rem;
+            margin-left: 0;
         }
 
-        .sidebar.expanded + .main-content {
+        .sidebar.visible + .main-content {
             margin-left: 280px;
         }
 
@@ -385,6 +392,9 @@
             font-weight: 700;
             margin-bottom: 1rem;
             color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .filter-btn-group .btn {
@@ -556,6 +566,7 @@
                 width: 100% !important;
                 height: auto;
                 box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                opacity: 1;
             }
 
             .sidebar-header {
@@ -813,40 +824,165 @@
             color: #9ca3af;
         }
 
-        /* Period Selector */
-        .period-selector {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-top: 1rem;
-        }
-
-        .period-selector .form-label {
-            color: white;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .period-selector select {
-            background: rgba(255, 255, 255, 0.9);
+        /* Toggle Button Styles */
+        .toggle-btn {
+            background: none;
             border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-weight: 600;
+            color: #667eea;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            padding: 0.25rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
         }
 
-        .period-display {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-top: 0.5rem;
+        .toggle-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .toggle-btn.collapsed {
+            transform: rotate(0deg);
+        }
+
+        .toggle-btn.expanded {
+            transform: rotate(180deg);
+        }
+
+        /* Period Filter Row */
+        #periodFilterRow {
+            transition: max-height 0.4s ease, opacity 0.4s ease;
+            overflow: hidden;
+        }
+
+        #periodFilterRow.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2000;
+        }
+
+        .btn-fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            font-size: 1.5rem;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        .btn-fab i {
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-fab:hover i {
+            transform: scale(1.2);
+        }
+
+        .btn-fab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            z-index: 1;
+            transition: transform 0.5s ease;
+            transform: scale(0);
+        }
+
+        .btn-fab:hover::before {
+            transform: scale(1);
+        }
+
+        .btn-fab span {
+            position: absolute;
+            bottom: -30px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateY(10px);
+        }
+
+        .btn-fab:hover span {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .sidebar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
     </style>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar expanded">
+        <!-- Sidebar - Hidden by default -->
+        <nav class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-icon">
                     <i class="fas fa-calculator"></i>
@@ -1051,55 +1187,56 @@
                     <div class="tab-pane fade" id="statistics">
                         <!-- Filter Controls -->
                         <div class="filter-controls">
-                            <div class="row align-items-center">
-                                <div class="col-md-4 mb-3 mb-md-0">
-                                    <h6><i class="fas fa-calendar-alt me-2"></i>View Period</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6>
+                                    <i class="fas fa-calendar-alt me-2"></i>View Period
+                                </h6>
+                                <button class="toggle-btn" id="togglePeriodFilter">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <div class="row g-3 align-items-end" id="periodFilterRow">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium">Period Type</label>
+                                    <select class="form-select" id="statsPeriodType">
+                                        <option value="yearly">Yearly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-md-4">
-                                            <label class="form-label fw-medium">Period Type</label>
-                                            <select class="form-select" id="statsPeriodType">
-                                                <option value="yearly">Yearly</option>
-                                                <option value="monthly">Monthly</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4" id="statsYearSelector">
-                                            <label class="form-label fw-medium">Select Year</label>
-                                            <select class="form-select" id="statsYearFilter">
-                                                <!-- Populated dynamically -->
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4" id="statsMonthSelector" style="display: none;">
-                                            <label class="form-label fw-medium">Select Month</label>
-                                            <select class="form-select" id="statsMonthFilter">
-                                                <option value="1">January</option>
-                                                <option value="2">February</option>
-                                                <option value="3">March</option>
-                                                <option value="4">April</option>
-                                                <option value="5">May</option>
-                                                <option value="6">June</option>
-                                                <option value="7">July</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="period-display" id="periodDisplay">
-                                                Showing statistics for <strong>2026</strong>
-                                            </div>
-                                        </div>
+                                <div class="col-md-4" id="statsYearSelector">
+                                    <label class="form-label fw-medium">Select Year</label>
+                                    <select class="form-select" id="statsYearFilter">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="col-md-4" id="statsMonthSelector" style="display: none;">
+                                    <label class="form-label fw-medium">Select Month</label>
+                                    <select class="form-select" id="statsMonthFilter">
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="period-display" id="periodDisplay">
+                                        Showing statistics for <strong>2026</strong>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Summary Cards -->
+                        <!-- Summary Cards - REMOVED AVERAGE EXPENSE -->
                         <div class="row g-4 mb-4">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="stat-card">
                                     <div class="d-flex justify-content-between align-items-start position-relative">
                                         <div>
@@ -1111,19 +1248,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="stat-card bg-success">
-                                    <div class="d-flex justify-content-between align-items-start position-relative">
-                                        <div>
-                                            <div class="card-text mb-1">Average Expense</div>
-                                            <h3 class="card-title mb-0" id="avgExpense">₨ 0.00</h3>
-                                            <small class="card-text" id="avgPeriodLabel">Per transaction</small>
-                                        </div>
-                                        <i class="fas fa-calculator stat-icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="stat-card bg-info">
                                     <div class="d-flex justify-content-between align-items-start position-relative">
                                         <div>
@@ -1350,6 +1475,14 @@
         </main>
     </div>
 
+    <!-- Floating Action Button - Toggles Sidebar -->
+    <div class="fab-container">
+        <button class="btn btn-fab" id="toggleSidebarBtn" title="Toggle Menu">
+            <i class="fas fa-plus"></i>
+            <span>Toggle Menu</span>
+        </button>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -1424,24 +1557,28 @@
         const SETTINGS_DOC_ID = 'userSettings';
 
         // ======================
-        // SIDEBAR TOGGLE
+        // SIDEBAR TOGGLE FUNCTION
         // ======================
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
+        function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
-            const toggleIcon = this.querySelector('i');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggleBtn = document.getElementById('toggleSidebarBtn');
+            const sidebarToggleBtn = document.getElementById('sidebarToggle');
+            const icon = toggleBtn.querySelector('i');
+            const sidebarIcon = sidebarToggleBtn.querySelector('i');
             
-            if (sidebar.classList.contains('expanded')) {
-                sidebar.classList.remove('expanded');
-                sidebar.classList.add('collapsed');
-                toggleIcon.classList.remove('fa-chevron-left');
-                toggleIcon.classList.add('fa-chevron-right');
+            if (sidebar.classList.contains('visible')) {
+                sidebar.classList.remove('visible');
+                overlay.classList.remove('visible');
+                icon.className = 'fas fa-plus';
+                sidebarIcon.className = 'fas fa-chevron-right';
             } else {
-                sidebar.classList.remove('collapsed');
-                sidebar.classList.add('expanded');
-                toggleIcon.classList.remove('fa-chevron-right');
-                toggleIcon.classList.add('fa-chevron-left');
+                sidebar.classList.add('visible');
+                overlay.classList.add('visible');
+                icon.className = 'fas fa-times';
+                sidebarIcon.className = 'fas fa-chevron-left';
             }
-        });
+        }
 
         // ======================
         // INITIALIZATION
@@ -1465,7 +1602,7 @@
             
             // Show welcome notification if first visit
             if (!localStorage.getItem('expenseTrackerVisited')) {
-                showNotification('Welcome! Set your budget in Settings to start tracking.', 'info');
+                showNotification('Welcome! Click the + button to open the menu and start tracking.', 'info');
                 localStorage.setItem('expenseTrackerVisited', 'true');
             }
         });
@@ -1474,6 +1611,20 @@
         // EVENT LISTENERS
         // ======================
         function setupEventListeners() {
+            // Sidebar toggle buttons
+            document.getElementById('toggleSidebarBtn').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+            
+            // Close sidebar when clicking a nav link on mobile
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 1366 && document.querySelector('.sidebar').classList.contains('visible')) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
             // Expense form submission
             document.getElementById('expenseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -1566,18 +1717,23 @@
                 updateStatistics();
             });
 
-            // Nav links - close sidebar on mobile
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 1366) {
-                        const sidebar = document.querySelector('.sidebar');
-                        if (sidebar.classList.contains('expanded')) {
-                            sidebar.classList.remove('expanded');
-                            sidebar.classList.add('collapsed');
-                            document.getElementById('sidebarToggle').querySelector('i').className = 'fas fa-chevron-right';
-                        }
-                    }
-                });
+            // Toggle period filter button
+            document.getElementById('togglePeriodFilter').addEventListener('click', function() {
+                const periodFilterRow = document.getElementById('periodFilterRow');
+                const toggleBtn = this;
+                const icon = toggleBtn.querySelector('i');
+                
+                if (periodFilterRow.classList.contains('collapsed')) {
+                    periodFilterRow.classList.remove('collapsed');
+                    icon.className = 'fas fa-minus';
+                    toggleBtn.classList.remove('collapsed');
+                    toggleBtn.classList.add('expanded');
+                } else {
+                    periodFilterRow.classList.add('collapsed');
+                    icon.className = 'fas fa-plus';
+                    toggleBtn.classList.remove('expanded');
+                    toggleBtn.classList.add('collapsed');
+                }
             });
         }
 
@@ -1992,7 +2148,6 @@
         function updateStatistics() {
             if (expenses.length === 0) {
                 document.getElementById('totalExpenses').textContent = '₨ 0.00';
-                document.getElementById('avgExpense').textContent = '₨ 0.00';
                 document.getElementById('expenseCount').textContent = '0';
                 document.getElementById('totalCash').textContent = '₨ 0.00';
                 document.getElementById('totalCard').textContent = '₨ 0.00';
@@ -2046,11 +2201,6 @@
             const total = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
             document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
             document.getElementById('totalPeriodLabel').textContent = `For ${periodLabel}`;
-
-            // Calculate average expense
-            const avg = filteredExpenses.length > 0 ? total / filteredExpenses.length : 0;
-            document.getElementById('avgExpense').textContent = `₨ ${avg.toFixed(2)}`;
-            document.getElementById('avgPeriodLabel').textContent = `${filteredExpenses.length} transactions`;
 
             // Expense count
             document.getElementById('expenseCount').textContent = filteredExpenses.length;
