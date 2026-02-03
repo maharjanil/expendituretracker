@@ -9,92 +9,451 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Sidebar Styles */
         .sidebar {
             position: fixed;
             top: 0;
-            bottom: 0;
             left: 0;
-            z-index: 100;
-            padding: 0;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background-color: #212529;
+            height: 100vh;
+            z-index: 1000;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
         }
 
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.75);
-            padding: 12px 20px;
-            border-left: 3px solid transparent;
-            transition: all 0.3s ease;
-            font-weight: 500;
+        .sidebar.collapsed {
+            width: 80px !important;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: white;
-            background-color: rgba(255,255,255,0.1);
-            border-left-color: #0d6efd;
+        .sidebar.expanded {
+            width: 280px !important;
         }
 
-        .sidebar .nav-link i {
-            width: 20px;
+        .sidebar-header {
+            padding: 1.5rem;
             text-align: center;
-            margin-right: 5px;
-        }
-
-        .sidebar .text-center {
-            padding: 1.5rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
         }
 
-        main {
-            margin-left: 280px;
-            padding-top: 20px;
-            transition: margin-left 0.3s ease;
+        .sidebar-header .logo-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #4cc9f0;
         }
 
-        .card {
-            border-radius: 12px;
+        .sidebar-header .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-header .logo-text {
+            opacity: 0;
+        }
+
+        .sidebar-toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #4cc9f0;
+            color: #1a1a2e;
             border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1001;
             transition: transform 0.3s ease;
         }
 
+        .sidebar.collapsed .sidebar-toggle-btn {
+            transform: rotate(180deg);
+        }
+
+        .nav-item {
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 1rem 1.5rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .nav-link span {
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            opacity: 0;
+            width: 0;
+            padding: 0;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-left-color: #4cc9f0;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(76,201,240,0.2) 0%, rgba(76,201,240,0.1) 100%);
+            border-left-color: #4cc9f0;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+        }
+
+        .sidebar.expanded + .main-content {
+            margin-left: 280px;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
         .card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
         }
 
         .card-header {
-            border-radius: 12px 12px 0 0 !important;
-            font-weight: 600;
+            border-radius: 16px 16px 0 0 !important;
+            font-weight: 700;
             padding: 1.25rem 1.5rem;
+            border: none;
         }
 
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+        /* Stat Cards */
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
             transition: all 0.3s ease;
-            padding: 0.6rem 1.5rem;
-            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transition: all 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scale(1.2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .stat-card.bg-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .stat-card.bg-success:hover {
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .stat-card.bg-info {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
+        }
+
+        .stat-card.bg-info:hover {
+            box-shadow: 0 12px 40px rgba(6, 182, 212, 0.6);
+        }
+
+        .stat-card .card-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        .stat-card .card-text {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.3;
+            position: absolute;
+            bottom: -20px;
+            right: 20px;
+        }
+
+        /* Payment Summary */
+        .payment-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4cc9f0, #f72585, #7209b7);
+        }
+
+        .payment-summary-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .payment-summary-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .payment-summary-item i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .payment-summary-item .fw-bold {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .payment-summary-item .h5 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Budget Cards */
+        .budget-card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .budget-card.cash {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .budget-card.digital {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+
+        .budget-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+        }
+
+        .budget-card .card-body {
+            padding: 1.8rem;
+        }
+
+        .budget-card .card-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .budget-card .text-muted {
+            color: rgba(255,255,255,0.7) !important;
+        }
+
+        .budget-card .h4,
+        .budget-card .fw-bold {
+            color: white !important;
+        }
+
+        .budget-card .progress {
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+            overflow: hidden;
+        }
+
+        .budget-card .progress-bar {
+            transition: width 0.5s ease;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filter-controls h6 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a2e;
+        }
+
+        .filter-btn-group .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn-group .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .filter-btn-group .btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Table Styles */
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0a58ca;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
         .btn-danger {
@@ -105,147 +464,280 @@
             transform: scale(1.05);
         }
 
-        .btn-success {
-            transition: all 0.2s ease;
+        /* Form Styles */
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
         }
 
-        .btn-success:hover {
-            transform: scale(1.05);
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
         }
 
-        .table-hover tbody tr:hover {
-            background-color: rgba(13, 110, 253, 0.05);
+        .input-group-text {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+            border-radius: 10px 0 0 10px;
         }
 
+        /* Modal Styles */
         .modal-content {
-            border-radius: 12px;
+            border-radius: 16px;
             border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .modal-header {
-            border-radius: 12px 12px 0 0 !important;
+            border-radius: 16px 16px 0 0 !important;
+            border: none;
+            padding: 1.5rem;
         }
 
-        .stat-card {
-            transition: all 0.3s ease;
-            border-left: 4px solid;
-        }
-
-        .stat-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        .stat-card.bg-primary {
-            border-left-color: #0d6efd;
-        }
-
-        .stat-card.bg-success {
-            border-left-color: #198754;
-        }
-
-        .stat-card.bg-info {
-            border-left-color: #0dcaf0;
-        }
-
-        .stat-card.bg-warning {
-            border-left-color: #ffc107;
-            color: #212529 !important;
-        }
-
-        .stat-card .card-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card .card-text {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-
-        .budget-card {
-            position: relative;
-            overflow: hidden;
-            border-left: 4px solid;
-        }
-
-        .budget-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: rgba(255,255,255,0.1);
-            transition: width 0.5s ease;
-        }
-
-        .budget-card.cash::before {
-            background: linear-gradient(90deg, rgba(25, 135, 84, 0.2) 0%, rgba(25, 135, 84, 0.1) 100%);
-        }
-
-        .budget-card.digital::before {
-            background: linear-gradient(90deg, rgba(13, 110, 253, 0.2) 0%, rgba(13, 110, 253, 0.1) 100%);
-        }
-
-        .progress {
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            transition: width 0.5s ease;
-        }
-
-        .payment-badge {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .payment-cash {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-        }
-
-        .payment-card {
-            background: linear-gradient(135deg, #0d6efd, #6f42c1);
-            color: white;
-        }
-
-        .payment-mobile {
-            background: linear-gradient(135deg, #ffc107, #fd7e14);
-            color: #212529;
-        }
-
-        .payment-bank {
-            background: linear-gradient(135deg, #17a2b8, #198754);
-            color: white;
-        }
-
+        /* Notification Styles */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
-            min-width: 300px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            animation: slideIn 0.3s ease forwards, fadeOut 0.5s ease 2.5s forwards;
+            min-width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                      fadeOut 0.5s ease 3s forwards;
         }
 
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+                margin-right: -20px;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+                margin-right: 0;
+            }
         }
 
         @keyframes fadeOut {
             from { opacity: 1; }
-            to { opacity: 0; transform: translateX(100%); }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+                margin-right: -20px;
+            }
+        }
+
+        /* Page Controls */
+        .page-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1366px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100% !important;
+                height: auto;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            }
+
+            .sidebar-header {
+                padding: 1rem;
+            }
+
+            .sidebar-toggle-btn {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1.5rem;
+            }
+
+            .stat-card .card-title {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .payment-summary {
+                padding: 1.5rem;
+            }
+
+            .payment-summary-item {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .payment-summary-item i {
+                font-size: 2rem;
+            }
+
+            .payment-summary-item .h5 {
+                font-size: 1.5rem;
+            }
+
+            .budget-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .filter-btn-group .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .content-wrapper {
+                padding: 0;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .card-header {
+                padding: 1rem 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .stat-card,
+            .payment-summary,
+            .budget-card {
+                border-radius: 12px;
+            }
+
+            .stat-card .card-title {
+                font-size: 1.5rem;
+            }
+
+            .stat-card .card-text {
+                font-size: 0.9rem;
+            }
+
+            .notification {
+                min-width: auto;
+                width: 90%;
+                right: 50%;
+                transform: translateX(50%);
+            }
+
+            .page-controls {
+                flex-direction: column;
+                gap: 0.75rem;
+                padding: 0.75rem;
+            }
+
+            .page-controls .btn {
+                width: 100%;
+            }
+
+            .filter-controls {
+                padding: 1rem;
+            }
+
+            .filter-btn-group {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .filter-btn-group .btn {
+                width: calc(50% - 0.25rem);
+            }
+
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+
+            .table thead th,
+            .table tbody td {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .filter-btn-group .btn {
+                width: 100%;
+            }
+
+            .payment-summary-item .h5 {
+                font-size: 1.3rem;
+            }
+
+            .payment-summary-item i {
+                font-size: 1.8rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+                bottom: -15px;
+                right: 10px;
+            }
+
+            .budget-card .card-body {
+                padding: 1.2rem;
+            }
+
+            .form-label {
+                font-size: 0.85rem;
+            }
+
+            .input-group {
+                flex-wrap: wrap;
+            }
+
+            .input-group .form-control {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Animation for new entries */
+        @keyframes highlight {
+            0% { background-color: #e6f7ee; }
+            50% { background-color: #d4edda; }
+            100% { background-color: transparent; }
         }
 
         .new-entry {
@@ -253,218 +745,133 @@
             background-color: #e6f7ee !important;
         }
 
-        @keyframes highlight {
-            0% { background-color: #e6f7ee; }
-            50% { background-color: #d4edda; }
-            100% { background-color: transparent; }
-        }
-
-        .page-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
-            padding: 0.75rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .payment-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .payment-summary-item {
-            text-align: center;
-            padding: 1rem;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .payment-summary-item:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .filter-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-badge {
-            background: linear-gradient(135deg, #0d6efd, #6f42c1);
-            color: white;
+        /* Badge Styles */
+        .payment-badge {
+            display: inline-block;
             padding: 0.4rem 1rem;
             border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
-            display: inline-block;
-            margin-bottom: 1rem;
+            margin: 0.25rem;
         }
 
-        .time-period-card {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: white;
-        }
-
-        .time-period-card:hover,
-        .time-period-card.active {
-            border-color: #0d6efd;
-            background: #f0f7ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
-        }
-
-        .time-period-card.active {
-            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        .payment-cash {
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
 
-        .time-period-card.active .card-title,
-        .time-period-card.active .card-text {
-            color: white !important;
+        .payment-card {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
         }
 
-        .settings-group {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        .payment-mobile {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
         }
 
-        .settings-group h6 {
-            color: #0d6efd;
+        .payment-bank {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
             margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e9ecef;
+            opacity: 0.3;
         }
 
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding: 10px;
-            }
-            
-            .sidebar .nav {
-                flex-direction: row;
-                overflow-x: auto;
-                padding: 10px 0;
-            }
-            
-            .sidebar .nav-link {
-                white-space: nowrap;
-                margin: 0 5px;
-                border-radius: 8px;
-            }
-            
-            main {
-                margin-left: 0;
-                padding: 15px;
-            }
-            
-            .stat-card .card-title {
-                font-size: 1.5rem;
-            }
+        .empty-state h5 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
         }
 
-        @media (max-width: 576px) {
-            .notification {
-                min-width: auto;
-                width: 90%;
-                right: 50%;
-                transform: translateX(50%);
-            }
-            
-            .page-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .page-controls .btn {
-                width: 100%;
-            }
-            
-            .payment-summary {
-                padding: 1rem;
-            }
-            
-            .time-period-card {
-                margin-bottom: 1rem;
-            }
+        .empty-state p {
+            color: #9ca3af;
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
-                <div class="position-sticky">
-                    <div class="text-center mb-3">
-                        <div class="mb-2">
-                            <i class="fas fa-calculator fa-2x text-primary"></i>
-                        </div>
-                        <h4 class="text-white fw-bold">Expense Tracker</h4>
-                        <p class="text-muted mb-0 small">Track & Budget</p>
-                    </div>
-                    <ul class="nav flex-column px-3">
-                        <li class="nav-item mb-2">
-                            <a class="nav-link active" href="#add-expense" data-bs-toggle="tab">
-                                <i class="fas fa-plus-circle"></i> Add Expense
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="#view-expenses" data-bs-toggle="tab">
-                                <i class="fas fa-list"></i> View Expenses
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="#statistics" data-bs-toggle="tab">
-                                <i class="fas fa-chart-line"></i> Statistics
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link" href="#settings" data-bs-toggle="tab">
-                                <i class="fas fa-cog"></i> Settings
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="px-3 mt-4 pt-3 border-top border-secondary">
-                        <div class="text-center">
-                            <div class="mb-2">
-                                <i class="fas fa-cloud-upload-alt fa-lg text-info"></i>
-                            </div>
-                            <p class="text-white mb-1 fw-medium">Firebase Connected</p>
-                            <p class="text-muted small mb-0">Real-time sync</p>
-                        </div>
-                    </div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar expanded">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fas fa-calculator"></i>
                 </div>
-            </nav>
+                <div class="logo-text">Expense Tracker</div>
+                <button class="sidebar-toggle-btn" id="sidebarToggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="nav flex-column px-3 py-3">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#add-expense" data-bs-toggle="tab">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Expense</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#view-expenses" data-bs-toggle="tab">
+                        <i class="fas fa-list"></i>
+                        <span>View Expenses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#statistics" data-bs-toggle="tab">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#settings" data-bs-toggle="tab">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="px-3 mt-auto mb-4">
+                <div class="text-center text-white-50 small">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>
+                    Firebase Connected
+                </div>
+            </div>
+        </nav>
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
                 <div class="tab-content">
                     <!-- Add Expense Tab -->
                     <div class="tab-pane fade show active" id="add-expense">
-                        <div class="card border-0">
+                        <div class="card">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Add New Expense</h5>
                             </div>
-                            <div class="card-body p-4">
+                            <div class="card-body">
                                 <form id="expenseForm">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -492,7 +899,7 @@
                                             <label for="expenseDescription" class="form-label fw-medium">Description (Optional)</label>
                                             <textarea class="form-control form-control-lg" id="expenseDescription" rows="2" placeholder="e.g., Grocery shopping, Lunch with friends"></textarea>
                                         </div>
-                                        <div class="col-12 mt-2">
+                                        <div class="col-12">
                                             <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
                                                 <i class="fas fa-save me-2"></i>Save Expense
                                             </button>
@@ -505,7 +912,7 @@
 
                     <!-- View Expenses Tab -->
                     <div class="tab-pane fade" id="view-expenses">
-                        <div class="card border-0 mb-4">
+                        <div class="card mb-4">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Expenses</h5>
                             </div>
@@ -561,7 +968,7 @@
                             </div>
                         </div>
 
-                        <div class="card border-0">
+                        <div class="card">
                             <div class="card-header bg-success text-white">
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
@@ -578,7 +985,7 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-hover mb-0">
-                                        <thead class="table-dark">
+                                        <thead>
                                             <tr>
                                                 <th class="px-4 py-3">Date</th>
                                                 <th class="px-4 py-3">Description</th>
@@ -589,12 +996,10 @@
                                         </thead>
                                         <tbody id="expensesTableBody">
                                             <tr>
-                                                <td colspan="5" class="text-center py-5">
-                                                    <div class="text-muted">
-                                                        <i class="fas fa-receipt fa-3x mb-3 d-block opacity-50"></i>
-                                                        <p class="h5">No expenses recorded yet</p>
-                                                        <p class="mb-0">Add your first expense to get started!</p>
-                                                    </div>
+                                                <td colspan="5" class="empty-state">
+                                                    <i class="fas fa-receipt"></i>
+                                                    <h5>No expenses recorded yet</h5>
+                                                    <p>Add your first expense to get started!</p>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -615,107 +1020,104 @@
 
                     <!-- Statistics Tab -->
                     <div class="tab-pane fade" id="statistics">
+                        <!-- Filter Controls -->
+                        <div class="filter-controls">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <h6><i class="fas fa-calendar-alt me-2"></i>View Period</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="filter-btn-group d-flex gap-2">
+                                        <button class="btn btn-outline-primary flex-1" data-period="monthly">
+                                            <i class="fas fa-calendar-week me-1"></i> Monthly
+                                        </button>
+                                        <button class="btn btn-outline-primary flex-1 active" data-period="yearly">
+                                            <i class="fas fa-calendar-alt me-1"></i> Yearly
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Summary Cards -->
                         <div class="row g-4 mb-4">
                             <div class="col-md-4">
-                                <div class="card stat-card text-white bg-primary">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <div class="card-text mb-1">Total Expenses</div>
-                                                <h3 class="card-title mb-0" id="totalExpenses">₨ 0.00</h3>
-                                                <small class="text-white-50">All time</small>
-                                            </div>
-                                            <div class="display-6 opacity-75">
-                                                <i class="fas fa-money-bill-wave"></i>
-                                            </div>
+                                <div class="stat-card">
+                                    <div class="d-flex justify-content-between align-items-start position-relative">
+                                        <div>
+                                            <div class="card-text mb-1">Total Expenses</div>
+                                            <h3 class="card-title mb-0" id="totalExpenses">₨ 0.00</h3>
+                                            <small class="card-text">All time</small>
                                         </div>
+                                        <i class="fas fa-money-bill-wave stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card stat-card text-white bg-success">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <div class="card-text mb-1">This Month</div>
-                                                <h3 class="card-title mb-0" id="monthExpenses">₨ 0.00</h3>
-                                                <small class="text-white-50">Current month</small>
-                                            </div>
-                                            <div class="display-6 opacity-75">
-                                                <i class="fas fa-calendar"></i>
-                                            </div>
+                                <div class="stat-card bg-success">
+                                    <div class="d-flex justify-content-between align-items-start position-relative">
+                                        <div>
+                                            <div class="card-text mb-1">Current Period</div>
+                                            <h3 class="card-title mb-0" id="periodExpenses">₨ 0.00</h3>
+                                            <small class="card-text" id="periodLabel">This year</small>
                                         </div>
+                                        <i class="fas fa-calendar stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card stat-card text-white bg-info">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start">
-                                            <div>
-                                                <div class="card-text mb-1">Expense Count</div>
-                                                <h3 class="card-title mb-0" id="expenseCount">0</h3>
-                                                <small class="text-white-50">Total records</small>
-                                            </div>
-                                            <div class="display-6 opacity-75">
-                                                <i class="fas fa-list"></i>
-                                            </div>
+                                <div class="stat-card bg-info">
+                                    <div class="d-flex justify-content-between align-items-start position-relative">
+                                        <div>
+                                            <div class="card-text mb-1">Expense Count</div>
+                                            <h3 class="card-title mb-0" id="expenseCount">0</h3>
+                                            <small class="card-text">Total records</small>
                                         </div>
+                                        <i class="fas fa-list stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Payment Method Breakdown -->
-                        <div class="payment-summary mb-4">
+                        <div class="payment-summary">
+                            <h5 class="mb-4 text-white"><i class="fas fa-wallet me-2"></i>Payment Method Breakdown</h5>
                             <div class="row g-3">
                                 <div class="col-md-3 col-6">
                                     <div class="payment-summary-item">
-                                        <div class="mb-2">
-                                            <i class="fas fa-money-bill-wave fa-2x"></i>
-                                        </div>
-                                        <div class="fw-bold mb-1">Cash</div>
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <div class="fw-bold">Cash</div>
                                         <div class="h5 mb-0" id="totalCash">₨ 0.00</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
                                     <div class="payment-summary-item">
-                                        <div class="mb-2">
-                                            <i class="fas fa-credit-card fa-2x"></i>
-                                        </div>
-                                        <div class="fw-bold mb-1">Card</div>
+                                        <i class="fas fa-credit-card"></i>
+                                        <div class="fw-bold">Card</div>
                                         <div class="h5 mb-0" id="totalCard">₨ 0.00</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
                                     <div class="payment-summary-item">
-                                        <div class="mb-2">
-                                            <i class="fas fa-mobile-alt fa-2x"></i>
-                                        </div>
-                                        <div class="fw-bold mb-1">Mobile</div>
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <div class="fw-bold">Mobile</div>
                                         <div class="h5 mb-0" id="totalMobile">₨ 0.00</div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-6">
                                     <div class="payment-summary-item">
-                                        <div class="mb-2">
-                                            <i class="fas fa-university fa-2x"></i>
-                                        </div>
-                                        <div class="fw-bold mb-1">Bank</div>
+                                        <i class="fas fa-university"></i>
+                                        <div class="fw-bold">Bank</div>
                                         <div class="h5 mb-0" id="totalBank">₨ 0.00</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Budget Tracking Cards -->
+                        <!-- Budget Tracking -->
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
-                                <div class="card budget-card cash border-0">
-                                    <div class="card-header bg-success text-white">
-                                        <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Cash Budget</h5>
-                                    </div>
+                                <div class="card budget-card cash">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <div>
@@ -731,20 +1133,17 @@
                                             <span class="fw-bold" id="cashSpent">₨ 0.00</span>
                                         </div>
                                         <div class="progress mb-3">
-                                            <div class="progress-bar bg-success" role="progressbar" id="cashProgress" style="width: 0%"></div>
+                                            <div class="progress-bar" role="progressbar" id="cashProgress" style="width: 0%"></div>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span class="fw-medium text-success">Remaining</span>
-                                            <span class="fw-bold text-success" id="cashRemaining">₨ 0.00</span>
+                                            <span class="fw-medium">Remaining</span>
+                                            <span class="fw-bold" id="cashRemaining">₨ 0.00</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="card budget-card digital border-0">
-                                    <div class="card-header bg-primary text-white">
-                                        <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h5>
-                                    </div>
+                                <div class="card budget-card digital">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <div>
@@ -762,11 +1161,11 @@
                                             <span class="fw-bold" id="digitalSpent">₨ 0.00</span>
                                         </div>
                                         <div class="progress mb-3">
-                                            <div class="progress-bar bg-primary" role="progressbar" id="digitalProgress" style="width: 0%"></div>
+                                            <div class="progress-bar" role="progressbar" id="digitalProgress" style="width: 0%"></div>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span class="fw-medium text-primary">Remaining</span>
-                                            <span class="fw-bold text-primary" id="digitalRemaining">₨ 0.00</span>
+                                            <span class="fw-medium">Remaining</span>
+                                            <span class="fw-bold" id="digitalRemaining">₨ 0.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -774,16 +1173,17 @@
                         </div>
 
                         <!-- Recent Expenses -->
-                        <div class="card border-0">
+                        <div class="card">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Expenses</h5>
                             </div>
                             <div class="card-body p-0">
                                 <div class="list-group list-group-flush">
                                     <div id="recentExpensesList">
-                                        <div class="list-group-item text-center text-muted py-4">
-                                            <i class="fas fa-clock fa-2x mb-2 opacity-50"></i>
-                                            <p>No recent expenses to display</p>
+                                        <div class="empty-state">
+                                            <i class="fas fa-clock"></i>
+                                            <h5>No recent expenses to display</h5>
+                                            <p>Add some expenses to see them here</p>
                                         </div>
                                     </div>
                                 </div>
@@ -793,121 +1193,100 @@
 
                     <!-- Settings Tab -->
                     <div class="tab-pane fade" id="settings">
-                        <!-- Budget Settings -->
-                        <div class="settings-group">
-                            <h6><i class="fas fa-wallet me-2"></i>Budget Settings</h6>
-                            <div class="alert alert-info border-0 mb-3">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Set your monthly budget limits. These settings are synced to Firebase and available across all your devices.
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Budget Settings</h5>
                             </div>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">₨</span>
-                                        <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
+                            <div class="card-body">
+                                <div class="alert alert-info border-0 mb-4">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Set your monthly budget limits. These settings are synced to Firebase and available across all your devices.
+                                </div>
+                                
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-success text-white">
+                                                <h6 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Cash Budget</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <span class="input-group-text">₨</span>
+                                                        <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
+                                                    </div>
+                                                    <div class="form-text">For physical cash expenses</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-text">For physical cash expenses</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">₨</span>
-                                        <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
+                                    <div class="col-md-6">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <span class="input-group-text">₨</span>
+                                                        <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
+                                                    </div>
+                                                    <div class="form-text">For Card, Mobile & Bank transfers (combined)</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-text">For Card, Mobile & Bank transfers (combined)</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Time Period Settings -->
-                        <div class="settings-group">
-                            <h6><i class="fas fa-calendar-alt me-2"></i>Default View Period</h6>
-                            <div class="alert alert-info border-0 mb-3">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Set your preferred default view when opening the expense list.
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Application Settings</h5>
                             </div>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Default Filter</label>
-                                    <select class="form-select" id="defaultFilter">
-                                        <option value="all">Show All Expenses</option>
-                                        <option value="monthly">Current Month Only</option>
-                                        <option value="yearly">Current Year Only</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Default Year</label>
-                                    <select class="form-select" id="defaultYear">
-                                        <!-- Populated dynamically -->
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- App Settings -->
-                        <div class="settings-group">
-                            <h6><i class="fas fa-cog me-2"></i>Application Settings</h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Currency</label>
-                                    <select class="form-select" id="currencySetting">
-                                        <option value="NPR">Nepalese Rupee (₨)</option>
-                                        <option value="USD">US Dollar ($)</option>
-                                        <option value="EUR">Euro (€)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Date Format</label>
-                                    <select class="form-select" id="dateFormatSetting">
-                                        <option value="YYYY-MM-DD">YYYY-MM-DD (Standard)</option>
-                                        <option value="DD-MM-YYYY">DD-MM-YYYY (Nepali Style)</option>
-                                    </select>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Currency</label>
+                                        <select class="form-select form-select-lg" id="currencySetting">
+                                            <option value="NPR">Nepalese Rupee (₨)</option>
+                                            <option value="USD">US Dollar ($)</option>
+                                            <option value="EUR">Euro (€)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Date Format</label>
+                                        <select class="form-select form-select-lg" id="dateFormatSetting">
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD (Standard)</option>
+                                            <option value="DD-MM-YYYY">DD-MM-YYYY (Nepali Style)</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Save Button -->
-                        <div class="card border-0">
+                        <div class="card">
                             <div class="card-body">
                                 <button class="btn btn-primary btn-lg w-100 py-3" id="saveSettings">
                                     <i class="fas fa-save me-2"></i>Save All Settings
                                 </button>
                             </div>
                         </div>
-
-                        <!-- Firebase Sync Status -->
-                        <div class="card border-0 mt-3">
-                            <div class="card-body bg-light">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <i class="fas fa-cloud fa-2x text-primary"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1">Firebase Sync Status</h6>
-                                        <p class="mb-1 text-muted small" id="syncStatus">Checking sync status...</p>
-                                        <button class="btn btn-sm btn-outline-primary" id="syncNow">
-                                            <i class="fas fa-sync me-1"></i> Sync Now
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body py-4">
                     <div class="text-center mb-4">
@@ -968,8 +1347,29 @@
         let currentFilter = 'all';
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1;
+        let currentStatsPeriod = 'yearly'; // 'monthly' or 'yearly'
         const db = firebase.firestore();
-        const SETTINGS_DOC_ID = 'userSettings'; // Single document for all settings
+        const SETTINGS_DOC_ID = 'userSettings';
+
+        // ======================
+        // SIDEBAR TOGGLE
+        // ======================
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleIcon = this.querySelector('i');
+            
+            if (sidebar.classList.contains('expanded')) {
+                sidebar.classList.remove('expanded');
+                sidebar.classList.add('collapsed');
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            } else {
+                sidebar.classList.remove('collapsed');
+                sidebar.classList.add('expanded');
+                toggleIcon.classList.remove('fa-chevron-right');
+                toggleIcon.classList.add('fa-chevron-left');
+            }
+        });
 
         // ======================
         // INITIALIZATION
@@ -1073,10 +1473,28 @@
             // Save settings button
             document.getElementById('saveSettings').addEventListener('click', saveSettingsToFirebase);
 
-            // Sync now button
-            document.getElementById('syncNow').addEventListener('click', function() {
-                loadSettingsFromFirebase();
-                showNotification('Syncing settings from Firebase...', 'info');
+            // Statistics period filter buttons
+            document.querySelectorAll('[data-period]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentStatsPeriod = this.getAttribute('data-period');
+                    updateStatistics();
+                });
+            });
+
+            // Nav links - close sidebar on mobile
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 1366) {
+                        const sidebar = document.querySelector('.sidebar');
+                        if (sidebar.classList.contains('expanded')) {
+                            sidebar.classList.remove('expanded');
+                            sidebar.classList.add('collapsed');
+                            document.getElementById('sidebarToggle').querySelector('i').className = 'fas fa-chevron-right';
+                        }
+                    }
+                });
             });
         }
 
@@ -1260,9 +1678,7 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="text-center py-5">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
+                            <div class="loading-spinner"></div>
                             <p class="mt-3 text-muted">Loading expenses...</p>
                         </td>
                     </tr>
@@ -1305,13 +1721,11 @@
                 console.error('Error loading expenses:', error);
                 document.getElementById('expensesTableBody').innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <div class="text-danger mb-2">
-                                <i class="fas fa-exclamation-triangle fa-2x"></i>
-                            </div>
-                            <p class="h5">Error loading expenses</p>
-                            <p class="text-muted mb-3">Please check your Firebase configuration</p>
-                            <button class="btn btn-sm btn-primary" onclick="loadExpenses()">
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h5>Error loading expenses</h5>
+                            <p>Please check your Firebase configuration</p>
+                            <button class="btn btn-sm btn-primary mt-3" onclick="loadExpenses()">
                                 <i class="fas fa-redo me-1"></i> Retry
                             </button>
                         </td>
@@ -1327,12 +1741,10 @@
             if (expenses.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <div class="text-muted">
-                                <i class="fas fa-receipt fa-3x mb-3 d-block opacity-50"></i>
-                                <p class="h5">No expenses recorded yet</p>
-                                <p class="mb-0">Add your first expense to get started!</p>
-                            </div>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-receipt"></i>
+                            <h5>No expenses recorded yet</h5>
+                            <p>Add your first expense to get started!</p>
                         </td>
                     </tr>
                 `;
@@ -1384,12 +1796,10 @@
             if (filteredExpenses.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <div class="text-muted">
-                                <i class="fas fa-search fa-3x mb-3 d-block opacity-50"></i>
-                                <p class="h5">No matching expenses found</p>
-                                <p class="mb-0">Try different filters or search terms</p>
-                            </div>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h5>No matching expenses found</h5>
+                            <p>Try different filters or search terms</p>
                         </td>
                     </tr>
                 `;
@@ -1499,7 +1909,8 @@
         function updateStatistics() {
             if (expenses.length === 0) {
                 document.getElementById('totalExpenses').textContent = '₨ 0.00';
-                document.getElementById('monthExpenses').textContent = '₨ 0.00';
+                document.getElementById('periodExpenses').textContent = '₨ 0.00';
+                document.getElementById('periodLabel').textContent = currentStatsPeriod === 'monthly' ? 'This month' : 'This year';
                 document.getElementById('expenseCount').textContent = '0';
                 
                 // Payment method totals
@@ -1513,9 +1924,10 @@
                 updateBudgetDisplay(0, 0, 'digital');
                 
                 document.getElementById('recentExpensesList').innerHTML = `
-                    <div class="list-group-item text-center text-muted py-4">
-                        <i class="fas fa-clock fa-2x mb-2 opacity-50"></i>
-                        <p>No recent expenses to display</p>
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h5>No recent expenses to display</h5>
+                        <p>Add some expenses to see them here</p>
                     </div>
                 `;
                 return;
@@ -1525,21 +1937,36 @@
             const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
             document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
 
-            // Calculate this month's expenses
+            // Calculate period expenses (monthly or yearly)
             const now = new Date();
             const currentMonthNum = now.getMonth() + 1;
             const currentYearNum = now.getFullYear();
-            const thisMonthExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
-            });
-            const monthTotal = thisMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-            document.getElementById('monthExpenses').textContent = `₨ ${monthTotal.toFixed(2)}`;
+            
+            let periodExpenses = [];
+            let periodLabel = '';
+            
+            if (currentStatsPeriod === 'monthly') {
+                periodExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return (expenseDate.getMonth() + 1) === currentMonthNum && expenseDate.getFullYear() === currentYearNum;
+                });
+                periodLabel = 'This month';
+            } else {
+                periodExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getFullYear() === currentYearNum;
+                });
+                periodLabel = 'This year';
+            }
+            
+            const periodTotal = periodExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+            document.getElementById('periodExpenses').textContent = `₨ ${periodTotal.toFixed(2)}`;
+            document.getElementById('periodLabel').textContent = periodLabel;
 
             // Expense count
             document.getElementById('expenseCount').textContent = expenses.length;
 
-            // Calculate payment method breakdown
+            // Calculate payment method breakdown for current period
             const paymentTotals = {
                 Cash: 0,
                 Card: 0,
@@ -1547,7 +1974,7 @@
                 Bank: 0
             };
             
-            thisMonthExpenses.forEach(expense => {
+            periodExpenses.forEach(expense => {
                 if (paymentTotals[expense.paymentMethod] !== undefined) {
                     paymentTotals[expense.paymentMethod] += expense.amount;
                 }
@@ -1566,12 +1993,12 @@
                 console.error('Error loading budget:', error);
             });
 
-            // Recent expenses list
+            // Recent expenses list (last 5 from current period)
             let recentHTML = '';
-            thisMonthExpenses.slice(0, 5).forEach(expense => {
+            periodExpenses.slice(0, 5).forEach(expense => {
                 const paymentIcon = getPaymentIcon(expense.paymentMethod);
                 recentHTML += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
                         <div>
                             <div class="fw-medium">${expense.description}</div>
                             <small class="text-muted">${formatDate(expense.date)} • ${paymentIcon} ${expense.paymentMethod}</small>
@@ -1581,11 +2008,12 @@
                 `;
             });
             
-            if (thisMonthExpenses.length === 0) {
+            if (periodExpenses.length === 0) {
                 recentHTML = `
-                    <div class="list-group-item text-center text-muted py-4">
-                        <i class="fas fa-calendar-times fa-2x mb-2 opacity-50"></i>
-                        <p>No expenses this month</p>
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h5>No expenses in current period</h5>
+                        <p>Add some expenses to see them here</p>
                     </div>
                 `;
             }
@@ -1696,8 +2124,6 @@
         async function saveSettingsToFirebase() {
             const cashBudget = document.getElementById('cashBudgetInput').value;
             const digitalBudget = document.getElementById('digitalBudgetInput').value;
-            const defaultFilter = document.getElementById('defaultFilter').value;
-            const defaultYear = document.getElementById('defaultYear').value;
             const currency = document.getElementById('currencySetting').value;
             const dateFormat = document.getElementById('dateFormatSetting').value;
 
@@ -1723,8 +2149,6 @@
                 const settingsData = {
                     cashBudget: parseFloat(cashBudget || 0),
                     digitalBudget: parseFloat(digitalBudget || 0),
-                    defaultFilter: defaultFilter,
-                    defaultYear: parseInt(defaultYear),
                     currency: currency,
                     dateFormat: dateFormat,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
@@ -1736,9 +2160,6 @@
                 localStorage.setItem('expenseTrackerSettings', JSON.stringify(settingsData));
                 
                 showNotification('Settings saved successfully to Firebase!', 'success');
-                
-                // Update sync status
-                document.getElementById('syncStatus').textContent = 'Last synced: ' + new Date().toLocaleString();
                 
                 // Reload statistics to reflect new budget limits
                 await loadBudgetFromFirebase();
@@ -1765,31 +2186,14 @@
                     // Update UI
                     document.getElementById('cashBudgetInput').value = settings.cashBudget || '';
                     document.getElementById('digitalBudgetInput').value = settings.digitalBudget || '';
-                    document.getElementById('defaultFilter').value = settings.defaultFilter || 'all';
-                    document.getElementById('defaultYear').value = settings.defaultYear || new Date().getFullYear();
                     document.getElementById('currencySetting').value = settings.currency || 'NPR';
                     document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
                     
                     // Save to localStorage
                     localStorage.setItem('expenseTrackerSettings', JSON.stringify(settings));
-                    
-                    // Update sync status
-                    let lastUpdated = 'Just now';
-                    if (settings.lastUpdated) {
-                        lastUpdated = settings.lastUpdated.toDate().toLocaleString();
-                    }
-                    document.getElementById('syncStatus').textContent = 'Last synced: ' + lastUpdated;
-                    
-                    // Load budget for statistics
-                    await loadBudgetFromFirebase();
-                    
-                } else {
-                    document.getElementById('syncStatus').textContent = 'No settings found in Firebase. Using defaults.';
                 }
             } catch (error) {
                 console.error('Error loading settings from Firebase:', error);
-                document.getElementById('syncStatus').textContent = 'Error syncing. Check console.';
-                showNotification('Error loading settings from Firebase', 'danger');
             }
         }
 
@@ -1899,23 +2303,15 @@
             const endYear = currentYear + 1; // Include next year
             
             const yearFilter = document.getElementById('yearFilter');
-            const defaultYear = document.getElementById('defaultYear');
             
             yearFilter.innerHTML = '';
-            defaultYear.innerHTML = '';
             
             for (let year = endYear; year >= startYear; year--) {
-                const option1 = document.createElement('option');
-                option1.value = year;
-                option1.textContent = year;
-                if (year === currentYear) option1.selected = true;
-                yearFilter.appendChild(option1);
-                
-                const option2 = document.createElement('option');
-                option2.value = year;
-                option2.textContent = year;
-                if (year === currentYear) option2.selected = true;
-                defaultYear.appendChild(option2);
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) option.selected = true;
+                yearFilter.appendChild(option);
             }
         }
     </script>
