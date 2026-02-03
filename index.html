@@ -1,398 +1,1467 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Expenditure Tracker</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <style>
-    /* Styling to make the app beautiful */
-    body {
-      background-color: #f4f7fc;
-      font-family: 'Arial', sans-serif;
-      color: #333;
-      margin-top: 50px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Expenditure Tracker</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #212529;
+        }
 
-    h1 {
-      color: #007bff;
-      font-weight: bold;
-      margin-bottom: 40px;
-      font-size: 2.5rem;
-      text-align: center;
-    }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.75);
+            padding: 12px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
 
-    .card {
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+            border-left-color: #0d6efd;
+        }
 
-    .form-control, .btn {
-      border-radius: 8px;
-      font-size: 1.1rem;
-      padding: 12px;
-      border: 1px solid #ced4da;
-    }
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 5px;
+        }
 
-    .form-control:focus, .form-select:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
+        .sidebar .text-center {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
 
-    .btn-primary {
-      background-color: #007bff;
-      border: none;
-    }
+        main {
+            margin-left: 280px;
+            padding-top: 20px;
+            transition: margin-left 0.3s ease;
+        }
 
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
+        .card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
 
-    .btn-danger {
-      background-color: #dc3545;
-      border: none;
-    }
+        .card:hover {
+            transform: translateY(-3px);
+        }
 
-    .btn-danger:hover {
-      background-color: #c82333;
-    }
+        .card-header {
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+        }
 
-    .total-container {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #28a745;
-      text-align: center;
-    }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
 
-    .table {
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 20px;
-    }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+        }
 
-    .table th, .table td {
-      text-align: center;
-      vertical-align: middle;
-      padding: 12px;
-    }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+        }
 
-    .table thead {
-      background-color: #007bff;
-      color: white;
-    }
+        .btn-danger {
+            transition: all 0.2s ease;
+        }
 
-    .table tbody tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
+        .btn-danger:hover {
+            transform: scale(1.05);
+        }
 
-    .table tbody tr:hover {
-      background-color: #f1f1f1;
-    }
+        .btn-success {
+            transition: all 0.2s ease;
+        }
 
-    .table .action-btns {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
+        .btn-success:hover {
+            transform: scale(1.05);
+        }
 
-    .icon-btn {
-      font-size: 16px;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
 
-    .icon-btn:hover {
-      opacity: 0.8;
-    }
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
 
-    .icon-btn.edit {
-      background-color: #007bff;
-      color: white;
-    }
+        .modal-header {
+            border-radius: 12px 12px 0 0 !important;
+        }
 
-    .icon-btn.delete {
-      background-color: #dc3545;
-      color: white;
-    }
+        .stat-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
 
-    .footer {
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: 40px;
-      color: #6c757d;
-    }
+        .stat-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
 
-    .footer a {
-      color: #007bff;
-      text-decoration: none;
-    }
+        .stat-card.bg-primary {
+            border-left-color: #0d6efd;
+        }
 
-    .filter-container {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
+        .stat-card.bg-success {
+            border-left-color: #198754;
+        }
 
-    .filter-container input {
-      width: 30%;
-    }
+        .stat-card.bg-info {
+            border-left-color: #0dcaf0;
+        }
 
-    .subtract-amount-container {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    
-    .subtract-amount-container input {
-      width: 65%;
-    }
+        .stat-card.bg-warning {
+            border-left-color: #ffc107;
+            color: #212529 !important;
+        }
 
-    .manual-amount-container {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
+        .stat-card .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
 
-    .manual-amount-container input {
-      width: 65%;
-    }
+        .stat-card .card-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
 
-    .remaining-amount {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #dc3545;
-      text-align: center;
-      margin-top: 10px;
-    }
+        .budget-card {
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid;
+        }
 
-    /* Bold the section titles */
-    .section-title {
-      font-weight: bold;
-    }
-  </style>
+        .budget-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transition: width 0.5s ease;
+        }
+
+        .budget-card.cash::before {
+            background: linear-gradient(90deg, rgba(25, 135, 84, 0.2) 0%, rgba(25, 135, 84, 0.1) 100%);
+        }
+
+        .budget-card.digital::before {
+            background: linear-gradient(90deg, rgba(13, 110, 253, 0.2) 0%, rgba(13, 110, 253, 0.1) 100%);
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-cash {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .payment-card {
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            color: white;
+        }
+
+        .payment-mobile {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #212529;
+        }
+
+        .payment-bank {
+            background: linear-gradient(135deg, #17a2b8, #198754);
+            color: white;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease forwards, fadeOut 0.5s ease 2.5s forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+
+        .new-entry {
+            animation: highlight 2s ease;
+            background-color: #e6f7ee !important;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #e6f7ee; }
+            50% { background-color: #d4edda; }
+            100% { background-color: transparent; }
+        }
+
+        .page-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .payment-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .payment-summary-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .payment-summary-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+            
+            .sidebar .nav {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+            
+            .sidebar .nav-link {
+                white-space: nowrap;
+                margin: 0 5px;
+                border-radius: 8px;
+            }
+            
+            main {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .stat-card .card-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .notification {
+                min-width: auto;
+                width: 90%;
+                right: 50%;
+                transform: translateX(50%);
+            }
+            
+            .page-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .page-controls .btn {
+                width: 100%;
+            }
+            
+            .payment-summary {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky">
+                    <div class="text-center mb-3">
+                        <div class="mb-2">
+                            <i class="fas fa-calculator fa-2x text-primary"></i>
+                        </div>
+                        <h4 class="text-white fw-bold">Expense Tracker</h4>
+                        <p class="text-muted mb-0 small">Track & Budget</p>
+                    </div>
+                    <ul class="nav flex-column px-3">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link active" href="#add-expense" data-bs-toggle="tab">
+                                <i class="fas fa-plus-circle"></i> Add Expense
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#view-expenses" data-bs-toggle="tab">
+                                <i class="fas fa-list"></i> View Expenses
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#statistics" data-bs-toggle="tab">
+                                <i class="fas fa-chart-line"></i> Statistics
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#settings" data-bs-toggle="tab">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="px-3 mt-4 pt-3 border-top border-secondary">
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <i class="fas fa-cloud-upload-alt fa-lg text-info"></i>
+                            </div>
+                            <p class="text-white mb-1 fw-medium">Firebase Connected</p>
+                            <p class="text-muted small mb-0">Real-time sync</p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-  <div class="container">
-    <h1>Daily Expenditure Tracker</h1>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="tab-content">
+                    <!-- Add Expense Tab -->
+                    <div class="tab-pane fade show active" id="add-expense">
+                        <div class="card border-0">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Add New Expense</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form id="expenseForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="expenseDate" class="form-label fw-medium">Date <span class="text-danger">*</span></label>
+                                            <input type="date" class="form-control form-control-lg" id="expenseDate" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="expenseAmount" class="form-label fw-medium">Amount (NPR) <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-lg">
+                                                <span class="input-group-text">₨</span>
+                                                <input type="number" class="form-control" id="expenseAmount" placeholder="0.00" step="0.01" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="expensePayment" class="form-label fw-medium">Payment Method <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-lg" id="expensePayment" required>
+                                                <option value="">Select Payment Method</option>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Card">Credit/Debit Card</option>
+                                                <option value="Mobile">Mobile Banking</option>
+                                                <option value="Bank">Bank Transfer</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="expenseDescription" class="form-label fw-medium">Description (Optional)</label>
+                                            <textarea class="form-control form-control-lg" id="expenseDescription" rows="2" placeholder="e.g., Grocery shopping, Lunch with friends"></textarea>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                                <i class="fas fa-save me-2"></i>Save Expense
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- Filter Section -->
-    <div class="filter-container">
-      <input type="date" id="date-filter" class="form-control" aria-label="Filter by Date">
-      <button id="apply-filters" class="btn btn-primary" aria-label="Apply Filters">Apply Filters</button>
-    </div>
+                    <!-- View Expenses Tab -->
+                    <div class="tab-pane fade" id="view-expenses">
+                        <div class="card border-0">
+                            <div class="card-header bg-success text-white">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Expense Records</h5>
+                                    </div>
+                                    <div class="col-md-6 mt-3 mt-md-0">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            <input type="text" class="form-control" id="searchExpense" placeholder="Search by description or amount...">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th class="px-4 py-3">Date</th>
+                                                <th class="px-4 py-3">Description</th>
+                                                <th class="px-4 py-3">Amount</th>
+                                                <th class="px-4 py-3">Payment</th>
+                                                <th class="px-4 py-3">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="expensesTableBody">
+                                            <tr>
+                                                <td colspan="5" class="text-center py-5">
+                                                    <div class="text-muted">
+                                                        <i class="fas fa-receipt fa-3x mb-3 d-block opacity-50"></i>
+                                                        <p class="h5">No expenses recorded yet</p>
+                                                        <p class="mb-0">Add your first expense to get started!</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="page-controls">
+                                    <button class="btn btn-outline-secondary" id="prevPage">
+                                        <i class="fas fa-chevron-left me-1"></i> Previous
+                                    </button>
+                                    <span id="pageInfo" class="fw-medium">Page 1 of 1</span>
+                                    <button class="btn btn-outline-secondary" id="nextPage">
+                                        Next <i class="fas fa-chevron-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- Expense Form -->
-    <div class="card" role="form" aria-labelledby="expense-form-title">
-      <h2 id="expense-form-title" class="visually-hidden">Expense Form</h2>
-      <form id="expense-form">
-        <div class="mb-3">
-          <label for="expense-name" class="form-label">Expense Name</label>
-          <input type="text" class="form-control" id="expense-name" placeholder="Enter expense name" aria-label="Expense name" required>
+                    <!-- Statistics Tab -->
+                    <div class="tab-pane fade" id="statistics">
+                        <!-- Summary Cards -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-4">
+                                <div class="card stat-card text-white bg-primary">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="card-text mb-1">Total Expenses</div>
+                                                <h3 class="card-title mb-0" id="totalExpenses">₨ 0.00</h3>
+                                                <small class="text-white-50">All time</small>
+                                            </div>
+                                            <div class="display-6 opacity-75">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card stat-card text-white bg-success">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="card-text mb-1">This Month</div>
+                                                <h3 class="card-title mb-0" id="monthExpenses">₨ 0.00</h3>
+                                                <small class="text-white-50">Current month</small>
+                                            </div>
+                                            <div class="display-6 opacity-75">
+                                                <i class="fas fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card stat-card text-white bg-info">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="card-text mb-1">Expense Count</div>
+                                                <h3 class="card-title mb-0" id="expenseCount">0</h3>
+                                                <small class="text-white-50">Total records</small>
+                                            </div>
+                                            <div class="display-6 opacity-75">
+                                                <i class="fas fa-list"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Breakdown -->
+                        <div class="payment-summary mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-3 col-6">
+                                    <div class="payment-summary-item">
+                                        <div class="mb-2">
+                                            <i class="fas fa-money-bill-wave fa-2x"></i>
+                                        </div>
+                                        <div class="fw-bold mb-1">Cash</div>
+                                        <div class="h5 mb-0" id="totalCash">₨ 0.00</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="payment-summary-item">
+                                        <div class="mb-2">
+                                            <i class="fas fa-credit-card fa-2x"></i>
+                                        </div>
+                                        <div class="fw-bold mb-1">Card</div>
+                                        <div class="h5 mb-0" id="totalCard">₨ 0.00</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="payment-summary-item">
+                                        <div class="mb-2">
+                                            <i class="fas fa-mobile-alt fa-2x"></i>
+                                        </div>
+                                        <div class="fw-bold mb-1">Mobile</div>
+                                        <div class="h5 mb-0" id="totalMobile">₨ 0.00</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="payment-summary-item">
+                                        <div class="mb-2">
+                                            <i class="fas fa-university fa-2x"></i>
+                                        </div>
+                                        <div class="fw-bold mb-1">Bank</div>
+                                        <div class="h5 mb-0" id="totalBank">₨ 0.00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Tracking Cards -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <div class="card budget-card cash border-0">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Cash Budget</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <div class="text-muted small">Budget Limit</div>
+                                                <div class="h4 fw-bold" id="cashBudgetLimit">₨ 0.00</div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="payment-badge payment-cash">CASH</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="fw-medium">Spent</span>
+                                            <span class="fw-bold" id="cashSpent">₨ 0.00</span>
+                                        </div>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar bg-success" role="progressbar" id="cashProgress" style="width: 0%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-medium text-success">Remaining</span>
+                                            <span class="fw-bold text-success" id="cashRemaining">₨ 0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card budget-card digital border-0">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <div class="text-muted small">Budget Limit</div>
+                                                <div class="h4 fw-bold" id="digitalBudgetLimit">₨ 0.00</div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="payment-badge payment-card">CARD</div>
+                                                <div class="payment-badge payment-mobile">MOBILE</div>
+                                                <div class="payment-badge payment-bank">BANK</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="fw-medium">Spent</span>
+                                            <span class="fw-bold" id="digitalSpent">₨ 0.00</span>
+                                        </div>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar bg-primary" role="progressbar" id="digitalProgress" style="width: 0%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-medium text-primary">Remaining</span>
+                                            <span class="fw-bold text-primary" id="digitalRemaining">₨ 0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Expenses -->
+                        <div class="card border-0">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Expenses</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <div id="recentExpensesList">
+                                        <div class="list-group-item text-center text-muted py-4">
+                                            <i class="fas fa-clock fa-2x mb-2 opacity-50"></i>
+                                            <p>No recent expenses to display</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-pane fade" id="settings">
+                        <div class="card border-0">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Budget Settings</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="alert alert-info border-0 mb-4">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Set your monthly budget limits for different payment methods to track your spending.
+                                </div>
+                                
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-success text-white">
+                                                <h6 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Cash Budget</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <span class="input-group-text">₨</span>
+                                                        <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
+                                                    </div>
+                                                    <div class="form-text">Set your monthly cash spending limit</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
+                                                    <div class="input-group input-group-lg">
+                                                        <span class="input-group-text">₨</span>
+                                                        <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
+                                                    </div>
+                                                    <div class="form-text">Combined limit for Card, Mobile & Bank transfers</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium">Currency</label>
+                                    <select class="form-select form-select-lg" id="currencySetting">
+                                        <option value="NPR">Nepalese Rupee (₨)</option>
+                                        <option value="USD">US Dollar ($)</option>
+                                        <option value="EUR">Euro (€)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium">Date Format</label>
+                                    <select class="form-select form-select-lg" id="dateFormatSetting">
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD (Standard)</option>
+                                        <option value="DD-MM-YYYY">DD-MM-YYYY (Nepali Style)</option>
+                                    </select>
+                                </div>
+                                
+                                <button class="btn btn-primary btn-lg w-100 py-3 mt-2" id="saveSettings">
+                                    <i class="fas fa-save me-2"></i>Save All Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <div class="mb-3">
-          <label for="expense-amount" class="form-label">Amount (NPR)</label>
-          <input type="number" class="form-control" id="expense-amount" placeholder="Enter amount" aria-label="Expense amount" required>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-danger bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+                            <i class="fas fa-trash-alt fa-3x text-danger"></i>
+                        </div>
+                        <h4 class="mb-3">Are you sure?</h4>
+                        <p class="text-muted mb-0">This expense will be permanently deleted from your records.</p>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center border-0">
+                    <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger px-5" id="confirmDelete">
+                        <i class="fas fa-trash me-1"></i> Delete
+                    </button>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary w-100" aria-label="Add Expense">Add Expense</button>
-      </form>
     </div>
 
-    <!-- Total Amount and Remaining Amount Section -->
-    <div class="card" role="section" aria-labelledby="amount-section-title">
-      <h3 id="amount-section-title" class="text-center section-title">Amount Management</h3>
-      <div class="manual-amount-container">
-        <input type="number" id="manual-amount" class="form-control" placeholder="Enter amount" aria-label="Enter manual amount">
-      </div>
-      <div class="remaining-amount" id="remaining-amount">
-        Remaining: NPR 0.00
-      </div>
-    </div>
-
-    <!-- Expenses Table Section -->
-    <div class="card" role="table" aria-labelledby="expense-table-title">
-      <h3 id="expense-table-title" class="text-center section-title">Recorded Expenditures</h3>
-      <table class="table" id="expense-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Expense Name</th>
-            <th>Amount (NPR)</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dynamic rows will go here -->
-        </tbody>
-      </table>
-      <div class="total-container" role="status" aria-live="polite">
-        Total: <span id="total-amount">NPR 0.00</span>
-      </div>
-      <button id="delete-all" class="btn btn-danger w-100 mt-3" aria-label="Delete All">Delete All</button>
-    </div>
-
-  </div>
-
-  <!-- Footer Section -->
-  <footer class="footer">
-    <p>&copy; 2025 Daily Expenditure Tracker | Designed with <i class="fas fa-heart"></i> by <a href="#">Anil Maharjan</a></p>
-  </footer>
-
-  <!-- Bootstrap 5 JS and Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    // DOM elements
-    const expenseForm = document.getElementById("expense-form");
-    const expenseNameInput = document.getElementById("expense-name");
-    const expenseAmountInput = document.getElementById("expense-amount");
-    const expenseTable = document.getElementById("expense-table").getElementsByTagName('tbody')[0];
-    const totalAmountDisplay = document.getElementById("total-amount");
-    const deleteAllButton = document.getElementById("delete-all");
-    const dateFilter = document.getElementById("date-filter");
-    const applyFiltersButton = document.getElementById("apply-filters");
-    const manualAmountInput = document.getElementById("manual-amount");
-    const remainingAmountDisplay = document.getElementById("remaining-amount");
-
-    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-    // Filter expenses by date
-    function filterExpenses() {
-      const dateValue = dateFilter.value;
-
-      const filteredExpenses = expenses.filter(expense => {
-        return dateValue ? expense.date === dateValue : true;
-      });
-
-      renderExpenses(filteredExpenses);
-    }
-
-    // Render expenses function
-    function renderExpenses(filteredExpenses) {
-      expenseTable.innerHTML = "";  // Clear table rows
-
-      filteredExpenses.forEach((expense, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${expense.name}</td>
-          <td>NPR ${expense.amount.toFixed(2)}</td>
-          <td>${expense.date}</td>
-          <td class="action-btns">
-            <button class="icon-btn edit" onclick="editExpense(${expense.id})" aria-label="Edit Expense">
-              <i class="fas fa-edit"></i> Edit
-            </button>
-            <button class="icon-btn delete" onclick="deleteExpense(${expense.id})" aria-label="Delete Expense">
-              <i class="fas fa-trash-alt"></i> Delete
-            </button>
-          </td>
-        `;
-        expenseTable.appendChild(row);
-      });
-
-      calculateTotal(filteredExpenses);
-    }
-
-    // Calculate total
-    function calculateTotal(filteredExpenses) {
-      const totalAmount = filteredExpenses.reduce((total, expense) => total + expense.amount, 0);
-      totalAmountDisplay.innerText = `NPR ${totalAmount.toFixed(2)}`;
-      updateRemainingAmount(totalAmount);
-    }
-
-    // Update remaining amount
-    function updateRemainingAmount(totalExpenses) {
-      const manualAmount = parseFloat(manualAmountInput.value.trim());
-      if (!isNaN(manualAmount)) {
-        const remaining = manualAmount - totalExpenses;
-        remainingAmountDisplay.innerText = `Remaining: NPR ${remaining.toFixed(2)}`;
-      }
-    }
-
-    // Manual amount input event listener
-    manualAmountInput.addEventListener("input", () => {
-      const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
-      updateRemainingAmount(totalExpenses);
-    });
-
-    // Delete all expenses
-    deleteAllButton.addEventListener("click", () => {
-      if (confirm("Are you sure you want to delete all expenses?")) {
-        expenses = [];
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        renderExpenses(expenses);
-      }
-    });
-
-    // Edit expense
-    function editExpense(id) {
-      if (confirm("Are you sure you want to edit this expense?")) {
-        const expense = expenses.find(exp => exp.id === id);
-        expenseNameInput.value = expense.name;
-        expenseAmountInput.value = expense.amount;
-        expenseForm.addEventListener("submit", function updateExpense(event) {
-          event.preventDefault();
-          expense.name = expenseNameInput.value.trim();
-          expense.amount = parseFloat(expenseAmountInput.value.trim());
-          expense.date = new Date().toLocaleDateString();
-          localStorage.setItem("expenses", JSON.stringify(expenses));
-          renderExpenses(expenses);
-          expenseNameInput.value = "";
-          expenseAmountInput.value = "";
-          expenseForm.removeEventListener("submit", updateExpense);
-        });
-      }
-    }
-
-    // Delete a single expense
-    function deleteExpense(id) {
-      if (confirm("Are you sure you want to delete this expense?")) {
-        expenses = expenses.filter(exp => exp.id !== id);
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        renderExpenses(expenses);
-      }
-    }
-
-    // Add expense to table and localStorage
-    expenseForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const name = expenseNameInput.value.trim();
-      const amount = parseFloat(expenseAmountInput.value.trim());
-
-      if (name && !isNaN(amount)) {
-        const expense = {
-          id: Date.now(),
-          name,
-          amount,
-          date: new Date().toLocaleDateString()
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ======================
+        // FIREBASE CONFIGURATION
+        // ======================
+        // TODO: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyACnmnZczn0Hgw-9UtaJNcuh-3JAPgR_7c",
+  authDomain: "expenditure-tracer.firebaseapp.com",
+  projectId: "expenditure-tracer",
+  storageBucket: "expenditure-tracer.firebasestorage.app",
+  messagingSenderId: "861354036523",
+  appId: "1:861354036523:web:7962a4809642d6c79e496e"
         };
-        expenses.push(expense);
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        renderExpenses(expenses);
-        expenseNameInput.value = "";
-        expenseAmountInput.value = "";
-      }
-    });
 
-    // Apply filters
-    applyFiltersButton.addEventListener("click", filterExpenses);
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            alert("Firebase configuration error. Please check console for details.");
+        }
 
-    // Render expenses initially
-    renderExpenses(expenses);
-  </script>
+        // ======================
+        // GLOBAL VARIABLES
+        // ======================
+        let expenses = [];
+        let currentPage = 1;
+        let expensesPerPage = 10;
+        let currentDeleteId = null;
+        const db = firebase.firestore();
+
+        // ======================
+        // INITIALIZATION
+        // ======================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = today;
+            
+            // Load settings from localStorage
+            loadSettings();
+            
+            // Load expenses from Firebase
+            loadExpenses();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Show welcome notification if first visit
+            if (!localStorage.getItem('expenseTrackerVisited')) {
+                showNotification('Welcome! Set your budget limits in Settings to start tracking.', 'info');
+                localStorage.setItem('expenseTrackerVisited', 'true');
+            }
+        });
+
+        // ======================
+        // EVENT LISTENERS
+        // ======================
+        function setupEventListeners() {
+            // Expense form submission
+            document.getElementById('expenseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addExpense();
+            });
+
+            // Delete confirmation
+            document.getElementById('confirmDelete').addEventListener('click', function() {
+                if (currentDeleteId) {
+                    deleteExpense(currentDeleteId);
+                }
+            });
+
+            // Pagination buttons
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayExpenses();
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', function() {
+                const totalPages = Math.ceil(expenses.length / expensesPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayExpenses();
+                }
+            });
+
+            // Search functionality
+            document.getElementById('searchExpense').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                if (searchTerm === '') {
+                    currentPage = 1;
+                    displayExpenses();
+                } else {
+                    filterExpenses(searchTerm);
+                }
+            });
+
+            // Save settings button
+            document.getElementById('saveSettings').addEventListener('click', saveSettings);
+        }
+
+        // ======================
+        // EXPENSE OPERATIONS
+        // ======================
+        async function addExpense() {
+            const expenseDate = document.getElementById('expenseDate').value;
+            const expenseAmount = parseFloat(document.getElementById('expenseAmount').value);
+            const expensePayment = document.getElementById('expensePayment').value;
+            const expenseDescription = document.getElementById('expenseDescription').value.trim();
+
+            // Validation
+            if (!expenseDate || isNaN(expenseAmount) || expenseAmount <= 0 || !expensePayment) {
+                showNotification('Please fill all required fields with valid values', 'danger');
+                return;
+            }
+
+            const expense = {
+                date: expenseDate,
+                amount: expenseAmount,
+                paymentMethod: expensePayment,
+                description: expenseDescription || 'No description',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                // Show loading state
+                const saveBtn = document.querySelector('#expenseForm button[type="submit"]');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                
+                // Add to Firebase
+                await db.collection('expenses').add(expense);
+                
+                // Reset form and show success
+                resetForm();
+                showNotification('Expense added successfully!', 'success');
+                
+                // Reload expenses
+                await loadExpenses();
+                
+                // Check budget warnings
+                checkBudgetWarnings();
+            } catch (error) {
+                console.error('Error adding expense:', error);
+                showNotification('Error adding expense. Please try again.', 'danger');
+            } finally {
+                // Restore button state
+                const saveBtn = document.querySelector('#expenseForm button[type="submit"]');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
+        }
+
+        async function loadExpenses() {
+            try {
+                // Show loading state
+                const tbody = document.getElementById('expensesTableBody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading expenses...</p>
+                        </td>
+                    </tr>
+                `;
+                
+                // Fetch from Firebase
+                const snapshot = await db.collection('expenses')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                // Process data
+                expenses = [];
+                snapshot.forEach(doc => {
+                    expenses.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Update UI
+                displayExpenses();
+                updateStatistics();
+                
+            } catch (error) {
+                console.error('Error loading expenses:', error);
+                document.getElementById('expensesTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-danger mb-2">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <p class="h5">Error loading expenses</p>
+                            <p class="text-muted mb-3">Please check your Firebase configuration</p>
+                            <button class="btn btn-sm btn-primary" onclick="loadExpenses()">
+                                <i class="fas fa-redo me-1"></i> Retry
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                showNotification('Failed to load expenses. Check console for details.', 'danger');
+            }
+        }
+
+        function displayExpenses() {
+            const tbody = document.getElementById('expensesTableBody');
+            
+            if (expenses.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fas fa-receipt fa-3x mb-3 d-block opacity-50"></i>
+                                <p class="h5">No expenses recorded yet</p>
+                                <p class="mb-0">Add your first expense to get started!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                updatePageInfo();
+                return;
+            }
+
+            // Pagination
+            const startIndex = (currentPage - 1) * expensesPerPage;
+            const endIndex = Math.min(startIndex + expensesPerPage, expenses.length);
+            const currentExpenses = expenses.slice(startIndex, endIndex);
+
+            // Generate table rows
+            let html = '';
+            currentExpenses.forEach((expense, index) => {
+                const paymentBadge = getPaymentBadge(expense.paymentMethod);
+                html += `
+                    <tr class="${index === 0 ? 'new-entry' : ''}">
+                        <td class="px-4 py-3">${formatDate(expense.date)}</td>
+                        <td class="px-4 py-3">${expense.description || '<span class="text-muted">No description</span>'}</td>
+                        <td class="px-4 py-3 fw-bold">₨ ${expense.amount.toFixed(2)}</td>
+                        <td class="px-4 py-3">${paymentBadge}</td>
+                        <td class="px-4 py-3">
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${expense.id}" title="Delete expense">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            
+            // Add delete event listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentDeleteId = this.getAttribute('data-id');
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    deleteModal.show();
+                });
+            });
+
+            updatePageInfo();
+        }
+
+        function updatePageInfo() {
+            const totalPages = Math.ceil(expenses.length / expensesPerPage);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            
+            // Disable buttons when needed
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === Math.ceil(expenses.length / expensesPerPage);
+        }
+
+        function filterExpenses(searchTerm) {
+            if (!searchTerm) {
+                displayExpenses();
+                return;
+            }
+
+            const filteredExpenses = expenses.filter(expense => 
+                (expense.description && expense.description.toLowerCase().includes(searchTerm)) ||
+                expense.amount.toString().includes(searchTerm) ||
+                expense.paymentMethod.toLowerCase().includes(searchTerm) ||
+                formatDate(expense.date).toLowerCase().includes(searchTerm)
+            );
+
+            displayFilteredExpenses(filteredExpenses);
+        }
+
+        function displayFilteredExpenses(filteredExpenses) {
+            const tbody = document.getElementById('expensesTableBody');
+            
+            if (filteredExpenses.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fas fa-search fa-3x mb-3 d-block opacity-50"></i>
+                                <p class="h5">No matching expenses found</p>
+                                <p class="mb-0">Try different search terms</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pageInfo').textContent = 'No results';
+                return;
+            }
+
+            let html = '';
+            filteredExpenses.forEach(expense => {
+                const paymentBadge = getPaymentBadge(expense.paymentMethod);
+                html += `
+                    <tr>
+                        <td class="px-4 py-3">${formatDate(expense.date)}</td>
+                        <td class="px-4 py-3">${expense.description || '<span class="text-muted">No description</span>'}</td>
+                        <td class="px-4 py-3 fw-bold">₨ ${expense.amount.toFixed(2)}</td>
+                        <td class="px-4 py-3">${paymentBadge}</td>
+                        <td class="px-4 py-3">
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${expense.id}" title="Delete expense">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            
+            // Add delete event listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentDeleteId = this.getAttribute('data-id');
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    deleteModal.show();
+                });
+            });
+            
+            document.getElementById('pageInfo').textContent = `${filteredExpenses.length} result${filteredExpenses.length > 1 ? 's' : ''} found`;
+        }
+
+        function getPaymentBadge(paymentMethod) {
+            const badges = {
+                'Cash': '<span class="badge bg-success">Cash</span>',
+                'Card': '<span class="badge bg-primary">Card</span>',
+                'Mobile': '<span class="badge bg-warning text-dark">Mobile</span>',
+                'Bank': '<span class="badge bg-info text-dark">Bank</span>'
+            };
+            return badges[paymentMethod] || '<span class="badge bg-secondary">Unknown</span>';
+        }
+
+        async function deleteExpense(expenseId) {
+            try {
+                // Show loading state on delete button
+                const deleteBtn = document.getElementById('confirmDelete');
+                const originalText = deleteBtn.innerHTML;
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Deleting...';
+                
+                // Delete from Firebase
+                await db.collection('expenses').doc(expenseId).delete();
+                
+                // Close modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                deleteModal.hide();
+                
+                // Show success notification
+                showNotification('Expense deleted successfully!', 'success');
+                
+                // Reload expenses
+                await loadExpenses();
+            } catch (error) {
+                console.error('Error deleting expense:', error);
+                showNotification('Error deleting expense. Please try again.', 'danger');
+            } finally {
+                // Restore button state
+                const deleteBtn = document.getElementById('confirmDelete');
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = originalText;
+            }
+        }
+
+        // ======================
+        // STATISTICS & BUDGET TRACKING
+        // ======================
+        function updateStatistics() {
+            if (expenses.length === 0) {
+                document.getElementById('totalExpenses').textContent = '₨ 0.00';
+                document.getElementById('monthExpenses').textContent = '₨ 0.00';
+                document.getElementById('expenseCount').textContent = '0';
+                
+                // Payment method totals
+                document.getElementById('totalCash').textContent = '₨ 0.00';
+                document.getElementById('totalCard').textContent = '₨ 0.00';
+                document.getElementById('totalMobile').textContent = '₨ 0.00';
+                document.getElementById('totalBank').textContent = '₨ 0.00';
+                
+                // Budget cards
+                updateBudgetDisplay(0, 0, 'cash');
+                updateBudgetDisplay(0, 0, 'digital');
+                
+                document.getElementById('recentExpensesList').innerHTML = `
+                    <div class="list-group-item text-center text-muted py-4">
+                        <i class="fas fa-clock fa-2x mb-2 opacity-50"></i>
+                        <p>No recent expenses to display</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate total expenses
+            const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
+
+            // Calculate this month's expenses
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const thisMonthExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+            });
+            const monthTotal = thisMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+            document.getElementById('monthExpenses').textContent = `₨ ${monthTotal.toFixed(2)}`;
+
+            // Expense count
+            document.getElementById('expenseCount').textContent = expenses.length;
+
+            // Calculate payment method breakdown
+            const paymentTotals = {
+                Cash: 0,
+                Card: 0,
+                Mobile: 0,
+                Bank: 0
+            };
+            
+            thisMonthExpenses.forEach(expense => {
+                if (paymentTotals[expense.paymentMethod] !== undefined) {
+                    paymentTotals[expense.paymentMethod] += expense.amount;
+                }
+            });
+            
+            // Update payment method totals
+            document.getElementById('totalCash').textContent = `₨ ${paymentTotals.Cash.toFixed(2)}`;
+            document.getElementById('totalCard').textContent = `₨ ${paymentTotals.Card.toFixed(2)}`;
+            document.getElementById('totalMobile').textContent = `₨ ${paymentTotals.Mobile.toFixed(2)}`;
+            document.getElementById('totalBank').textContent = `₨ ${paymentTotals.Bank.toFixed(2)}`;
+
+            // Get budget limits from settings
+            const settings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
+            const cashBudget = parseFloat(settings.cashBudget || 0);
+            const digitalBudget = parseFloat(settings.digitalBudget || 0);
+            
+            // Calculate digital total (Card + Mobile + Bank)
+            const digitalTotal = paymentTotals.Card + paymentTotals.Mobile + paymentTotals.Bank;
+            
+            // Update budget displays
+            updateBudgetDisplay(cashBudget, paymentTotals.Cash, 'cash');
+            updateBudgetDisplay(digitalBudget, digitalTotal, 'digital');
+
+            // Recent expenses list
+            let recentHTML = '';
+            thisMonthExpenses.slice(0, 5).forEach(expense => {
+                const paymentIcon = getPaymentIcon(expense.paymentMethod);
+                recentHTML += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-medium">${expense.description}</div>
+                            <small class="text-muted">${formatDate(expense.date)} • ${paymentIcon} ${expense.paymentMethod}</small>
+                        </div>
+                        <span class="badge ${getPaymentBadgeClass(expense.paymentMethod)} rounded-pill">₨ ${expense.amount.toFixed(0)}</span>
+                    </div>
+                `;
+            });
+            
+            if (thisMonthExpenses.length === 0) {
+                recentHTML = `
+                    <div class="list-group-item text-center text-muted py-4">
+                        <i class="fas fa-calendar-times fa-2x mb-2 opacity-50"></i>
+                        <p>No expenses this month</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('recentExpensesList').innerHTML = recentHTML;
+        }
+
+        function updateBudgetDisplay(budgetLimit, spentAmount, type) {
+            const budgetLimitEl = type === 'cash' ? document.getElementById('cashBudgetLimit') : document.getElementById('digitalBudgetLimit');
+            const spentEl = type === 'cash' ? document.getElementById('cashSpent') : document.getElementById('digitalSpent');
+            const remainingEl = type === 'cash' ? document.getElementById('cashRemaining') : document.getElementById('digitalRemaining');
+            const progressEl = type === 'cash' ? document.getElementById('cashProgress') : document.getElementById('digitalProgress');
+            
+            budgetLimitEl.textContent = `₨ ${budgetLimit.toFixed(2)}`;
+            spentEl.textContent = `₨ ${spentAmount.toFixed(2)}`;
+            
+            const remaining = Math.max(0, budgetLimit - spentAmount);
+            remainingEl.textContent = `₨ ${remaining.toFixed(2)}`;
+            
+            // Calculate progress percentage
+            const progressPercent = budgetLimit > 0 ? Math.min(100, (spentAmount / budgetLimit) * 100) : 0;
+            progressEl.style.width = `${progressPercent.toFixed(1)}%`;
+            
+            // Add color coding based on percentage
+            if (progressPercent >= 90) {
+                progressEl.className = 'progress-bar bg-danger';
+            } else if (progressPercent >= 75) {
+                progressEl.className = 'progress-bar bg-warning';
+            } else if (progressPercent >= 50) {
+                progressEl.className = 'progress-bar bg-info';
+            } else {
+                progressEl.className = `progress-bar bg-${type === 'cash' ? 'success' : 'primary'}`;
+            }
+        }
+
+        function getPaymentIcon(paymentMethod) {
+            const icons = {
+                'Cash': '<i class="fas fa-money-bill-wave"></i>',
+                'Card': '<i class="fas fa-credit-card"></i>',
+                'Mobile': '<i class="fas fa-mobile-alt"></i>',
+                'Bank': '<i class="fas fa-university"></i>'
+            };
+            return icons[paymentMethod] || '';
+        }
+
+        function getPaymentBadgeClass(paymentMethod) {
+            const classes = {
+                'Cash': 'bg-success',
+                'Card': 'bg-primary',
+                'Mobile': 'bg-warning',
+                'Bank': 'bg-info'
+            };
+            return classes[paymentMethod] || 'bg-secondary';
+        }
+
+        function checkBudgetWarnings() {
+            const settings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
+            const cashBudget = parseFloat(settings.cashBudget || 0);
+            const digitalBudget = parseFloat(settings.digitalBudget || 0);
+            
+            if (cashBudget > 0 || digitalBudget > 0) {
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+                
+                const thisMonthExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+                });
+                
+                const cashSpent = thisMonthExpenses
+                    .filter(e => e.paymentMethod === 'Cash')
+                    .reduce((sum, e) => sum + e.amount, 0);
+                
+                const digitalSpent = thisMonthExpenses
+                    .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
+                    .reduce((sum, e) => sum + e.amount, 0);
+                
+                // Check cash budget
+                if (cashBudget > 0) {
+                    const cashPercent = (cashSpent / cashBudget) * 100;
+                    if (cashPercent >= 90) {
+                        showNotification(`⚠️ Cash budget at ${cashPercent.toFixed(1)}%! (${cashSpent.toFixed(2)}/${cashBudget.toFixed(2)})`, 'warning');
+                    } else if (cashPercent >= 75) {
+                        showNotification(`💰 Cash budget at ${cashPercent.toFixed(1)}%`, 'info');
+                    }
+                }
+                
+                // Check digital budget
+                if (digitalBudget > 0) {
+                    const digitalPercent = (digitalSpent / digitalBudget) * 100;
+                    if (digitalPercent >= 90) {
+                        showNotification(`⚠️ Digital budget at ${digitalPercent.toFixed(1)}%! (${digitalSpent.toFixed(2)}/${digitalBudget.toFixed(2)})`, 'warning');
+                    } else if (digitalPercent >= 75) {
+                        showNotification(`💳 Digital budget at ${digitalPercent.toFixed(1)}%`, 'info');
+                    }
+                }
+            }
+        }
+
+        // ======================
+        // UTILITY FUNCTIONS
+        // ======================
+        function resetForm() {
+            document.getElementById('expenseForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = today;
+            document.getElementById('expenseDescription').value = '';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} notification`;
+            notification.role = 'alert';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-2">
+                        <i class="fas ${getNotificationIcon(type)} fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">${message}</div>
+                    <div class="flex-shrink-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+
+            // Add to body
+            document.body.appendChild(notification);
+
+            // Auto-remove after animation completes
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3500);
+        }
+
+        function getNotificationIcon(type) {
+            const icons = {
+                'success': 'fa-check-circle text-success',
+                'danger': 'fa-exclamation-circle text-danger',
+                'info': 'fa-info-circle text-info',
+                'warning': 'fa-exclamation-triangle text-warning'
+            };
+            return icons[type] || 'fa-bell';
+        }
+
+        // ======================
+        // SETTINGS MANAGEMENT
+        // ======================
+        function saveSettings() {
+            const cashBudget = document.getElementById('cashBudgetInput').value;
+            const digitalBudget = document.getElementById('digitalBudgetInput').value;
+            const currency = document.getElementById('currencySetting').value;
+            const dateFormat = document.getElementById('dateFormatSetting').value;
+
+            // Validation
+            if (cashBudget && parseFloat(cashBudget) < 0) {
+                showNotification('Cash budget cannot be negative', 'danger');
+                return;
+            }
+            
+            if (digitalBudget && parseFloat(digitalBudget) < 0) {
+                showNotification('Digital budget cannot be negative', 'danger');
+                return;
+            }
+
+            // Save to localStorage
+            const settings = {
+                cashBudget: cashBudget || '0',
+                digitalBudget: digitalBudget || '0',
+                currency: currency || 'NPR',
+                dateFormat: dateFormat || 'YYYY-MM-DD',
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('expenseTrackerSettings', JSON.stringify(settings));
+            showNotification('Budget settings saved successfully!', 'success');
+            
+            // Reload statistics to reflect new budget limits
+            updateStatistics();
+        }
+
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('expenseTrackerSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                document.getElementById('cashBudgetInput').value = settings.cashBudget || '';
+                document.getElementById('digitalBudgetInput').value = settings.digitalBudget || '';
+                document.getElementById('currencySetting').value = settings.currency || 'NPR';
+                document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
+            }
+        }
+    </script>
 </body>
 </html>
