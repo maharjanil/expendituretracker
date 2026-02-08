@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,12 +16,29 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --info: #06b6d4;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border-radius: 16px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
             min-height: 100vh;
             overflow-x: hidden;
-            padding-bottom: 80px;
+            color: #1e293b;
+            line-height: 1.6;
         }
 
         .app-container {
@@ -29,144 +47,183 @@
             max-width: 1600px;
             margin: 0 auto;
             width: 100%;
+            position: relative;
         }
 
-        /* Sidebar Styles - Hidden by default */
+        /* Modern Sidebar Styles - Always Visible */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             height: 100vh;
             z-index: 1000;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
             overflow-y: auto;
-            width: 0 !important;
-            opacity: 0;
-        }
-
-        .sidebar.visible {
-            width: 280px !important;
-            opacity: 1;
-        }
-
-        .sidebar.collapsed {
-            width: 80px !important;
-            opacity: 1;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
-            padding: 1.5rem;
+            padding: 1.8rem 1.5rem;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        .sidebar-header .logo-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: #4cc9f0;
-        }
-
-        .sidebar-header .logo-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar.collapsed .sidebar-header .logo-text {
-            opacity: 0;
-        }
-
-        .sidebar-toggle-btn {
-            position: absolute;
-            top: 15px;
-            right: -15px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #4cc9f0;
-            color: #1a1a2e;
-            border: none;
-            cursor: pointer;
+        .logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1001;
-            transition: transform 0.3s ease;
+            gap: 14px;
+            margin-bottom: 1.2rem;
         }
 
-        .sidebar.collapsed .sidebar-toggle-btn {
-            transform: rotate(180deg);
-            right: -20px;
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #6366f1, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .app-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.8rem 0 1.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 1.2rem;
+            padding: 0 1.5rem;
+        }
+
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            padding-left: 8px;
         }
 
         .nav-item {
-            margin: 0.5rem 0;
-            transition: all 0.3s ease;
+            margin: 0.4rem 0;
+            position: relative;
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 1rem 1.5rem;
-            border-left: 3px solid transparent;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 1rem 18px;
+            margin: 0 12px;
+            border-radius: 16px;
+            transition: var(--transition);
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 14px;
+            position: relative;
+            text-decoration: none;
+            font-size: 1.02rem;
+            border: 1px solid transparent;
         }
 
         .nav-link i {
-            font-size: 1.2rem;
-            min-width: 24px;
-            text-align: center;
+            font-size: 1.35rem;
+            min-width: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-link span {
-            white-space: nowrap;
-            overflow: hidden;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar.collapsed .nav-link span {
-            opacity: 0;
-            width: 0;
-            padding: 0;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
+        .nav-link:hover, .nav-link.active {
             color: white;
-            background: rgba(255,255,255,0.1);
-            border-left-color: #4cc9f0;
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(4px);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .nav-link.active {
-            background: linear-gradient(90deg, rgba(76,201,240,0.2) 0%, rgba(76,201,240,0.1) 100%);
-            border-left-color: #4cc9f0;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.28) 0%, rgba(139, 92, 246, 0.22) 100%);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+            position: relative;
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: 0 8px 8px 0;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.25);
+            margin-top: auto;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .status-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 2rem;
-            margin-left: 0;
-        }
-
-        .sidebar.visible + .main-content {
+            transition: var(--transition);
+            padding: 2.2rem;
             margin-left: 280px;
-        }
-
-        .sidebar.collapsed + .main-content {
-            margin-left: 80px;
         }
 
         .content-wrapper {
@@ -174,38 +231,89 @@
             margin: 0 auto;
         }
 
-        /* Card Styles */
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-dark), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Modern Card Styles */
         .card {
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             border: none;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            margin-bottom: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 1.8rem;
+            transition: var(--transition);
             background: white;
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
         .card-header {
-            border-radius: 16px 16px 0 0 !important;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
             font-weight: 700;
-            padding: 1.25rem 1.5rem;
+            padding: 1.4rem 1.8rem;
             border: none;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* Stat Cards */
+        .card-header i {
+            font-size: 1.4rem;
+            opacity: 0.95;
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-size: 1.4rem;
+        }
+
+        .card-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.8rem;
+        }
+
+        /* Modern Stat Cards */
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.8rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .stat-card::before {
@@ -215,8 +323,9 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transition: all 0.5s ease;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            transition: var(--transition);
+            z-index: 0;
         }
 
         .stat-card:hover::before {
@@ -224,312 +333,465 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
         }
 
-        .stat-card.bg-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+        .stat-card .card-body {
+            position: relative;
+            z-index: 1;
+            padding: 1.5rem;
         }
 
-        .stat-card.bg-success:hover {
-            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+        .stat-label {
+            color: var(--gray);
+            font-size: 1.05rem;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .stat-card.bg-info {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
-        }
-
-        .stat-card.bg-info:hover {
-            box-shadow: 0 12px 40px rgba(6, 182, 212, 0.6);
-        }
-
-        .stat-card .card-title {
-            font-size: 2rem;
+        .stat-value {
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 0.25rem;
-            color: white;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(to right, var(--primary-dark), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .stat-card .card-text {
+        .stat-period {
+            color: var(--gray);
             font-size: 0.95rem;
-            opacity: 0.95;
-            color: rgba(255,255,255,0.95);
+            font-weight: 500;
         }
 
         .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.3;
             position: absolute;
-            bottom: -20px;
-            right: 20px;
+            bottom: -10px;
+            right: 15px;
+            font-size: 5rem;
+            opacity: 0.07;
+            z-index: 0;
         }
 
         /* Payment Summary */
         .payment-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 16px;
+            background: white;
+            border-radius: var(--border-radius);
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-            position: relative;
-            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .payment-summary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #4cc9f0, #f72585, #7209b7);
+        .payment-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        .payment-summary-item {
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .payment-summary-item:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .payment-summary-item i {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .payment-summary-item .fw-bold {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .payment-summary-item .h5 {
-            font-size: 1.8rem;
+        .payment-summary-title {
             font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-period-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 0.45rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .payment-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .payment-item {
+            background: rgba(99, 102, 241, 0.04);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(99, 102, 241, 0.12);
+        }
+
+        .payment-item:hover {
+            transform: translateY(-4px);
+            background: rgba(99, 102, 241, 0.08);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
+        }
+
+        .payment-icon {
+            width: 64px;
+            height: 64px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .payment-item:hover .payment-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .payment-cash .payment-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .payment-card .payment-icon {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--info);
+            box-shadow: 0 6px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .payment-mobile .payment-icon {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.2);
+        }
+
+        .payment-bank .payment-icon {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--secondary);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .payment-label {
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: var(--dark);
+            font-size: 1.2rem;
+        }
+
+        .payment-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .payment-percent {
+            color: var(--gray);
+            font-size: 1.05rem;
+            font-weight: 600;
         }
 
         /* Budget Cards */
         .budget-card {
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
             position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .budget-card.cash {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border-top: 5px solid var(--success);
         }
 
         .budget-card.digital {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            background: linear-gradient(135deg, #f0f9ff 0%, #ecfeff 100%);
+            border-top: 5px solid var(--info);
         }
 
-        .budget-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+        .budget-header {
+            padding: 1.4rem 1.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .budget-card .card-body {
+        .budget-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .budget-badge {
+            padding: 0.4rem 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .budget-badge.cash {
+            background: rgba(16, 185, 129, 0.18);
+            color: var(--success);
+        }
+
+        .budget-badge.digital {
+            background: rgba(6, 182, 212, 0.18);
+            color: var(--info);
+        }
+
+        .budget-body {
             padding: 1.8rem;
         }
 
-        .budget-card .card-title {
-            color: white;
+        .budget-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .budget-label {
+            color: var(--gray);
+        }
+
+        .budget-value {
             font-weight: 700;
-            font-size: 1.4rem;
+            color: var(--dark);
         }
 
-        .budget-card .text-muted {
-            color: rgba(255,255,255,0.7) !important;
-        }
-
-        .budget-card .h4,
-        .budget-card .fw-bold {
-            color: white !important;
-        }
-
-        .budget-card .progress {
-            height: 10px;
-            border-radius: 5px;
-            background: rgba(255,255,255,0.2);
+        .budget-progress {
+            height: 12px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.06);
             overflow: hidden;
+            margin: 1.2rem 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .budget-card .progress-bar {
-            transition: width 0.5s ease;
+        .budget-progress-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.6s ease;
+            box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .budget-footer {
+            padding: 1rem 1.8rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            font-size: 0.95rem;
+            color: var(--gray);
+            font-weight: 500;
         }
 
         /* Filter Controls */
-        .filter-controls {
+        .filter-section {
             background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            padding: 1.8rem;
+            box-shadow: var(--box-shadow);
             margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .filter-controls h6 {
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-title {
             font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a1a2e;
+            color: var(--dark);
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 10px;
         }
 
-        .filter-btn-group .btn {
-            border-radius: 10px;
-            padding: 0.75rem 1.5rem;
+        .toggle-filter-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .toggle-filter-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            transform: rotate(90deg);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Form Elements */
+        .form-label {
             font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            margin-bottom: 0.65rem;
+            color: var(--dark);
+            font-size: 1.02rem;
         }
 
-        .filter-btn-group .btn:hover {
+        .form-control, .form-select {
+            border-radius: 14px;
+            padding: 0.85rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+            font-size: 1.02rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        .input-group-text {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            border-radius: 14px 0 0 14px;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .btn {
+            border-radius: 14px;
+            padding: 0.8rem 1.6rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.05rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            box-shadow: 0 5px 18px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 22px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: white;
+        }
+
+        .btn-outline-primary:hover {
+            background: rgba(99, 102, 241, 0.08);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
-        .filter-btn-group .btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #0ca678 100%);
+            border: none;
+            box-shadow: 0 5px 18px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 22px rgba(16, 185, 129, 0.45);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            border: none;
+            box-shadow: 0 5px 18px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 22px rgba(239, 68, 68, 0.45);
         }
 
         /* Table Styles */
         .table thead th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             border: none;
-            padding: 1rem;
+            padding: 1.1rem;
+            font-size: 1.05rem;
         }
 
         .table tbody tr {
-            transition: all 0.2s ease;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .table tbody tr:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(99, 102, 241, 0.05);
             transform: translateX(5px);
         }
 
         .table tbody td {
-            padding: 1rem;
+            padding: 1.1rem;
             vertical-align: middle;
+            font-size: 1.02rem;
         }
 
-        /* Button Styles */
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-danger {
-            transition: all 0.2s ease;
-        }
-
-        .btn-danger:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Form Styles */
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e5e7eb;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
-        }
-
-        .input-group-text {
-            background: #f9fafb;
-            border-color: #e5e7eb;
-            border-radius: 10px 0 0 10px;
-        }
-
-        /* Modal Styles */
-        .modal-content {
+        /* Page Controls */
+        .page-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.8rem;
+            padding: 1.2rem;
+            background: #f8fafc;
             border-radius: 16px;
-            border: none;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .modal-header {
-            border-radius: 16px 16px 0 0 !important;
-            border: none;
-            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.06);
         }
 
         /* Notification Styles */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             z-index: 9999;
-            min-width: 350px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-                      fadeOut 0.5s ease 3s forwards;
+            min-width: 380px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            border: none;
+            animation: slideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                      fadeOut 0.5s ease 3.5s forwards;
         }
 
         @keyframes slideIn {
@@ -555,420 +817,92 @@
         }
 
         /* Budget Notification Badges */
-        .budget-badge {
+        .budget-badge-notification {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            padding: 0.6rem 1.5rem;
+            padding: 0.85rem 2.2rem;
             border-radius: 50px;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
             animation: pulse 2s infinite;
             display: none;
+            font-size: 1.05rem;
+            gap: 12px;
+            align-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        .budget-badge.cash {
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            color: white;
+        .budget-badge-notification.cash {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #b91c1c;
+            border-color: #fecaca;
         }
 
-        .budget-badge.digital {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
+        .budget-badge-notification.digital {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #075985;
+            border-color: #bae6fd;
         }
 
-        .budget-badge.warning {
-            animation: pulse 1.5s infinite;
+        .budget-badge-notification.warning {
+            animation: pulse 1.6s infinite;
         }
 
-        .budget-badge.critical {
-            animation: pulse 1s infinite;
-            transform: translateX(-50%) scale(1.05);
-        }
-
-        /* Page Controls */
-        .page-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: #f9fafb;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1366px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                position: relative;
-                width: 100% !important;
-                height: auto;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-                opacity: 1;
-            }
-
-            .sidebar-header {
-                padding: 1rem;
-            }
-
-            .sidebar-toggle-btn {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-                padding: 1.5rem;
-            }
-
-            .stat-card .card-title {
-                font-size: 1.7rem;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .payment-summary {
-                padding: 1.5rem;
-            }
-
-            .payment-summary-item {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .payment-summary-item i {
-                font-size: 2rem;
-            }
-
-            .payment-summary-item .h5 {
-                font-size: 1.5rem;
-            }
-
-            .budget-card .card-body {
-                padding: 1.5rem;
-            }
-
-            .filter-btn-group .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            
-            .budget-badge {
-                min-width: auto;
-                padding: 0.5rem 1.2rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 0 1rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .content-wrapper {
-                padding: 0;
-            }
-
-            .card {
-                margin-bottom: 1rem;
-            }
-
-            .card-body {
-                padding: 1rem;
-            }
-
-            .card-header {
-                padding: 1rem 1.25rem;
-                font-size: 1.1rem;
-            }
-
-            .stat-card,
-            .payment-summary,
-            .budget-card {
-                border-radius: 12px;
-            }
-
-            .stat-card .card-title {
-                font-size: 1.5rem;
-            }
-
-            .stat-card .card-text {
-                font-size: 0.9rem;
-            }
-
-            .notification {
-                min-width: auto;
-                width: 90%;
-                right: 50%;
-                transform: translateX(50%);
-            }
-
-            .page-controls {
-                flex-direction: column;
-                gap: 0.75rem;
-                padding: 0.75rem;
-            }
-
-            .page-controls .btn {
-                width: 100%;
-            }
-
-            .filter-controls {
-                padding: 1rem;
-            }
-
-            .filter-btn-group {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .filter-btn-group .btn {
-                width: calc(50% - 0.25rem);
-            }
-
-            .table-responsive {
-                font-size: 0.9rem;
-            }
-
-            .table thead th,
-            .table tbody td {
-                padding: 0.75rem;
-                font-size: 0.85rem;
-            }
-
-            .btn {
-                padding: 0.6rem 1.25rem;
-                font-size: 0.9rem;
-            }
-
-            .form-control,
-            .form-select {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .filter-btn-group .btn {
-                width: 100%;
-            }
-
-            .payment-summary-item .h5 {
-                font-size: 1.3rem;
-            }
-
-            .payment-summary-item i {
-                font-size: 1.8rem;
-            }
-
-            .stat-icon {
-                font-size: 2rem;
-                bottom: -15px;
-                right: 10px;
-            }
-
-            .budget-card .card-body {
-                padding: 1.2rem;
-            }
-
-            .form-label {
-                font-size: 0.85rem;
-            }
-
-            .input-group {
-                flex-wrap: wrap;
-            }
-
-            .input-group .form-control {
-                width: 100%;
-                margin-top: 0.5rem;
-            }
-            
-            .budget-badge {
-                padding: 0.4rem 1rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Animation for new entries */
-        @keyframes highlight {
-            0% { background-color: #e6f7ee; }
-            50% { background-color: #d4edda; }
-            100% { background-color: transparent; }
-        }
-
-        .new-entry {
-            animation: highlight 2s ease;
-            background-color: #e6f7ee !important;
-        }
-
-        /* Badge Styles */
-        .payment-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin: 0.25rem;
-        }
-
-        .payment-cash {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .payment-card {
-            background: linear-gradient(135deg, #06b6d4, #0891b2);
-            color: white;
-        }
-
-        .payment-mobile {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        .payment-bank {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-        }
-
-        /* Loading States */
-        .loading-spinner {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 3px solid rgba(102, 126, 234, 0.3);
-            border-radius: 50%;
-            border-top-color: #667eea;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #9ca3af;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-
-        .empty-state h5 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #6b7280;
-        }
-
-        .empty-state p {
-            color: #9ca3af;
-        }
-
-        /* Toggle Button Styles */
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: #667eea;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            padding: 0.25rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-        }
-
-        .toggle-btn:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: rotate(90deg);
-        }
-
-        .toggle-btn.collapsed {
-            transform: rotate(0deg);
-        }
-
-        .toggle-btn.expanded {
-            transform: rotate(180deg);
-        }
-
-        /* Period Filter Row */
-        #periodFilterRow {
-            transition: max-height 0.4s ease, opacity 0.4s ease;
-            overflow: hidden;
-        }
-
-        #periodFilterRow.collapsed {
-            max-height: 0;
-            opacity: 0;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
+        .budget-badge-notification.critical {
+            animation: pulse 1.1s infinite;
+            transform: translateX(-50%) scale(1.07);
+            box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.35);
         }
 
         /* Floating Action Button */
         .fab-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 40px;
+            right: 40px;
             z-index: 2000;
         }
 
         .btn-fab {
-            width: 56px;
-            height: 56px;
+            width: 68px;
+            height: 68px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.55);
+            font-size: 1.8rem;
             padding: 0;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border: none;
             cursor: pointer;
         }
 
         .btn-fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            transform: scale(1.12) rotate(8deg);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.7);
         }
 
         .btn-fab i {
             position: relative;
             z-index: 2;
-            transition: transform 0.3s ease;
+            transition: transform 0.35s ease;
         }
 
         .btn-fab:hover i {
-            transform: scale(1.2);
+            transform: scale(1.25);
         }
 
         .btn-fab::before {
@@ -978,9 +912,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.25);
             z-index: 1;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
             transform: scale(0);
         }
 
@@ -990,16 +924,18 @@
 
         .btn-fab span {
             position: absolute;
-            bottom: -30px;
-            background: rgba(0,0,0,0.8);
+            bottom: -40px;
+            background: rgba(0, 0, 0, 0.92);
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 28px;
+            font-size: 1.05rem;
             white-space: nowrap;
             opacity: 0;
-            transition: all 0.3s ease;
-            transform: translateY(10px);
+            transition: all 0.35s ease;
+            transform: translateY(12px);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
         }
 
         .btn-fab:hover span {
@@ -1014,11 +950,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .sidebar-overlay.visible {
@@ -1026,113 +962,521 @@
             visibility: visible;
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .sidebar::-webkit-scrollbar {
-            display: none;
+        /* Responsive Design */
+        @media (max-width: 1199px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .main-content {
+                margin-left: 260px;
+                padding: 1.8rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .payment-icon {
+                width: 58px;
+                height: 58px;
+                font-size: 1.8rem;
+            }
         }
 
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .sidebar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .main-content {
+                margin-left: 240px;
+                padding: 1.5rem;
+            }
+            
+            .payment-summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
         }
 
-        /* Budget Period Selector */
-        .budget-period-selector {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e9ecef;
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: relative;
+                width: 100% !important;
+                height: auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            }
+            
+            .sidebar-header {
+                padding: 1.4rem;
+            }
+            
+            .logo-text {
+                font-size: 1.4rem;
+            }
+            
+            .nav-menu {
+                padding: 1.2rem 0;
+            }
+            
+            .nav-link {
+                padding: 0.9rem 16px;
+                font-size: 0.98rem;
+                margin: 0 10px;
+            }
+            
+            .nav-link i {
+                font-size: 1.25rem;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1.4rem;
+            }
+            
+            .card {
+                margin-bottom: 1.2rem;
+            }
+            
+            .card-body {
+                padding: 1.4rem;
+            }
+            
+            .card-header {
+                padding: 1.2rem 1.5rem;
+                font-size: 1.25rem;
+            }
+            
+            .stat-card, .payment-summary, .budget-card {
+                border-radius: 14px;
+            }
+            
+            .stat-value {
+                font-size: 1.6rem;
+            }
+            
+            .stat-label {
+                font-size: 0.95rem;
+            }
+            
+            .notification {
+                min-width: auto;
+                width: 95%;
+                right: 50%;
+                transform: translateX(50%);
+            }
+            
+            .page-controls {
+                flex-direction: column;
+                gap: 0.85rem;
+                padding: 1rem;
+            }
+            
+            .page-controls .btn {
+                width: 100%;
+                padding: 0.75rem;
+            }
+            
+            .filter-section {
+                padding: 1.4rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.4rem;
+                font-size: 0.98rem;
+            }
+            
+            .form-control, .form-select {
+                padding: 0.75rem 1rem;
+                font-size: 0.98rem;
+            }
+            
+            .fab-container {
+                bottom: 25px;
+                right: 25px;
+            }
+            
+            .btn-fab {
+                width: 60px;
+                height: 60px;
+                font-size: 1.6rem;
+            }
+            
+            .btn-fab span {
+                font-size: 0.95rem;
+                padding: 5px 14px;
+            }
+            
+            .payment-item {
+                padding: 1.2rem;
+            }
+            
+            .payment-amount {
+                font-size: 1.7rem;
+            }
+            
+            .payment-label {
+                font-size: 1.05rem;
+            }
+            
+            .budget-body {
+                padding: 1.4rem;
+            }
+            
+            .budget-row {
+                font-size: 0.98rem;
+            }
+            
+            .budget-value {
+                font-size: 1.15rem;
+            }
         }
 
-        .budget-period-selector h6 {
-            margin-bottom: 1rem;
-            color: #495057;
+        @media (max-width: 576px) {
+            .sidebar-header {
+                padding: 1.2rem;
+            }
+            
+            .logo-icon {
+                width: 46px;
+                height: 46px;
+                font-size: 1.5rem;
+            }
+            
+            .logo-text {
+                font-size: 1.3rem;
+            }
+            
+            .app-tagline {
+                font-size: 0.9rem;
+                margin-top: 0.3rem;
+            }
+            
+            .nav-section-title {
+                font-size: 0.8rem;
+                margin-bottom: 0.6rem;
+            }
+            
+            .nav-link {
+                padding: 0.85rem 14px;
+                font-size: 0.95rem;
+                margin: 0 8px;
+            }
+            
+            .nav-link i {
+                font-size: 1.2rem;
+                min-width: 24px;
+            }
+            
+            .page-title {
+                font-size: 1.7rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .payment-item {
+                padding: 1rem;
+            }
+            
+            .payment-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 1.7rem;
+            }
+            
+            .payment-amount {
+                font-size: 1.6rem;
+            }
+            
+            .payment-label {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .payment-percent {
+                font-size: 0.95rem;
+            }
+            
+            .stat-card .card-body {
+                padding: 1.2rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .stat-period {
+                font-size: 0.9rem;
+            }
+            
+            .budget-footer {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.4rem;
+            }
+            
+            .btn-fab span {
+                font-size: 0.9rem;
+                padding: 4px 12px;
+            }
+        }
+
+        /* Animation for new entries */
+        @keyframes highlight {
+            0% { background-color: #f0fdf4; }
+            50% { background-color: #dcfce7; }
+            100% { background-color: transparent; }
+        }
+
+        .new-entry {
+            animation: highlight 2.8s ease;
+            background-color: #f0fdf4 !important;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 1.8rem;
+            height: 1.8rem;
+            border: 4px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 1.5rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 1.4rem;
+            opacity: 0.25;
+            color: var(--primary);
+        }
+
+        .empty-state h5 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            font-size: 1.15rem;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 0.5em 1em;
+            border-radius: 50px;
             font-weight: 600;
-        }
-
-        .budget-period-note {
-            background: #fff8e6;
-            border-left: 4px solid #ffc107;
-            padding: 1rem;
-            border-radius: 0 8px 8px 0;
-            margin-top: 1rem;
             font-size: 0.9rem;
         }
 
+        .badge.bg-success {
+            background: rgba(16, 185, 129, 0.18) !important;
+            color: var(--success) !important;
+        }
+
+        .badge.bg-primary {
+            background: rgba(99, 102, 241, 0.18) !important;
+            color: var(--primary) !important;
+        }
+
+        .badge.bg-warning {
+            background: rgba(245, 158, 11, 0.18) !important;
+            color: var(--warning) !important;
+        }
+
+        .badge.bg-info {
+            background: rgba(6, 182, 212, 0.18) !important;
+            color: var(--info) !important;
+        }
+
+        /* Custom Period Highlight */
         .custom-period-highlight {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
             font-weight: 600;
             display: inline-block;
-            margin: 0.25rem;
+            margin: 0.3rem;
+            font-size: 1.05rem;
+            box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
         }
 
         .period-label {
             font-weight: 600;
-            color: #4f46e5;
+            color: var(--primary-dark);
+            background: rgba(99, 102, 241, 0.12);
+            padding: 0.25rem 0.8rem;
+            border-radius: 10px;
+            font-size: 1.05rem;
+        }
+
+        /* Recent Expenses List */
+        .recent-item {
+            padding: 1.2rem 1.4rem !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none !important;
+        }
+
+        .recent-desc {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.35rem;
+            font-size: 1.05rem;
+        }
+
+        .recent-meta {
+            color: var(--gray);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Budget Period Selector */
+        .budget-period-selector {
+            background: #f8fafc;
+            padding: 1.8rem;
+            border-radius: 16px;
+            margin-bottom: 1.8rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .budget-period-selector h6 {
+            margin-bottom: 1.2rem;
+            color: var(--dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+
+        .budget-period-note {
+            background: #f0f9ff;
+            border-left: 5px solid var(--primary);
+            padding: 1.2rem;
+            border-radius: 0 10px 10px 0;
+            margin-top: 1.2rem;
+            font-size: 1.02rem;
+            color: var(--dark);
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+        }
+
+        /* Section Dividers */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08), transparent);
+            margin: 1.8rem 0;
         }
     </style>
 </head>
 <body>
     <!-- Budget Notification Badges -->
-    <div class="budget-badge cash" id="cashBudgetBadge">
-        <i class="fas fa-money-bill-wave me-2"></i>
+    <div class="budget-badge-notification cash" id="cashBudgetBadge">
+        <i class="fas fa-money-bill-wave"></i>
         <span id="cashBudgetMessage">Cash budget warning</span>
     </div>
-    <div class="budget-badge digital" id="digitalBudgetBadge">
-        <i class="fas fa-credit-card me-2"></i>
+    <div class="budget-badge-notification digital" id="digitalBudgetBadge">
+        <i class="fas fa-credit-card"></i>
         <span id="digitalBudgetMessage">Digital budget warning</span>
     </div>
 
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
     <div class="app-container">
-        <!-- Sidebar - Hidden by default -->
+        <!-- Modern Sidebar - Always Visible -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <div class="logo-icon">
-                    <i class="fas fa-calculator"></i>
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="logo-text">Expense Tracker</div>
                 </div>
-                <div class="logo-text">Expense Tracker</div>
-                <button class="sidebar-toggle-btn" id="sidebarToggle">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
+                <div class="app-tagline">Track • Budget • Save</div>
             </div>
-            <ul class="nav flex-column px-3 py-3">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#add-expense" data-bs-toggle="tab">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add Expense</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#view-expenses" data-bs-toggle="tab">
-                        <i class="fas fa-list"></i>
-                        <span>View Expenses</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#statistics" data-bs-toggle="tab">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Statistics</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#settings" data-bs-toggle="tab">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="px-3 mt-auto mb-4">
-                <div class="text-center text-white-50 small">
-                    <i class="fas fa-cloud-upload-alt me-2"></i>
-                    Firebase Connected
+            <div class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">MAIN</div>
+                    <div class="nav-item">
+                        <a class="nav-link active" href="#add-expense" data-bs-toggle="tab">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Add Expense</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#view-expenses" data-bs-toggle="tab">
+                            <i class="fas fa-list"></i>
+                            <span>View Expenses</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#statistics" data-bs-toggle="tab">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Statistics</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">SETTINGS</div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="#settings" data-bs-toggle="tab">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-dot"></div>
+                    <div class="status-label">
+                        <i class="fas fa-cloud"></i>
+                        <span>Firebase Connected</span>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -1143,26 +1487,31 @@
                 <div class="tab-content">
                     <!-- Add Expense Tab -->
                     <div class="tab-pane fade show active" id="add-expense">
+                        <div class="page-header">
+                            <h1 class="page-title">Add New Expense</h1>
+                            <p class="page-subtitle">Record your daily expenses and track your spending</p>
+                        </div>
+                        
                         <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Add New Expense</h5>
+                            <div class="card-header">
+                                <span><i class="fas fa-plus me-2"></i>Expense Details</span>
                             </div>
                             <div class="card-body">
                                 <form id="expenseForm">
-                                    <div class="row g-3">
+                                    <div class="row g-4">
                                         <div class="col-md-6">
-                                            <label for="expenseDate" class="form-label fw-medium">Date <span class="text-danger">*</span></label>
+                                            <label for="expenseDate" class="form-label">Date <span class="text-danger">*</span></label>
                                             <input type="date" class="form-control form-control-lg" id="expenseDate" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="expenseAmount" class="form-label fw-medium">Amount (NPR) <span class="text-danger">*</span></label>
+                                            <label for="expenseAmount" class="form-label">Amount (NPR) <span class="text-danger">*</span></label>
                                             <div class="input-group input-group-lg">
                                                 <span class="input-group-text">₨</span>
                                                 <input type="number" class="form-control" id="expenseAmount" placeholder="0.00" step="0.01" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="expensePayment" class="form-label fw-medium">Payment Method <span class="text-danger">*</span></label>
+                                            <label for="expensePayment" class="form-label">Payment Method <span class="text-danger">*</span></label>
                                             <select class="form-select form-select-lg" id="expensePayment" required>
                                                 <option value="">Select Payment Method</option>
                                                 <option value="Cash">Cash</option>
@@ -1172,11 +1521,11 @@
                                             </select>
                                         </div>
                                         <div class="col-12">
-                                            <label for="expenseDescription" class="form-label fw-medium">Description (Optional)</label>
-                                            <textarea class="form-control form-control-lg" id="expenseDescription" rows="2" placeholder="e.g., Grocery shopping, Lunch with friends"></textarea>
+                                            <label for="expenseDescription" class="form-label">Description (Optional)</label>
+                                            <textarea class="form-control form-control-lg" id="expenseDescription" rows="3" placeholder="e.g., Grocery shopping, Lunch with friends, Utility bills"></textarea>
                                         </div>
                                         <div class="col-12">
-                                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                            <button type="submit" class="btn btn-primary btn-lg w-100">
                                                 <i class="fas fa-save me-2"></i>Save Expense
                                             </button>
                                         </div>
@@ -1188,14 +1537,19 @@
 
                     <!-- View Expenses Tab -->
                     <div class="tab-pane fade" id="view-expenses">
+                        <div class="page-header">
+                            <h1 class="page-title">Expense Records</h1>
+                            <p class="page-subtitle">View and manage your expense history</p>
+                        </div>
+                        
                         <div class="card mb-4">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Expenses</h5>
+                            <div class="card-header">
+                                <span><i class="fas fa-filter me-2"></i>Filter Expenses</span>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <label class="form-label fw-medium">Filter By</label>
+                                        <label class="form-label">Filter By</label>
                                         <select class="form-select" id="filterType">
                                             <option value="all">All Time</option>
                                             <option value="yearly">Yearly</option>
@@ -1204,13 +1558,13 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4" id="yearFilterGroup" style="display: none;">
-                                        <label class="form-label fw-medium">Select Year</label>
+                                        <label class="form-label">Select Year</label>
                                         <select class="form-select" id="yearFilter">
                                             <!-- Populated dynamically -->
                                         </select>
                                     </div>
                                     <div class="col-md-4" id="monthFilterGroup" style="display: none;">
-                                        <label class="form-label fw-medium">Select Period</label>
+                                        <label class="form-label">Select Period</label>
                                         <select class="form-select" id="monthFilter">
                                             <option value="1">Jan 10 - Feb 9</option>
                                             <option value="2">Feb 10 - Mar 9</option>
@@ -1227,15 +1581,15 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4" id="startDateGroup" style="display: none;">
-                                        <label class="form-label fw-medium">Start Date</label>
+                                        <label class="form-label">Start Date</label>
                                         <input type="date" class="form-control" id="startDate">
                                     </div>
                                     <div class="col-md-4" id="endDateGroup" style="display: none;">
-                                        <label class="form-label fw-medium">End Date</label>
+                                        <label class="form-label">End Date</label>
                                         <input type="date" class="form-control" id="endDate">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-medium">&nbsp;</label>
+                                        <label class="form-label">&nbsp;</label>
                                         <button class="btn btn-primary w-100" id="applyFilter">
                                             <i class="fas fa-search me-2"></i>Apply Filter
                                         </button>
@@ -1245,18 +1599,8 @@
                         </div>
 
                         <div class="card">
-                            <div class="card-header bg-success text-white">
-                                <div class="row align-items-center">
-                                    <div class="col-md-6">
-                                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Expense Records</h5>
-                                    </div>
-                                    <div class="col-md-6 mt-3 mt-md-0">
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control" id="searchExpense" placeholder="Search by description or amount...">
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="card-header">
+                                <span><i class="fas fa-receipt me-2"></i>Expense Records</span>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -1282,11 +1626,11 @@
                                     </table>
                                 </div>
                                 <div class="page-controls">
-                                    <button class="btn btn-outline-secondary" id="prevPage">
+                                    <button class="btn btn-outline-primary" id="prevPage">
                                         <i class="fas fa-chevron-left me-1"></i> Previous
                                     </button>
                                     <span id="pageInfo" class="fw-medium">Page 1 of 1</span>
-                                    <button class="btn btn-outline-secondary" id="nextPage">
+                                    <button class="btn btn-outline-primary" id="nextPage">
                                         Next <i class="fas fa-chevron-right ms-1"></i>
                                     </button>
                                 </div>
@@ -1296,32 +1640,37 @@
 
                     <!-- Statistics Tab -->
                     <div class="tab-pane fade" id="statistics">
+                        <div class="page-header">
+                            <h1 class="page-title">Expense Statistics</h1>
+                            <p class="page-subtitle">Analyze your spending patterns and budget performance</p>
+                        </div>
+                        
                         <!-- Filter Controls -->
-                        <div class="filter-controls">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6>
+                        <div class="filter-section">
+                            <div class="filter-header">
+                                <div class="filter-title">
                                     <i class="fas fa-calendar-alt me-2"></i>View Period
-                                </h6>
-                                <button class="toggle-btn" id="togglePeriodFilter">
+                                </div>
+                                <button class="toggle-filter-btn" id="togglePeriodFilter">
                                     <i class="fas fa-minus"></i>
                                 </button>
                             </div>
                             <div class="row g-3 align-items-end" id="periodFilterRow">
                                 <div class="col-md-4">
-                                    <label class="form-label fw-medium">Period Type</label>
+                                    <label class="form-label">Period Type</label>
                                     <select class="form-select" id="statsPeriodType">
                                         <option value="yearly">Yearly</option>
                                         <option value="monthly">Monthly (10th-9th)</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4" id="statsYearSelector">
-                                    <label class="form-label fw-medium">Select Year</label>
+                                    <label class="form-label">Select Year</label>
                                     <select class="form-select" id="statsYearFilter">
                                         <!-- Populated dynamically -->
                                     </select>
                                 </div>
                                 <div class="col-md-4" id="statsMonthSelector" style="display: none;">
-                                    <label class="form-label fw-medium">Select Period</label>
+                                    <label class="form-label">Select Period</label>
                                     <select class="form-select" id="statsMonthFilter">
                                         <option value="1">Jan 10 - Feb 9</option>
                                         <option value="2">Feb 10 - Mar 9</option>
@@ -1338,36 +1687,38 @@
                                     </select>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="period-display" id="periodDisplay">
+                                    <div class="stat-period" id="periodDisplay">
                                         Showing statistics for <strong>2026</strong>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Summary Cards - REMOVED AVERAGE EXPENSE -->
+                        <!-- Summary Cards -->
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
                                 <div class="stat-card">
-                                    <div class="d-flex justify-content-between align-items-start position-relative">
-                                        <div>
-                                            <div class="card-text mb-1">Total Expenses</div>
-                                            <h3 class="card-title mb-0" id="totalExpenses">₨ 0.00</h3>
-                                            <small class="card-text" id="totalPeriodLabel">For selected period</small>
+                                    <div class="card-body">
+                                        <div class="stat-label">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            Total Expenses
                                         </div>
-                                        <i class="fas fa-money-bill-wave stat-icon"></i>
+                                        <div class="stat-value" id="totalExpenses">₨ 0.00</div>
+                                        <div class="stat-period" id="totalPeriodLabel">For selected period</div>
+                                        <i class="fas fa-coins stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="stat-card bg-info">
-                                    <div class="d-flex justify-content-between align-items-start position-relative">
-                                        <div>
-                                            <div class="card-text mb-1">Expense Count</div>
-                                            <h3 class="card-title mb-0" id="expenseCount">0</h3>
-                                            <small class="card-text" id="countPeriodLabel">Transactions</small>
+                                <div class="stat-card">
+                                    <div class="card-body">
+                                        <div class="stat-label">
+                                            <i class="fas fa-list"></i>
+                                            Expense Count
                                         </div>
-                                        <i class="fas fa-list stat-icon"></i>
+                                        <div class="stat-value" id="expenseCount">0</div>
+                                        <div class="stat-period" id="countPeriodLabel">Transactions</div>
+                                        <i class="fas fa-receipt stat-icon"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1375,101 +1726,111 @@
 
                         <!-- Payment Method Breakdown -->
                         <div class="payment-summary">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Payment Method Breakdown</h5>
-                                <span class="badge bg-light text-dark" id="paymentPeriodBadge">2026</span>
+                            <div class="payment-summary-header">
+                                <div class="payment-summary-title">
+                                    <i class="fas fa-wallet me-2"></i>Payment Method Breakdown
+                                </div>
+                                <span class="payment-period-badge" id="paymentPeriodBadge">2026</span>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-3 col-6">
-                                    <div class="payment-summary-item">
+                            <div class="payment-summary-grid">
+                                <div class="payment-item payment-cash">
+                                    <div class="payment-icon">
                                         <i class="fas fa-money-bill-wave"></i>
-                                        <div class="fw-bold">Cash</div>
-                                        <div class="h5 mb-0" id="totalCash">₨ 0.00</div>
-                                        <small class="text-white-50" id="cashPercent">0%</small>
                                     </div>
+                                    <div class="payment-label">Cash</div>
+                                    <div class="payment-amount" id="totalCash">₨ 0.00</div>
+                                    <div class="payment-percent" id="cashPercent">0%</div>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="payment-summary-item">
+                                <div class="payment-item payment-card">
+                                    <div class="payment-icon">
                                         <i class="fas fa-credit-card"></i>
-                                        <div class="fw-bold">Card</div>
-                                        <div class="h5 mb-0" id="totalCard">₨ 0.00</div>
-                                        <small class="text-white-50" id="cardPercent">0%</small>
                                     </div>
+                                    <div class="payment-label">Card</div>
+                                    <div class="payment-amount" id="totalCard">₨ 0.00</div>
+                                    <div class="payment-percent" id="cardPercent">0%</div>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="payment-summary-item">
+                                <div class="payment-item payment-mobile">
+                                    <div class="payment-icon">
                                         <i class="fas fa-mobile-alt"></i>
-                                        <div class="fw-bold">Mobile</div>
-                                        <div class="h5 mb-0" id="totalMobile">₨ 0.00</div>
-                                        <small class="text-white-50" id="mobilePercent">0%</small>
                                     </div>
+                                    <div class="payment-label">Mobile</div>
+                                    <div class="payment-amount" id="totalMobile">₨ 0.00</div>
+                                    <div class="payment-percent" id="mobilePercent">0%</div>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="payment-summary-item">
+                                <div class="payment-item payment-bank">
+                                    <div class="payment-icon">
                                         <i class="fas fa-university"></i>
-                                        <div class="fw-bold">Bank</div>
-                                        <div class="h5 mb-0" id="totalBank">₨ 0.00</div>
-                                        <small class="text-white-50" id="bankPercent">0%</small>
                                     </div>
+                                    <div class="payment-label">Bank</div>
+                                    <div class="payment-amount" id="totalBank">₨ 0.00</div>
+                                    <div class="payment-percent" id="bankPercent">0%</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Budget Tracking - Only shown for monthly view -->
+                        <!-- Budget Tracking -->
                         <div class="row g-4 mb-4" id="budgetCardsRow">
                             <div class="col-md-6">
                                 <div class="card budget-card cash">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <div>
-                                                <div class="text-muted small">Budget Limit</div>
-                                                <div class="h4 fw-bold" id="cashBudgetLimit">₨ 0.00</div>
-                                            </div>
-                                            <div class="text-center">
-                                                <div class="payment-badge payment-cash">CASH</div>
-                                            </div>
+                                    <div class="budget-header">
+                                        <div class="budget-title">
+                                            <i class="fas fa-wallet me-2"></i>Cash Budget
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span class="fw-medium">Spent</span>
-                                            <span class="fw-bold" id="cashSpent">₨ 0.00</span>
+                                        <span class="budget-badge cash">CASH</span>
+                                    </div>
+                                    <div class="budget-body">
+                                        <div class="budget-row">
+                                            <span class="budget-label">Budget Limit</span>
+                                            <span class="budget-value" id="cashBudgetLimit">₨ 0.00</span>
                                         </div>
-                                        <div class="progress mb-3">
-                                            <div class="progress-bar" role="progressbar" id="cashProgress" style="width: 0%"></div>
+                                        <div class="budget-row">
+                                            <span class="budget-label">Spent</span>
+                                            <span class="budget-value" id="cashSpent">₨ 0.00</span>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span class="fw-medium">Remaining</span>
-                                            <span class="fw-bold" id="cashRemaining">₨ 0.00</span>
+                                        <div class="budget-progress">
+                                            <div class="budget-progress-bar bg-success" id="cashProgress" style="width: 0%"></div>
                                         </div>
-                                        <small class="text-white-50 mt-2 d-block" id="cashPeriodNote">Based on current period</small>
+                                        <div class="budget-row">
+                                            <span class="budget-label">Remaining</span>
+                                            <span class="budget-value text-success" id="cashRemaining">₨ 0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="budget-footer" id="cashPeriodNote">
+                                        Based on current period
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="card budget-card digital">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <div>
-                                                <div class="text-muted small">Budget Limit</div>
-                                                <div class="h4 fw-bold" id="digitalBudgetLimit">₨ 0.00</div>
-                                            </div>
-                                            <div class="text-center">
-                                                <div class="payment-badge payment-card">CARD</div>
-                                                <div class="payment-badge payment-mobile">MOBILE</div>
-                                                <div class="payment-badge payment-bank">BANK</div>
-                                            </div>
+                                    <div class="budget-header">
+                                        <div class="budget-title">
+                                            <i class="fas fa-credit-card me-2"></i>Digital Budget
                                         </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span class="fw-medium">Spent</span>
-                                            <span class="fw-bold" id="digitalSpent">₨ 0.00</span>
+                                        <div>
+                                            <span class="budget-badge digital">CARD</span>
+                                            <span class="budget-badge digital">MOBILE</span>
+                                            <span class="budget-badge digital">BANK</span>
                                         </div>
-                                        <div class="progress mb-3">
-                                            <div class="progress-bar" role="progressbar" id="digitalProgress" style="width: 0%"></div>
+                                    </div>
+                                    <div class="budget-body">
+                                        <div class="budget-row">
+                                            <span class="budget-label">Budget Limit</span>
+                                            <span class="budget-value" id="digitalBudgetLimit">₨ 0.00</span>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span class="fw-medium">Remaining</span>
-                                            <span class="fw-bold" id="digitalRemaining">₨ 0.00</span>
+                                        <div class="budget-row">
+                                            <span class="budget-label">Spent</span>
+                                            <span class="budget-value" id="digitalSpent">₨ 0.00</span>
                                         </div>
-                                        <small class="text-white-50 mt-2 d-block" id="digitalPeriodNote">Based on current period</small>
+                                        <div class="budget-progress">
+                                            <div class="budget-progress-bar bg-info" id="digitalProgress" style="width: 0%"></div>
+                                        </div>
+                                        <div class="budget-row">
+                                            <span class="budget-label">Remaining</span>
+                                            <span class="budget-value text-info" id="digitalRemaining">₨ 0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="budget-footer" id="digitalPeriodNote">
+                                        Based on current period
                                     </div>
                                 </div>
                             </div>
@@ -1477,11 +1838,8 @@
 
                         <!-- Recent Expenses -->
                         <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Expenses</h5>
-                                    <span class="badge bg-light text-dark" id="recentPeriodBadge">2026</span>
-                                </div>
+                            <div class="card-header">
+                                <span><i class="fas fa-history me-2"></i>Recent Expenses</span>
                             </div>
                             <div class="card-body p-0">
                                 <div class="list-group list-group-flush">
@@ -1499,9 +1857,14 @@
 
                     <!-- Settings Tab -->
                     <div class="tab-pane fade" id="settings">
+                        <div class="page-header">
+                            <h1 class="page-title">Application Settings</h1>
+                            <p class="page-subtitle">Configure your expense tracker preferences and budget settings</p>
+                        </div>
+                        
                         <div class="card mb-4">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="fas fa-wallet me-2"></i>Budget Settings</h5>
+                            <div class="card-header">
+                                <span><i class="fas fa-wallet me-2"></i>Budget Settings</span>
                             </div>
                             <div class="card-body">
                                 <div class="alert alert-info border-0 mb-4">
@@ -1514,13 +1877,13 @@
                                     <h6><i class="fas fa-calendar me-2"></i>Select Period for Budget</h6>
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label class="form-label fw-medium">Select Year</label>
+                                            <label class="form-label">Select Year</label>
                                             <select class="form-select" id="budgetYearSelector">
                                                 <!-- Populated dynamically -->
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label fw-medium">Select Period</label>
+                                            <label class="form-label">Select Period</label>
                                             <select class="form-select" id="budgetMonthSelector">
                                                 <option value="1">Jan 10 - Feb 9</option>
                                                 <option value="2">Feb 10 - Mar 9</option>
@@ -1548,11 +1911,11 @@
                                     <div class="col-md-6">
                                         <div class="card border-0 shadow-sm">
                                             <div class="card-header bg-success text-white">
-                                                <h6 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Cash Budget</h6>
+                                                <span><i class="fas fa-money-bill-wave me-2"></i>Cash Budget</span>
                                             </div>
                                             <div class="card-body">
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-medium">Monthly Cash Budget</label>
+                                                    <label class="form-label">Monthly Cash Budget</label>
                                                     <div class="input-group input-group-lg">
                                                         <span class="input-group-text">₨</span>
                                                         <input type="number" class="form-control" id="cashBudgetInput" placeholder="e.g., 10000" min="0">
@@ -1564,12 +1927,12 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="card border-0 shadow-sm">
-                                            <div class="card-header bg-primary text-white">
-                                                <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Digital Budget</h6>
+                                            <div class="card-header bg-info text-white">
+                                                <span><i class="fas fa-credit-card me-2"></i>Digital Budget</span>
                                             </div>
                                             <div class="card-body">
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-medium">Monthly Digital Budget</label>
+                                                    <label class="form-label">Monthly Digital Budget</label>
                                                     <div class="input-group input-group-lg">
                                                         <span class="input-group-text">₨</span>
                                                         <input type="number" class="form-control" id="digitalBudgetInput" placeholder="e.g., 20000" min="0">
@@ -1590,13 +1953,13 @@
                         </div>
 
                         <div class="card mb-4">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Application Settings</h5>
+                            <div class="card-header">
+                                <span><i class="fas fa-cog me-2"></i>Application Settings</span>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-medium">Currency</label>
+                                        <label class="form-label">Currency</label>
                                         <select class="form-select form-select-lg" id="currencySetting">
                                             <option value="NPR">Nepalese Rupee (₨)</option>
                                             <option value="USD">US Dollar ($)</option>
@@ -1604,7 +1967,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-medium">Date Format</label>
+                                        <label class="form-label">Date Format</label>
                                         <select class="form-select form-select-lg" id="dateFormatSetting">
                                             <option value="YYYY-MM-DD">YYYY-MM-DD (Standard)</option>
                                             <option value="DD-MM-YYYY">DD-MM-YYYY (Nepali Style)</option>
@@ -1627,11 +1990,11 @@
         </main>
     </div>
 
-    <!-- Floating Action Button - Toggles Sidebar -->
+    <!-- Floating Action Button - Add Expense -->
     <div class="fab-container">
-        <button class="btn btn-fab" id="toggleSidebarBtn" title="Toggle Menu">
+        <button class="btn btn-fab" id="addExpenseFab" title="Add Expense">
             <i class="fas fa-plus"></i>
-            <span>Toggle Menu</span>
+            <span>Add Expense</span>
         </button>
     </div>
 
@@ -1672,9 +2035,8 @@
         // ======================
         // FIREBASE CONFIGURATION
         // ======================
-        // TODO: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
         const firebaseConfig = {
-              apiKey: "AIzaSyACnmnZczn0Hgw-9UtaJNcuh-3JAPgR_7c",
+            apiKey: "AIzaSyACnmnZczn0Hgw-9UtaJNcuh-3JAPgR_7c",
   authDomain: "expenditure-tracer.firebaseapp.com",
   projectId: "expenditure-tracer",
   storageBucket: "expenditure-tracer.firebasestorage.app",
@@ -1702,7 +2064,7 @@
         let currentFilter = 'all';
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1;
-        let statsPeriodType = 'yearly'; // 'yearly' or 'monthly'
+        let statsPeriodType = 'yearly';
         let statsSelectedYear = new Date().getFullYear();
         let statsSelectedMonth = new Date().getMonth() + 1;
         let budgetSelectedYear = new Date().getFullYear();
@@ -1711,40 +2073,33 @@
         let lastDigitalBudgetCheck = 0;
         const db = firebase.firestore();
         const SETTINGS_DOC_ID = 'userSettings';
-        const BUDGETS_COLLECTION = 'budgets'; // New collection for monthly budgets
-        const BUDGET_CHECK_INTERVAL = 300000; // 5 minutes in milliseconds
-        const CUSTOM_MONTH_START_DAY = 10; // Custom month starts on the 10th
+        const BUDGETS_COLLECTION = 'budgets';
+        const BUDGET_CHECK_INTERVAL = 300000;
+        const CUSTOM_MONTH_START_DAY = 10;
 
         // ======================
         // CUSTOM MONTH HELPER FUNCTIONS
         // ======================
-        // Get custom month key (YYYY-MM) for a given date
         function getCustomMonthKey(date) {
             const d = new Date(date);
             let year = d.getFullYear();
-            let month = d.getMonth() + 1; // 1-12
+            let month = d.getMonth() + 1;
 
-            // If date is before the 10th, it belongs to the previous custom month
             if (d.getDate() < CUSTOM_MONTH_START_DAY) {
                 if (month === 1) {
-                    // December of previous year
                     year -= 1;
                     month = 12;
                 } else {
                     month -= 1;
                 }
             }
-            // Format month as two digits
             const monthStr = String(month).padStart(2, '0');
             return `${year}-${monthStr}`;
         }
 
-        // Get date range for a custom month key (YYYY-MM)
         function getCustomMonthDateRange(customMonthKey) {
             const [year, month] = customMonthKey.split('-').map(Number);
-            // Start date: 10th of the month
             const startDate = new Date(year, month - 1, CUSTOM_MONTH_START_DAY);
-            // End date: 9th of next month
             let endYear = year;
             let endMonth = month;
             if (month === 12) {
@@ -1753,91 +2108,45 @@
             } else {
                 endMonth = month + 1;
             }
-            const endDate = new Date(endYear, endMonth - 1, 9, 23, 59, 59, 999); // End of day on the 9th
+            const endDate = new Date(endYear, endMonth - 1, 9, 23, 59, 59, 999);
             return { startDate, endDate };
         }
 
-        // Get period label for display (e.g., "Jan 10 - Feb 9, 2026")
         function getCustomPeriodLabel(year, monthIndex) {
-            // monthIndex: 1-12 where 1 = Jan 10 - Feb 9, 12 = Dec 10 - Jan 9
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                               'July', 'August', 'September', 'October', 'November', 'December'];
             
             if (monthIndex === 12) {
-                // December period: Dec 10 - Jan 9 (next year)
                 return `${monthNames[11]} ${CUSTOM_MONTH_START_DAY} - ${monthNames[0]} 9, ${year}-${year+1}`;
             } else {
-                // Regular period: e.g., Jan 10 - Feb 9
                 return `${monthNames[monthIndex-1]} ${CUSTOM_MONTH_START_DAY} - ${monthNames[monthIndex]} 9, ${year}`;
             }
         }
 
-        // Get custom month key from year and period index (1-12)
         function getCustomMonthKeyFromPeriod(year, periodIndex) {
-            // periodIndex: 1-12 where 1 = Jan, 2 = Feb, ... 12 = Dec
-            // For period 12 (Dec), the custom month key is YYYY-12
-            // For other periods, the custom month key is YYYY-MM where MM = periodIndex
             let month = periodIndex;
             let y = year;
-            
-            // Special case: Period 12 (Dec 10 - Jan 9) belongs to December of the current year
-            // No adjustment needed
-            
             const monthStr = String(month).padStart(2, '0');
             return `${y}-${monthStr}`;
-        }
-
-        // ======================
-        // SIDEBAR TOGGLE FUNCTION
-        // ======================
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggleBtn = document.getElementById('toggleSidebarBtn');
-            const sidebarToggleBtn = document.getElementById('sidebarToggle');
-            const icon = toggleBtn.querySelector('i');
-            const sidebarIcon = sidebarToggleBtn.querySelector('i');
-            
-            if (sidebar.classList.contains('visible')) {
-                sidebar.classList.remove('visible');
-                overlay.classList.remove('visible');
-                icon.className = 'fas fa-plus';
-                sidebarIcon.className = 'fas fa-chevron-right';
-            } else {
-                sidebar.classList.add('visible');
-                overlay.classList.add('visible');
-                icon.className = 'fas fa-times';
-                sidebarIcon.className = 'fas fa-chevron-left';
-            }
         }
 
         // ======================
         // INITIALIZATION
         // ======================
         document.addEventListener('DOMContentLoaded', function() {
-            // Set today's date as default
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('expenseDate').value = today;
             
-            // Populate year dropdowns
             populateYearDropdowns();
-            
-            // Load settings from Firebase
             loadSettingsFromFirebase();
-            
-            // Load expenses from Firebase
             loadExpenses();
-            
-            // Setup event listeners
             setupEventListeners();
             
-            // Show welcome notification if first visit
             if (!localStorage.getItem('expenseTrackerVisited')) {
                 showNotification('Welcome! Budget periods run from the 10th to the 9th of next month.', 'info');
                 localStorage.setItem('expenseTrackerVisited', 'true');
             }
             
-            // Setup budget notification check interval
             setupBudgetNotificationCheck();
         });
 
@@ -1845,34 +2154,23 @@
         // EVENT LISTENERS
         // ======================
         function setupEventListeners() {
-            // Sidebar toggle buttons
-            document.getElementById('toggleSidebarBtn').addEventListener('click', toggleSidebar);
-            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-            document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
-            
-            // Close sidebar when clicking a nav link on mobile
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 1366 && document.querySelector('.sidebar').classList.contains('visible')) {
-                        toggleSidebar();
-                    }
-                });
+            document.getElementById('addExpenseFab').addEventListener('click', function() {
+                // Switch to add expense tab
+                document.querySelector('.nav-link[href="#add-expense"]').click();
+                window.scrollTo(0, 0);
             });
-
-            // Expense form submission
+            
             document.getElementById('expenseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 addExpense();
             });
 
-            // Delete confirmation
             document.getElementById('confirmDelete').addEventListener('click', function() {
                 if (currentDeleteId) {
                     deleteExpense(currentDeleteId);
                 }
             });
 
-            // Pagination buttons
             document.getElementById('prevPage').addEventListener('click', function() {
                 if (currentPage > 1) {
                     currentPage--;
@@ -1888,7 +2186,6 @@
                 }
             });
 
-            // Search functionality
             document.getElementById('searchExpense').addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 if (searchTerm === '') {
@@ -1899,7 +2196,6 @@
                 }
             });
 
-            // Filter type change
             document.getElementById('filterType').addEventListener('change', function(e) {
                 const filterType = e.target.value;
                 document.getElementById('yearFilterGroup').style.display = 'none';
@@ -1915,7 +2211,6 @@
                 } else if (filterType === 'custom') {
                     document.getElementById('startDateGroup').style.display = 'block';
                     document.getElementById('endDateGroup').style.display = 'block';
-                    // Set default dates
                     const today = new Date().toISOString().split('T')[0];
                     const lastMonth = new Date();
                     lastMonth.setMonth(lastMonth.getMonth() - 1);
@@ -1924,16 +2219,10 @@
                 }
             });
 
-            // Apply filter button
             document.getElementById('applyFilter').addEventListener('click', applyFilter);
-
-            // Save settings button (application settings only)
             document.getElementById('saveSettings').addEventListener('click', saveAppSettingsToFirebase);
-
-            // Save budget settings button
             document.getElementById('saveBudgetSettings').addEventListener('click', saveBudgetSettingsToFirebase);
 
-            // Statistics period filter
             document.getElementById('statsPeriodType').addEventListener('change', function(e) {
                 statsPeriodType = e.target.value;
                 if (statsPeriodType === 'monthly') {
@@ -1956,7 +2245,6 @@
                 updateStatistics();
             });
 
-            // Budget period selector in Settings tab
             document.getElementById('budgetYearSelector').addEventListener('change', function(e) {
                 budgetSelectedYear = parseInt(e.target.value);
             });
@@ -1965,7 +2253,6 @@
                 budgetSelectedMonth = parseInt(e.target.value);
             });
 
-            // Toggle period filter button
             document.getElementById('togglePeriodFilter').addEventListener('click', function() {
                 const periodFilterRow = document.getElementById('periodFilterRow');
                 const toggleBtn = this;
@@ -1974,13 +2261,9 @@
                 if (periodFilterRow.classList.contains('collapsed')) {
                     periodFilterRow.classList.remove('collapsed');
                     icon.className = 'fas fa-minus';
-                    toggleBtn.classList.remove('collapsed');
-                    toggleBtn.classList.add('expanded');
                 } else {
                     periodFilterRow.classList.add('collapsed');
                     icon.className = 'fas fa-plus';
-                    toggleBtn.classList.remove('expanded');
-                    toggleBtn.classList.add('collapsed');
                 }
             });
         }
@@ -2044,7 +2327,6 @@
         }
 
         function filterByCustomMonth(year, periodIndex) {
-            // Get custom month key for this period
             const customMonthKey = getCustomMonthKeyFromPeriod(year, periodIndex);
             const { startDate, endDate } = getCustomMonthDateRange(customMonthKey);
             
@@ -2062,7 +2344,7 @@
         function filterByDateRange(startDate, endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999); // Include entire end day
+            end.setHours(23, 59, 59, 999);
             
             const filtered = expenses.filter(expense => {
                 const expenseDate = new Date(expense.date);
@@ -2082,14 +2364,12 @@
 
             let filteredExpenses = expenses;
             
-            // Apply current time filter first
             if (currentFilter === 'yearly') {
                 filteredExpenses = filteredExpenses.filter(expense => {
                     const expenseDate = new Date(expense.date);
                     return expenseDate.getFullYear() === currentYear;
                 });
             } else if (currentFilter === 'monthly') {
-                // Get custom month key for current filter
                 const customMonthKey = getCustomMonthKeyFromPeriod(currentYear, currentMonth);
                 const { startDate, endDate } = getCustomMonthDateRange(customMonthKey);
                 
@@ -2099,7 +2379,6 @@
                 });
             }
             
-            // Then apply search filter
             filteredExpenses = filteredExpenses.filter(expense => 
                 (expense.description && expense.description.toLowerCase().includes(searchTerm)) ||
                 expense.amount.toString().includes(searchTerm) ||
@@ -2120,7 +2399,6 @@
             const expensePayment = document.getElementById('expensePayment').value;
             const expenseDescription = document.getElementById('expenseDescription').value.trim();
 
-            // Validation
             if (!expenseDate || isNaN(expenseAmount) || expenseAmount <= 0 || !expensePayment) {
                 showNotification('Please fill all required fields with valid values', 'danger');
                 return;
@@ -2135,29 +2413,22 @@
             };
 
             try {
-                // Show loading state
                 const saveBtn = document.querySelector('#expenseForm button[type="submit"]');
                 const originalText = saveBtn.innerHTML;
                 saveBtn.disabled = true;
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
                 
-                // Add to Firebase
                 await db.collection('expenses').add(expense);
                 
-                // Reset form and show success
                 resetForm();
                 showNotification('Expense added successfully!', 'success');
                 
-                // Reload expenses
                 await loadExpenses();
-                
-                // Check budget warnings for current period with payment method specificity
                 await checkPaymentSpecificBudgetWarnings();
             } catch (error) {
                 console.error('Error adding expense:', error);
                 showNotification('Error adding expense. Please try again.', 'danger');
             } finally {
-                // Restore button state
                 const saveBtn = document.querySelector('#expenseForm button[type="submit"]');
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = originalText;
@@ -2166,7 +2437,6 @@
 
         async function loadExpenses() {
             try {
-                // Show loading state
                 const tbody = document.getElementById('expensesTableBody');
                 tbody.innerHTML = `
                     <tr>
@@ -2177,18 +2447,15 @@
                     </tr>
                 `;
                 
-                // Fetch from Firebase
                 const snapshot = await db.collection('expenses')
                     .orderBy('timestamp', 'desc')
                     .get();
                 
-                // Process data
                 expenses = [];
                 snapshot.forEach(doc => {
                     expenses.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // Apply default filter from settings
                 const savedSettings = JSON.parse(localStorage.getItem('expenseTrackerSettings')) || {};
                 const defaultFilter = savedSettings.defaultFilter || 'all';
                 const defaultYear = savedSettings.defaultYear || new Date().getFullYear();
@@ -2196,7 +2463,6 @@
                 if (defaultFilter === 'monthly') {
                     currentFilter = 'monthly';
                     currentYear = defaultYear;
-                    // Determine current period index based on today's date
                     const today = new Date();
                     currentMonth = today.getDate() < CUSTOM_MONTH_START_DAY ? 
                         (today.getMonth() === 0 ? 12 : today.getMonth()) : 
@@ -2211,7 +2477,6 @@
                     displayExpenses();
                 }
                 
-                // Update statistics
                 updateStatistics();
                 
             } catch (error) {
@@ -2249,12 +2514,10 @@
                 return;
             }
 
-            // Pagination
             const startIndex = (currentPage - 1) * expensesPerPage;
             const endIndex = Math.min(startIndex + expensesPerPage, expenses.length);
             const currentExpenses = expenses.slice(startIndex, endIndex);
 
-            // Generate table rows
             let html = '';
             currentExpenses.forEach((expense, index) => {
                 const paymentBadge = getPaymentBadge(expense.paymentMethod);
@@ -2275,7 +2538,6 @@
 
             tbody.innerHTML = html;
             
-            // Add delete event listeners
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     currentDeleteId = this.getAttribute('data-id');
@@ -2304,7 +2566,6 @@
                 return;
             }
 
-            // Pagination
             const startIndex = (currentPage - 1) * expensesPerPage;
             const endIndex = Math.min(startIndex + expensesPerPage, filteredExpenses.length);
             const currentExpenses = filteredExpenses.slice(startIndex, endIndex);
@@ -2329,7 +2590,6 @@
 
             tbody.innerHTML = html;
             
-            // Add delete event listeners
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     currentDeleteId = this.getAttribute('data-id');
@@ -2345,7 +2605,6 @@
             const totalPages = Math.ceil(expenses.length / expensesPerPage);
             document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
             
-            // Disable buttons when needed
             document.getElementById('prevPage').disabled = currentPage === 1;
             document.getElementById('nextPage').disabled = currentPage === Math.ceil(expenses.length / expensesPerPage);
         }
@@ -2354,7 +2613,6 @@
             const totalPages = Math.ceil(totalCount / expensesPerPage);
             document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
             
-            // Disable buttons when needed
             document.getElementById('prevPage').disabled = currentPage === 1;
             document.getElementById('nextPage').disabled = currentPage === Math.ceil(totalCount / expensesPerPage);
         }
@@ -2371,32 +2629,24 @@
 
         async function deleteExpense(expenseId) {
             try {
-                // Show loading state on delete button
                 const deleteBtn = document.getElementById('confirmDelete');
                 const originalText = deleteBtn.innerHTML;
                 deleteBtn.disabled = true;
                 deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Deleting...';
                 
-                // Delete from Firebase
                 await db.collection('expenses').doc(expenseId).delete();
                 
-                // Close modal
                 const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
                 deleteModal.hide();
                 
-                // Show success notification
                 showNotification('Expense deleted successfully!', 'success');
                 
-                // Reload expenses
                 await loadExpenses();
-                
-                // Check budget warnings after deletion
                 await checkPaymentSpecificBudgetWarnings();
             } catch (error) {
                 console.error('Error deleting expense:', error);
                 showNotification('Error deleting expense. Please try again.', 'danger');
             } finally {
-                // Restore button state
                 const deleteBtn = document.getElementById('confirmDelete');
                 deleteBtn.disabled = false;
                 deleteBtn.innerHTML = originalText;
@@ -2419,7 +2669,6 @@
                 document.getElementById('mobilePercent').textContent = '0%';
                 document.getElementById('bankPercent').textContent = '0%';
                 
-                // Hide budget cards for empty state
                 document.getElementById('budgetCardsRow').style.display = 'none';
                 
                 document.getElementById('recentExpensesList').innerHTML = `
@@ -2430,13 +2679,10 @@
                     </div>
                 `;
                 
-                // Update period displays
                 updatePeriodDisplays();
-                
                 return;
             }
 
-            // Filter expenses based on selected period
             let filteredExpenses = [];
             let periodLabel = '';
             
@@ -2446,10 +2692,8 @@
                     return expenseDate.getFullYear() === statsSelectedYear;
                 });
                 periodLabel = `${statsSelectedYear}`;
-                // Hide budget cards for yearly view
                 document.getElementById('budgetCardsRow').style.display = 'none';
             } else {
-                // Get custom month key for the selected period
                 const customMonthKey = getCustomMonthKeyFromPeriod(statsSelectedYear, statsSelectedMonth);
                 const { startDate, endDate } = getCustomMonthDateRange(customMonthKey);
                 
@@ -2459,20 +2703,16 @@
                 });
                 
                 periodLabel = getCustomPeriodLabel(statsSelectedYear, statsSelectedMonth);
-                // Show budget cards for monthly view
                 document.getElementById('budgetCardsRow').style.display = 'block';
             }
 
-            // Calculate total expenses for selected period
             const total = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
             document.getElementById('totalExpenses').textContent = `₨ ${total.toFixed(2)}`;
             document.getElementById('totalPeriodLabel').textContent = `For ${periodLabel}`;
 
-            // Expense count
             document.getElementById('expenseCount').textContent = filteredExpenses.length;
             document.getElementById('countPeriodLabel').textContent = `in ${periodLabel}`;
 
-            // Calculate payment method breakdown for selected period
             const paymentTotals = {
                 Cash: 0,
                 Card: 0,
@@ -2486,39 +2726,31 @@
                 }
             });
             
-            // Update payment method totals
             document.getElementById('totalCash').textContent = `₨ ${paymentTotals.Cash.toFixed(2)}`;
             document.getElementById('totalCard').textContent = `₨ ${paymentTotals.Card.toFixed(2)}`;
             document.getElementById('totalMobile').textContent = `₨ ${paymentTotals.Mobile.toFixed(2)}`;
             document.getElementById('totalBank').textContent = `₨ ${paymentTotals.Bank.toFixed(2)}`;
             
-            // Calculate percentages
             const totalPayment = paymentTotals.Cash + paymentTotals.Card + paymentTotals.Mobile + paymentTotals.Bank;
             document.getElementById('cashPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Cash / totalPayment) * 100).toFixed(1)}%` : '0%';
             document.getElementById('cardPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Card / totalPayment) * 100).toFixed(1)}%` : '0%';
             document.getElementById('mobilePercent').textContent = totalPayment > 0 ? `${((paymentTotals.Mobile / totalPayment) * 100).toFixed(1)}%` : '0%';
             document.getElementById('bankPercent').textContent = totalPayment > 0 ? `${((paymentTotals.Bank / totalPayment) * 100).toFixed(1)}%` : '0%';
 
-            // Update period badges
             document.getElementById('paymentPeriodBadge').textContent = periodLabel;
-            document.getElementById('recentPeriodBadge').textContent = periodLabel;
-
-            // For monthly view, load and display budget for this custom month
+            
             if (statsPeriodType === 'monthly') {
                 await loadAndDisplayBudgetForCustomMonth(statsSelectedYear, statsSelectedMonth, paymentTotals);
             }
 
-            // Recent expenses list (last 5 from selected period)
             let recentHTML = '';
             filteredExpenses.slice(0, 5).forEach(expense => {
                 const paymentIcon = getPaymentIcon(expense.paymentMethod);
                 recentHTML += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
-                        <div>
-                            <div class="fw-medium">${expense.description}</div>
-                            <small class="text-muted">${formatDate(expense.date)} • ${paymentIcon} ${expense.paymentMethod}</small>
-                        </div>
-                        <span class="badge ${getPaymentBadgeClass(expense.paymentMethod)} rounded-pill">₨ ${expense.amount.toFixed(0)}</span>
+                    <div class="list-group-item recent-item">
+                        <div class="recent-desc">${expense.description}</div>
+                        <small class="recent-meta">${formatDate(expense.date)} • ${paymentIcon} ${expense.paymentMethod}</small>
+                        <span class="badge ${getPaymentBadgeClass(expense.paymentMethod)} rounded-pill mt-2">₨ ${expense.amount.toFixed(0)}</span>
                     </div>
                 `;
             });
@@ -2534,17 +2766,12 @@
             }
             
             document.getElementById('recentExpensesList').innerHTML = recentHTML;
-            
-            // Update period displays
             updatePeriodDisplays();
         }
 
         async function loadAndDisplayBudgetForCustomMonth(year, periodIndex, paymentTotals) {
             try {
-                // Get custom month key for this period
                 const customMonthKey = getCustomMonthKeyFromPeriod(year, periodIndex);
-                
-                // Load budget for this custom month
                 const budgetDoc = await db.collection(BUDGETS_COLLECTION).doc(customMonthKey).get();
                 
                 let cashBudget = 0;
@@ -2556,19 +2783,14 @@
                     digitalBudget = budgetData.digitalBudget || 0;
                 }
                 
-                // Calculate spent amounts
                 const cashSpent = paymentTotals.Cash || 0;
                 const digitalSpent = (paymentTotals.Card || 0) + (paymentTotals.Mobile || 0) + (paymentTotals.Bank || 0);
                 
-                // Update cash budget card
                 updateBudgetCard('cash', cashBudget, cashSpent, year, periodIndex);
-                
-                // Update digital budget card
                 updateBudgetCard('digital', digitalBudget, digitalSpent, year, periodIndex);
                 
             } catch (error) {
                 console.error('Error loading budget for custom month:', error);
-                // Show default values if error occurs
                 updateBudgetCard('cash', 0, paymentTotals.Cash || 0, year, periodIndex);
                 updateBudgetCard('digital', 0, (paymentTotals.Card || 0) + (paymentTotals.Mobile || 0) + (paymentTotals.Bank || 0), year, periodIndex);
             }
@@ -2587,22 +2809,19 @@
             const remaining = Math.max(0, budgetLimit - spentAmount);
             remainingEl.textContent = `₨ ${remaining.toFixed(2)}`;
             
-            // Calculate progress percentage
             const progressPercent = budgetLimit > 0 ? Math.min(100, (spentAmount / budgetLimit) * 100) : 0;
             progressEl.style.width = `${progressPercent.toFixed(1)}%`;
             
-            // Add color coding based on percentage
             if (progressPercent >= 90) {
-                progressEl.className = 'progress-bar bg-danger';
+                progressEl.className = `budget-progress-bar bg-danger`;
             } else if (progressPercent >= 75) {
-                progressEl.className = 'progress-bar bg-warning';
+                progressEl.className = `budget-progress-bar bg-warning`;
             } else if (progressPercent >= 50) {
-                progressEl.className = 'progress-bar bg-info';
+                progressEl.className = `budget-progress-bar bg-info`;
             } else {
-                progressEl.className = `progress-bar bg-${type === 'cash' ? 'success' : 'primary'}`;
+                progressEl.className = `budget-progress-bar bg-${type === 'cash' ? 'success' : 'info'}`;
             }
             
-            // Update period note with custom period label
             const periodLabel = getCustomPeriodLabel(year, periodIndex);
             periodNoteEl.textContent = `Budget for ${periodLabel}`;
         }
@@ -2643,27 +2862,20 @@
         // ======================
         async function checkPaymentSpecificBudgetWarnings() {
             try {
-                // Get current custom month key for today
                 const today = new Date();
                 const customMonthKey = getCustomMonthKey(today);
                 const { year, month } = parseCustomMonthKey(customMonthKey);
                 
-                // Load budget for current custom month
                 const budgetDoc = await db.collection(BUDGETS_COLLECTION).doc(customMonthKey).get();
                 
-                if (!budgetDoc.exists) {
-                    return; // No budget set for current period
-                }
+                if (!budgetDoc.exists) return;
                 
                 const budgetData = budgetDoc.data();
                 const cashBudget = parseFloat(budgetData.cashBudget || 0);
                 const digitalBudget = parseFloat(budgetData.digitalBudget || 0);
                 
-                if (cashBudget <= 0 && digitalBudget <= 0) {
-                    return; // No budget limits set
-                }
+                if (cashBudget <= 0 && digitalBudget <= 0) return;
                 
-                // Get current custom month expenses
                 const { startDate, endDate } = getCustomMonthDateRange(customMonthKey);
                 const currentTime = Date.now();
                 
@@ -2680,11 +2892,8 @@
                     .filter(e => ['Card', 'Mobile', 'Bank'].includes(e.paymentMethod))
                     .reduce((sum, e) => sum + e.amount, 0);
                 
-                // Check cash budget with specific notifications
                 if (cashBudget > 0) {
                     const cashPercent = (cashSpent / cashBudget) * 100;
-                    
-                    // Only show notification if we haven't shown one recently for this threshold
                     if (cashPercent >= 90 && (currentTime - lastCashBudgetCheck) > BUDGET_CHECK_INTERVAL) {
                         showPaymentSpecificNotification('cash', 'critical', cashPercent, cashSpent, cashBudget, customMonthKey);
                         lastCashBudgetCheck = currentTime;
@@ -2694,11 +2903,8 @@
                     }
                 }
                 
-                // Check digital budget with specific notifications
                 if (digitalBudget > 0) {
                     const digitalPercent = (digitalSpent / digitalBudget) * 100;
-                    
-                    // Only show notification if we haven't shown one recently for this threshold
                     if (digitalPercent >= 90 && (currentTime - lastDigitalBudgetCheck) > BUDGET_CHECK_INTERVAL) {
                         showPaymentSpecificNotification('digital', 'critical', digitalPercent, digitalSpent, digitalBudget, customMonthKey);
                         lastDigitalBudgetCheck = currentTime;
@@ -2712,14 +2918,12 @@
             }
         }
 
-        // Parse custom month key (YYYY-MM) to get year and month
         function parseCustomMonthKey(customMonthKey) {
             const [year, month] = customMonthKey.split('-').map(Number);
             return { year, month };
         }
 
         function showPaymentSpecificNotification(paymentType, severity, percent, spent, limit, customMonthKey) {
-            // Create notification element
             const notification = document.createElement('div');
             notification.className = `alert alert-${severity === 'critical' ? 'danger' : 'warning'} notification`;
             notification.role = 'alert';
@@ -2728,9 +2932,8 @@
             let title = '';
             let message = '';
             
-            // Get period label for display
             const { year, month } = parseCustomMonthKey(customMonthKey);
-            const periodIndex = month; // For custom months, month index = period index
+            const periodIndex = month;
             const periodLabel = getCustomPeriodLabel(year, periodIndex);
             
             if (paymentType === 'cash') {
@@ -2754,17 +2957,14 @@
                 </div>
             `;
 
-            // Add to body
             document.body.appendChild(notification);
 
-            // Auto-remove after animation completes
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
             }, 5000);
             
-            // Also show persistent badge notification
             showBudgetBadgeNotification(paymentType, severity, percent, spent, limit);
         }
 
@@ -2772,32 +2972,25 @@
             const badge = paymentType === 'cash' ? document.getElementById('cashBudgetBadge') : document.getElementById('digitalBudgetBadge');
             const messageEl = paymentType === 'cash' ? document.getElementById('cashBudgetMessage') : document.getElementById('digitalBudgetMessage');
             
-            // Set message
             if (paymentType === 'cash') {
-                messageEl.textContent = `Cash: ₨${spent.toFixed(0)}/${limit.toFixed(0)} (${percent.toFixed(0)}%)`;
+                messageEl.innerHTML = `<i class="fas fa-money-bill-wave me-2"></i>Cash: ₨${spent.toFixed(0)}/${limit.toFixed(0)} (${percent.toFixed(0)}%)`;
             } else {
-                messageEl.textContent = `Digital: ₨${spent.toFixed(0)}/${limit.toFixed(0)} (${percent.toFixed(0)}%)`;
+                messageEl.innerHTML = `<i class="fas fa-credit-card me-2"></i>Digital: ₨${spent.toFixed(0)}/${limit.toFixed(0)} (${percent.toFixed(0)}%)`;
             }
             
-            // Set severity class
-            badge.className = `budget-badge ${paymentType} ${severity}`;
+            badge.className = `budget-badge-notification ${paymentType} ${severity}`;
+            badge.style.display = 'flex';
             
-            // Show badge
-            badge.style.display = 'block';
-            
-            // Auto-hide after 10 seconds
             setTimeout(() => {
                 badge.style.display = 'none';
             }, 10000);
         }
 
         function setupBudgetNotificationCheck() {
-            // Check budget notifications every 5 minutes
             setInterval(async () => {
                 await checkPaymentSpecificBudgetWarnings();
             }, BUDGET_CHECK_INTERVAL);
             
-            // Initial check after 10 seconds (allow expenses to load first)
             setTimeout(async () => {
                 await checkPaymentSpecificBudgetWarnings();
             }, 10000);
@@ -2810,7 +3003,6 @@
             const cashBudget = document.getElementById('cashBudgetInput').value;
             const digitalBudget = document.getElementById('digitalBudgetInput').value;
 
-            // Validation
             if (cashBudget && parseFloat(cashBudget) < 0) {
                 showNotification('Cash budget cannot be negative', 'danger');
                 return;
@@ -2822,21 +3014,18 @@
             }
 
             try {
-                // Show loading state
                 const saveBtn = document.getElementById('saveBudgetSettings');
                 const originalText = saveBtn.innerHTML;
                 saveBtn.disabled = true;
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
                 
-                // Get custom month key for selected period
                 const customMonthKey = getCustomMonthKeyFromPeriod(budgetSelectedYear, budgetSelectedMonth);
                 
-                // Save to Firebase budgets collection
                 const budgetData = {
                     cashBudget: parseFloat(cashBudget || 0),
                     digitalBudget: parseFloat(digitalBudget || 0),
                     year: budgetSelectedYear,
-                    periodIndex: budgetSelectedMonth, // 1-12 representing the custom period
+                    periodIndex: budgetSelectedMonth,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
@@ -2845,7 +3034,6 @@
                 const periodLabel = getCustomPeriodLabel(budgetSelectedYear, budgetSelectedMonth);
                 showNotification(`Budget settings saved successfully for ${periodLabel}!`, 'success');
                 
-                // If we're currently viewing this period in statistics, update it
                 if (statsPeriodType === 'monthly' && 
                     statsSelectedYear === budgetSelectedYear && 
                     statsSelectedMonth === budgetSelectedMonth) {
@@ -2856,7 +3044,6 @@
                 console.error('Error saving budget settings to Firebase:', error);
                 showNotification('Error saving budget settings. Please try again.', 'danger');
             } finally {
-                // Restore button state
                 const saveBtn = document.getElementById('saveBudgetSettings');
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = originalText;
@@ -2868,13 +3055,11 @@
             const dateFormat = document.getElementById('dateFormatSetting').value;
 
             try {
-                // Show loading state
                 const saveBtn = document.getElementById('saveSettings');
                 const originalText = saveBtn.innerHTML;
                 saveBtn.disabled = true;
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
                 
-                // Save to Firebase
                 const settingsData = {
                     currency: currency,
                     dateFormat: dateFormat,
@@ -2883,7 +3068,6 @@
                 
                 await db.collection('settings').doc(SETTINGS_DOC_ID).set(settingsData, { merge: true });
                 
-                // Also save to localStorage for offline access
                 localStorage.setItem('expenseTrackerSettings', JSON.stringify(settingsData));
                 
                 showNotification('Application settings saved successfully to Firebase!', 'success');
@@ -2892,7 +3076,6 @@
                 console.error('Error saving settings to Firebase:', error);
                 showNotification('Error saving settings. Please try again.', 'danger');
             } finally {
-                // Restore button state
                 const saveBtn = document.getElementById('saveSettings');
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = originalText;
@@ -2905,12 +3088,8 @@
                 
                 if (doc.exists) {
                     const settings = doc.data();
-                    
-                    // Update UI
                     document.getElementById('currencySetting').value = settings.currency || 'NPR';
                     document.getElementById('dateFormatSetting').value = settings.dateFormat || 'YYYY-MM-DD';
-                    
-                    // Save to localStorage
                     localStorage.setItem('expenseTrackerSettings', JSON.stringify(settings));
                 }
             } catch (error) {
@@ -2935,7 +3114,6 @@
         }
 
         function showNotification(message, type) {
-            // Create notification element
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} notification`;
             notification.role = 'alert';
@@ -2951,10 +3129,8 @@
                 </div>
             `;
 
-            // Add to body
             document.body.appendChild(notification);
 
-            // Auto-remove after animation completes
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
@@ -2980,30 +3156,25 @@
 
         function populateYearDropdowns() {
             const currentYear = new Date().getFullYear();
-            const startYear = currentYear - 10; // Show last 10 years
-            const endYear = currentYear + 1; // Include next year
+            const startYear = currentYear - 10;
+            const endYear = currentYear + 1;
             
-            // View Expenses tab
             const yearFilter = document.getElementById('yearFilter');
             yearFilter.innerHTML = '';
             
-            // Statistics tab
             const statsYearFilter = document.getElementById('statsYearFilter');
             statsYearFilter.innerHTML = '';
             
-            // Budget settings in Settings tab
             const budgetYearSelector = document.getElementById('budgetYearSelector');
             budgetYearSelector.innerHTML = '';
             
             for (let year = endYear; year >= startYear; year--) {
-                // View Expenses dropdown
                 const option1 = document.createElement('option');
                 option1.value = year;
                 option1.textContent = year;
                 if (year === currentYear) option1.selected = true;
                 yearFilter.appendChild(option1);
                 
-                // Statistics dropdown
                 const option2 = document.createElement('option');
                 option2.value = year;
                 option2.textContent = year;
@@ -3013,7 +3184,6 @@
                 }
                 statsYearFilter.appendChild(option2);
                 
-                // Budget settings dropdown
                 const option3 = document.createElement('option');
                 option3.value = year;
                 option3.textContent = year;
@@ -3024,7 +3194,6 @@
                 budgetYearSelector.appendChild(option3);
             }
             
-            // Set current period for budget selector based on today's date
             const today = new Date();
             const currentPeriodIndex = today.getDate() < CUSTOM_MONTH_START_DAY ? 
                 (today.getMonth() === 0 ? 12 : today.getMonth()) : 
@@ -3033,7 +3202,6 @@
             document.getElementById('budgetMonthSelector').value = currentPeriodIndex;
             budgetSelectedMonth = currentPeriodIndex;
             
-            // Set current period for statistics
             document.getElementById('statsMonthFilter').value = currentPeriodIndex;
             statsSelectedMonth = currentPeriodIndex;
         }
